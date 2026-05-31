@@ -27,12 +27,12 @@
   nav button.active { color: var(--accent); border-bottom-color: var(--accent); }
   nav button:hover:not(.active) { color: var(--text); }
 
-  .view { display: none; padding: 20px; max-width: 920px; margin: 0 auto; }
+  .view { display: none; padding: 20px; max-width: 900px; margin: 0 auto; }
   .view.active { display: block; }
 
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 20px; }
-  .card h3 { font-size: 0.95rem; margin-bottom: 6px; }
-  .sub { color: var(--muted); font-size: 0.8rem; margin-bottom: 14px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+  .card h3 { font-size: 0.95rem; margin-bottom: 10px; }
+  .sub { color: var(--muted); font-size: 0.8rem; margin-bottom: 12px; }
 
   .player-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
   .ptab { padding: 7px 18px; border-radius: 20px; border: 1.5px solid var(--border); background: none; color: var(--muted); cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
@@ -41,14 +41,13 @@
   .count-line { font-size: 0.82rem; margin-bottom: 10px; }
   .badge { display: inline-flex; align-items: center; background: var(--border); color: var(--muted); border-radius: 10px; padding: 2px 10px; font-size: 0.78rem; font-weight: 700; margin-left: 6px; }
   .badge.ok { background: var(--green); color: #fff; }
-  .badge.warn { background: var(--red); color: #fff; }
 
   .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 7px; }
-  /* グループ表示 */
-  .group-section { margin-bottom: 14px; }
+  .group-section { margin-bottom: 12px; }
   .group-header { font-size: 0.75rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; padding: 4px 0 6px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
   .group-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
   @media(max-width:520px) { .group-grid { grid-template-columns: repeat(2, 1fr); } }
+
   .tbtn { padding: 7px 9px; border-radius: 8px; border: 1.5px solid var(--border); background: rgba(255,255,255,0.03); color: var(--text); cursor: pointer; font-size: 0.8rem; text-align: left; transition: all 0.15s; display: flex; align-items: center; gap: 5px; }
   .tbtn .flag { font-size: 1.05rem; }
   .tbtn:hover { border-color: var(--accent); }
@@ -60,18 +59,16 @@
   .save-btn:hover { opacity: 0.88; }
   .msg { text-align: center; margin-top: 10px; font-size: 0.85rem; color: var(--green); display: none; }
 
-  /* 予想比較ビュー */
   .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .cplayer { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
   .cplayer h3 { font-size: 0.95rem; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-  .stage-label { font-size: 0.75rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin: 12px 0 6px; }
+  .stage-label { font-size: 0.72rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin: 12px 0 6px; }
   .team-pill { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 14px; font-size: 0.8rem; margin: 3px 3px 3px 0; border: 1px solid var(--border); background: rgba(255,255,255,0.04); }
   .team-pill.hit { border-color: var(--green); color: var(--green); background: rgba(46,204,113,0.08); }
   .team-pill.miss { border-color: var(--red); color: #e57373; background: rgba(231,76,60,0.08); }
   .team-pill.bonus-hit { border-color: var(--accent); color: var(--accent); background: rgba(232,200,74,0.08); }
   .team-pill.pending { border-color: var(--border); color: var(--muted); }
 
-  /* スコアボード */
   .score-board { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
   .score-card { background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 22px; text-align: center; }
   .score-card.winner { border-color: var(--accent); background: rgba(232,200,74,0.06); }
@@ -90,23 +87,21 @@
   .miss { color: var(--red); }
   .pend { color: var(--muted); }
 
-  /* 日程 */
-  .schedule-section { margin-bottom: 24px; }
-  .schedule-section h3 { font-size: 0.9rem; color: var(--accent); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
-  .match-row { display: flex; align-items: center; padding: 10px 14px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 6px; gap: 10px; font-size: 0.82rem; }
-  .match-date { color: var(--muted); min-width: 100px; }
+  .schedule-section { margin-bottom: 20px; }
+  .schedule-section h3 { font-size: 0.88rem; color: var(--accent); margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+  .match-row { display: flex; align-items: center; padding: 9px 14px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 5px; gap: 10px; font-size: 0.82rem; }
+  .match-date { color: var(--muted); min-width: 90px; }
   .match-teams { flex: 1; font-weight: 600; }
   .match-venue { color: var(--muted); font-size: 0.75rem; }
   .match-round { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.72rem; font-weight: 700; }
-  .round-group { background: rgba(30,100,200,0.25); color: #7ab4ff; }
-  .round-r32 { background: rgba(232,200,74,0.2); color: var(--accent); }
-  .round-r16 { background: rgba(46,204,113,0.2); color: var(--green); }
-  .round-qf { background: rgba(232,200,74,0.15); color: var(--accent); }
-  .round-sf { background: rgba(231,76,60,0.2); color: var(--red); }
-  .round-final { background: rgba(232,200,74,0.35); color: var(--accent); }
+  .round-group { background: rgba(30,100,200,0.2); color: #7ab4ff; }
+  .round-r32 { background: rgba(232,200,74,0.15); color: var(--accent); }
+  .round-r16 { background: rgba(46,204,113,0.18); color: var(--green); }
+  .round-qf { background: rgba(232,200,74,0.12); color: var(--accent); }
+  .round-sf { background: rgba(231,76,60,0.18); color: var(--red); }
+  .round-final { background: rgba(232,200,74,0.3); color: var(--accent); }
 
-  .info-box { background: rgba(232,200,74,0.07); border: 1px solid rgba(232,200,74,0.25); border-radius: 8px; padding: 11px 14px; margin-bottom: 16px; font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
-  .bonus-note { background: rgba(232,200,74,0.06); border: 1px solid rgba(232,200,74,0.25); border-radius: 8px; padding: 10px 14px; font-size: 0.82rem; color: var(--muted); margin-bottom: 14px; }
+  .note { background: rgba(232,200,74,0.06); border: 1px solid rgba(232,200,74,0.2); border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
 
   @media(max-width:580px) {
     .compare-grid, .score-board { grid-template-columns: 1fr; }
@@ -129,196 +124,147 @@
   <button onclick="showView('schedule',this)">📅 日程</button>
 </nav>
 
-<!-- ============ ルール ============ -->
+<!-- ルール -->
 <div id="rules" class="view active">
   <div class="card">
-    <h3>⚽ ゲーム概要</h3>
-    <p class="sub" style="margin-bottom:0">KeiとAkacelloの2人で、W杯2026の結果を予想して点数を競うゲームです。<br>予想は3段階。大会が進むにつれて締切が来るので、締切前に必ず入力してください。</p>
-  </div>
-
-  <div class="card">
-    <h3>📌 予想の3ステージ＆締切</h3>
-    <table style="margin-top:8px">
+    <h3>📌 ルール</h3>
+    <p class="sub">KeiとAkacelloが3ステージで予想を入力。点数が高い方が勝ち。</p>
+    <table>
       <thead>
-        <tr><th>ステージ</th><th>内容</th><th style="white-space:nowrap">締切</th><th>配点</th></tr>
+        <tr><th>ステージ</th><th>内容</th><th>締切</th><th>配点</th></tr>
       </thead>
       <tbody>
         <tr>
-          <td><strong style="color:#7ab4ff">① ベスト16</strong></td>
-          <td>48チームの中からラウンド16に残る16チームを選ぶ</td>
-          <td style="white-space:nowrap;color:var(--accent)">6/11（木）<br><small>大会開幕前</small></td>
-          <td>1チーム <strong>1点</strong></td>
+          <td><strong>① グループ勝者</strong></td>
+          <td>各グループ（A〜L）から1チームずつ、計12チームを予想</td>
+          <td style="white-space:nowrap;color:var(--accent)">6/11<br><small>開幕前</small></td>
+          <td>1チーム <strong>1点</strong>（最大12点）</td>
         </tr>
         <tr>
-          <td><strong style="color:#9b59b6">　＋ボーナス</strong></td>
-          <td>ステージ①と同時に優勝国も予想できる（任意）</td>
-          <td style="white-space:nowrap;color:var(--accent)">6/11（木）</td>
-          <td>的中で <strong>+3点</strong></td>
+          <td><strong>　＋ボーナス</strong></td>
+          <td>①と同時に優勝国も予想（任意）</td>
+          <td style="white-space:nowrap;color:var(--accent)">6/11</td>
+          <td>的中 <strong>+3点</strong></td>
         </tr>
         <tr>
-          <td><strong style="color:var(--accent)">② ベスト4</strong></td>
-          <td>準決勝に残る4チームを選ぶ</td>
-          <td style="white-space:nowrap;color:var(--accent)">7/10（金）<br><small>R16開始前</small></td>
-          <td>1チーム <strong>3点</strong></td>
+          <td><strong>② ベスト4</strong></td>
+          <td>準決勝に残る4チームを予想</td>
+          <td style="white-space:nowrap;color:var(--accent)">7/10<br><small>R16前</small></td>
+          <td>1チーム <strong>3点</strong>（最大12点）</td>
         </tr>
         <tr>
-          <td><strong style="color:var(--red)">③ 優勝予想</strong></td>
-          <td>優勝チームを1チーム選ぶ（本命）</td>
-          <td style="white-space:nowrap;color:var(--accent)">7/20（月）<br><small>準決勝前</small></td>
-          <td>的中で <strongg>5点</strong></td>
+          <td><strong>③ 優勝予想</strong></td>
+          <td>優勝チームを1チーム予想</td>
+          <td style="white-space:nowrap;color:var(--accent)">7/20<br><small>準決勝前</small></td>
+          <td>的中 <strong>5点</strong></td>
         </tr>
       </tbody>
     </table>
+    <p style="margin-top:12px;font-size:0.8rem;color:var(--muted)">合計最大：<strong style="color:var(--text)">32点</strong>（12 + 3 + 12 + 5）</p>
   </div>
 
   <div class="card">
-    <h3>🏆 最大得点</h3>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:10px">
-      <div style="background:rgba(30,100,200,0.15);border:1px solid #2a5aaa;border-radius:8px;padding:12px;text-align:center">
-        <div style="font-size:0.75rem;color:var(--muted)">ベスト16</div>
-        <div style="font-size:1.6rem;font-weight:700;color:#7ab4ff">16点</div>
-        <div style="font-size:0.72rem;color:var(--muted)">16チーム × 1点</div>
-      </div>
-      <div style="background:rgba(232,200,74,0.08);border:1px solid var(--accent);border-radius:8px;padding:12px;text-align:center;border-style:dashed">
-        <div style="font-size:0.75rem;color:var(--muted)">ボーナス</div>
-        <div style="font-size:1.6rem;font-weight:700;color:var(--accent)">3点</div>
-        <div style="font-size:0.72rem;color:var(--muted)">優勝的中のみ</div>
-      </div>
-      <div style="background:rgba(232,200,74,0.12);border:1px solid var(--accent);border-radius:8px;padding:12px;text-align:center">
-        <div style="font-size:0.75rem;color:var(--muted)">ベスト4</div>
-        <div style="font-size:1.6rem;font-weight:700;color:var(--accent)">12点</div>
-        <div style="font-size:0.72rem;color:var(--muted)">4チーム × 3点</div>
-      </div>
-      <div style="background:rgba(231,76,60,0.12);border:1px solid var(--red);border-radius:8px;padding:12px;text-align:center">
-        <div style="font-size:0.75rem;color:var(--muted)">優勝予想</div>
-        <div style="font-size:1.6rem;font-weight:700;color:var(--red)"g>5点</div>
-        <div style="font-size:0.72rem;color:var(--muted)">的中のみ</div>
-      </div>
-      <div style="background:rgba(46,204,113,0.12);border:1px solid var(--green);border-radius:8px;padding:12px;text-align:center;grid-column:span 1">
-        <div style="font-size:0.75rem;color:var(--muted)">合計最大</div>
-        <div style="font-size:1.6rem;font-weight:700;color:var(--green)">41点</div>
-        <div style="font-size:0.72rem;color:var(--muted)">全部的中した場合</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>📱 Akacello → Keiへの予想の伝え方</h3>
-    <p class="sub" style="margin-bottom:0">「予想入力」タブを開くとテンプレートが自動生成されます。<br>AkacelloはそれをワンクリックでコピーしてKeiにLINEで送るだけです。</p>
+    <h3>📱 Akacelloの予想の送り方</h3>
+    <p class="sub" style="margin-bottom:0">「予想入力」タブでAkacelloの予想を選択 → テンプレートが自動生成されるので、コピーしてKeiにLINEで送る。Keiが代わりに入力・保存する。</p>
   </div>
 </div>
 
-<!-- ============ 予想入力 ============ -->
+<!-- 予想入力 -->
 <div id="predict" class="view">
-  <div class="info-box">
-    📌 各ステージの予想入力画面です。KeiとAkacelloそれぞれ入力してください。<br>
-    ⚠️ 各ステージは試合開始前に入力・保存してください。
-  </div>
-
   <!-- Akacello用テンプレ -->
-  <div class="card" style="border-color:var(--border)">
+  <div class="card">
     <h3>📱 Akacello → Kei 予想テンプレ</h3>
-    <p class="sub">AkacelloはこのテキストをコピーしてLINEでKeiに送ってください。Keiが代わりに入力します。</p>
-    <textarea id="template-text" style="width:100%;height:200px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.78rem;padding:12px;resize:none;font-family:monospace;line-height:1.6" readonly></textarea>
-    <button class="save-btn" style="margin-top:8px" onclick="copyTemplate()">📋 ワンクリックでコピー → LINEで送る</button>
-    <div id="copy-msg" style="text-align:center;margin-top:8px;font-size:0.85rem;color:var(--green);display:none">✅ コピーしました！LINEに貼り付けてKeiに送ってください</div>
+    <p class="sub">Akacelloタブで予想を選ぶと自動でテキストが更新されます。コピーしてKeiにLINEで送ってください。</p>
+    <textarea id="template-text" style="width:100%;height:180px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.78rem;padding:12px;resize:none;font-family:monospace;line-height:1.6" readonly></textarea>
+    <button class="save-btn" style="margin-top:8px" onclick="copyTemplate()">📋 コピーしてLINEで送る</button>
+    <div id="copy-msg" style="text-align:center;margin-top:8px;font-size:0.85rem;color:var(--green);display:none">✅ コピーしました！</div>
   </div>
 
-  <!-- Stage 1 -->
+  <!-- ステージ1 -->
   <div class="card">
-    <h3>🔵 ステージ1：ベスト16予想 <small style="color:var(--muted);font-size:0.75rem;">締切：6/11（大会開幕前）</small></h3>
-    <p class="sub">グループステージを突破してベスト16に残る16チームを選択。さらに優勝予想（ボーナス）も選べます。</p>
-    <div class="bonus-note">⭐ 優勝ボーナス：ここで優勝チームも予想できます。最終的に優勝したら <strong>+3点</strong>（5点とは別）</div>
+    <h3>① グループ勝者予想 <small style="color:var(--muted);font-weight:400">締切：6/11</small></h3>
     <div class="player-tabs">
-      <button class="ptab active" onclick="switchPlayer('b16','kei',this)">🎯 Kei</button>
-      <button class="ptab" onclick="switchPlayer('b16','akacello',this)">🎯 Akacello</button>
+      <button class="ptab active" onclick="switchPlayer('b16','kei',this)">Kei</button>
+      <button class="ptab" onclick="switchPlayer('b16','akacello',this)">Akacello</button>
     </div>
-    <div class="count-line">
-      グループ勝者選択：<span id="b16-count" class="badge">0 / 12</span>
-      　優勝ボーナス予想：<span id="bonus-count" class="badge">未選択</span>
-    </div>
+    <div class="count-line">選択：<span id="b16-count" class="badge">0 / 12</span></div>
     <div id="b16-grid"></div>
 
-    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
-      <div class="bonus-note" style="margin-bottom:10px">⭐ 優勝ボーナス予想：上で選んだ12チームの中から優勝国を1チーム選ぶ（的中で+3点）</div>
-      <div class="count-line">ボーナス予想：<span id="bonus-count" class="badge">未選択</span></div>
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+      <div class="note">⭐ ボーナス予想：選んだ12チームの中から優勝国を1チーム選ぶ（的中で+3点）</div>
+      <div class="count-line">ボーナス：<span id="bonus-count" class="badge">未選択</span></div>
       <div class="team-grid" id="bonus-grid"></div>
     </div>
   </div>
 
-  <!-- Stage 2 -->
+  <!-- ステージ2 -->
   <div class="card">
-    <h3>🟡 ステージ2：ベスト4予想 <small style="color:var(--muted);font-size:0.75rem;">締切：7/10（ベスト16開始前）</small></h3>
-    <p class="sub">準決勝に残る4チームを選択（各自4チーム）</p>
+    <h3>② ベスト4予想 <small style="color:var(--muted);font-weight:400">締切：7/10</small></h3>
     <div class="player-tabs">
-      <button class="ptab active" onclick="switchPlayer('b4','kei',this)">🎯 Kei</button>
-      <button class="ptab" onclick="switchPlayer('b4','akacello',this)">🎯 Akacello</button>
+      <button class="ptab active" onclick="switchPlayer('b4','kei',this)">Kei</button>
+      <button class="ptab" onclick="switchPlayer('b4','akacello',this)">Akacello</button>
     </div>
-    <div class="count-line">選択数：<span id="b4-count" class="badge">0 / 4</span></div>
+    <div class="count-line">選択：<span id="b4-count" class="badge">0 / 4</span></div>
     <div class="team-grid" id="b4-grid"></div>
   </div>
 
-  <!-- Stage 3 -->
+  <!-- ステージ3 -->
   <div class="card">
-    <h3>🔴 ステージ3：優勝予想 <small style="color:var(--muted);font-size:0.75rem;">締切：7/20（準決勝前）</small></h3>
-    <p class="sub">最終的な優勝チームを1チーム選択（各自1チーム）</p>
+    <h3>③ 優勝予想 <small style="color:var(--muted);font-weight:400">締切：7/20</small></h3>
     <div class="player-tabs">
-      <button class="ptab active" onclick="switchPlayer('champ','kei',this)">🎯 Kei</button>
-      <button class="ptab" onclick="switchPlayer('champ','akacello',this)">🎯 Akacello</button>
+      <button class="ptab active" onclick="switchPlayer('champ','kei',this)">Kei</button>
+      <button class="ptab" onclick="switchPlayer('champ','akacello',this)">Akacello</button>
     </div>
     <div class="count-line">選択：<span id="champ-count" class="badge">未選択</span></div>
     <div class="team-grid" id="champ-grid"></div>
   </div>
 
-  <button class="save-btn" onclick="savePredictions()">💾 予想を保存する</button>
+  <button class="save-btn" onclick="savePredictions()">💾 保存する</button>
   <div class="msg" id="save-msg">✅ 保存しました！</div>
 </div>
 
-<!-- ============ 予想比較 ============ -->
+<!-- 予想比較 -->
 <div id="compare" class="view">
-  <div class="info-box">👀 KeiとAkacelloの予想を並べて表示。結果が出たチームは ✅/❌ で表示されます。</div>
   <div class="compare-grid" id="compare-grid"></div>
 </div>
 
-<!-- ============ スコア ============ -->
+<!-- スコア -->
 <div id="scores" class="view">
   <div class="score-board" id="score-board"></div>
 
   <div class="dtable" id="dtb16" style="display:none">
-    <div class="thead">🔵 ベスト16（各1点）</div>
+    <div class="thead">① グループ勝者（各1点）</div>
     <table><thead><tr><th>チーム</th><th>結果</th><th>Kei</th><th>Akacello</th></tr></thead>
     <tbody id="tb16"></tbody></table>
   </div>
 
   <div class="dtable" id="dtbonus" style="display:none">
-    <div class="thead">⭐ 優勝ボーナス（+3点）</div>
-    <table><thead><tr><th></th><th>ボーナス予想</th><th>結果</th><th>点数</th></tr></thead>
+    <div class="thead">⭐ ボーナス（+3点）</div>
+    <table><thead><tr><th></th><th>予想</th><th>結果</th><th>点数</th></tr></thead>
     <tbody id="tbonus"></tbody></table>
   </div>
 
   <div class="dtable" id="dtb4" style="display:none">
-    <div class="thead">🟡 ベスト4（各3点）</div>
+    <div class="thead">② ベスト4（各3点）</div>
     <table><thead><tr><th>チーム</th><th>結果</th><th>Kei</th><th>Akacello</th></tr></thead>
     <tbody id="tb4"></tbody></table>
   </div>
 
   <div class="dtable" id="dtchamp" style="display:none">
-    <div class="thead">🔴 優勝予想（5点）</div>
+    <div class="thead">③ 優勝予想（5点）</div>
     <table><thead><tr><th></th><th>予想</th><th>結果</th><th>点数</th></tr></thead>
     <tbody id="tchamp"></tbody></table>
   </div>
 
-  <div class="info-box" id="no-data-msg">まだデータがありません。「予想入力」で予想を保存してください。</div>
+  <div class="note" id="no-data-msg">まだ予想が保存されていません。「予想入力」タブから入力してください。</div>
 </div>
 
-<!-- ============ 日程 ============ -->
+<!-- 日程 -->
 <div id="schedule" class="view">
-  <div class="info-box">📅 2026 FIFA ワールドカップ（北中米開催）の主要日程です。予想の締切確認にも使ってください。</div>
   <div id="schedule-content"></div>
 </div>
 
 <script>
-// ==================== グループデータ（2026 W杯 12グループ） ====================
 const GROUPS = [
   {g:'A', teams:[{n:'メキシコ',f:'🇲🇽'},{n:'韓国',f:'🇰🇷'},{n:'南アフリカ',f:'🇿🇦'},{n:'チェコ',f:'🇨🇿'}]},
   {g:'B', teams:[{n:'カナダ',f:'🇨🇦'},{n:'スイス',f:'🇨🇭'},{n:'カタール',f:'🇶🇦'},{n:'ボスニア',f:'🇧🇦'}]},
@@ -334,19 +280,17 @@ const GROUPS = [
   {g:'L', teams:[{n:'イングランド',f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},{n:'クロアチア',f:'🇭🇷'},{n:'ガーナ',f:'🇬🇭'},{n:'パナマ',f:'🇵🇦'}]},
 ];
 
-// フラットなチームリスト（B4・優勝予想などで使用）
 const TEAMS = GROUPS.flatMap(g => g.teams);
 function teamFlag(name) { return TEAMS.find(t=>t.n===name)?.f||''; }
 function teamGroup(name) { return GROUPS.find(g=>g.teams.some(t=>t.n===name))?.g||''; }
 
-const LIMITS = {b16:12, b4:4, champ:1};
 const POINTS = {b16:1, b4:3, champ:5, bonus:3};
 
-// ==================== 結果データ（Claudeが大会進行に合わせて更新） ====================
+// 結果データ（Claudeが大会進行に合わせて更新）
 const RESULTS = {
-  b16:   [], // ベスト16通過チーム（確定後にClaudeが入力）
-  b4:    [], // ベスト4チーム（確定後にClaudeが入力）
-  champ: [], // 優勝チーム（確定後にClaudeが入力）
+  b16:   [],
+  b4:    [],
+  champ: [],
 };
 
 let state = {
@@ -364,7 +308,7 @@ function loadState() {
 }
 function saveState() { localStorage.setItem('wc2026v3', JSON.stringify(state)); }
 
-// ==================== B16グリッド（グループ別・1グループ1チーム） ====================
+// B16グリッド（グループ別・1グループ1チーム）
 function renderB16Grid(player) {
   const grid = document.getElementById('b16-grid');
   const selected = state.predictions[player].b16;
@@ -385,22 +329,21 @@ function renderB16Grid(player) {
 
     group.teams.forEach(team => {
       const isSel = selected.includes(team.n);
-      const groupHasSel = !!groupSel;
-      const disabled = !isSel && groupHasSel;
-
+      const disabled = !isSel && !!groupSel;
       const btn = document.createElement('button');
       btn.className = 'tbtn' + (isSel ? ' sel' : '') + (disabled ? ' dis' : '');
       btn.innerHTML = `<span class="flag">${team.f}</span>${team.n}`;
       btn.onclick = () => {
         if (isSel) {
-          // 解除
           selected.splice(selected.indexOf(team.n), 1);
           if (state.predictions[player].bonus === team.n) state.predictions[player].bonus = null;
-        } else if (!groupHasSel) {
-          // 選択
+        } else if (!groupSel) {
           selected.push(team.n);
         }
-        refreshB16(player);
+        renderB16Grid(player);
+        updateB16Count(player);
+        renderBonusGrid(player);
+        updateTemplate();
       };
       ggrid.appendChild(btn);
     });
@@ -426,7 +369,6 @@ function renderBonusGrid(player) {
     return;
   }
 
-  // 選んだ12チームのみ表示
   selected.forEach(name => {
     const team = TEAMS.find(t => t.n === name);
     if (!team) return;
@@ -442,14 +384,7 @@ function renderBonusGrid(player) {
     };
     grid.appendChild(btn);
   });
-
   updateBonusCount(player);
-}
-
-function refreshB16(player) {
-  updateB16Count(player);
-  renderB16Grid(player);
-  updateTemplate();
 }
 
 function updateB16Count(player) {
@@ -468,37 +403,28 @@ function updateBonusCount(player) {
   el.className = 'badge' + (b ? ' ok' : '');
 }
 
-// ==================== フラットグリッド（B4・優勝・結果） ====================
-function renderGrid(gridId, stage, isResult=false) {
+// フラットグリッド（B4・優勝）
+function renderGrid(gridId, stage) {
   const grid = document.getElementById(gridId);
-  const limit = LIMITS[stage];
-  const player = isResult ? null : curPlayer[stage];
-  const selected = isResult ? RESULTS[stage] : state.predictions[player][stage];
+  const player = curPlayer[stage];
+  const selected = state.predictions[player][stage];
+  const limit = stage === 'b4' ? 4 : 1;
 
-  // 予想時：選択肢を結果に基づいて絞る
   let pool;
-  if (!isResult) {
-    if (stage === 'b4') {
-      // ベスト16確定チームのみ
-      if (RESULTS.b16.length === 0) {
-        grid.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;padding:12px 0">🔒 ベスト16の結果が確定したら選択できます（「結果入力」タブで登録）</div>';
-        updateFlatCount(stage, selected.length, limit, isResult);
-        return;
-      }
-      pool = TEAMS.filter(t => RESULTS.b16.includes(t.n));
-    } else if (stage === 'champ') {
-      // ベスト4確定チームのみ
-      if (RESULTS.b4.length === 0) {
-        grid.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;padding:12px 0">🔒 ベスト4の結果が確定したら選択できます（「結果入力」タブで登録）</div>';
-        updateFlatCount(stage, selected.length, limit, isResult);
-        return;
-      }
-      pool = TEAMS.filter(t => RESULTS.b4.includes(t.n));
-    } else {
-      pool = TEAMS;
+  if (stage === 'b4') {
+    if (RESULTS.b16.length === 0) {
+      grid.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;padding:12px 0">🔒 ベスト16確定後に解放されます</div>';
+      updateFlatCount(stage, selected.length, limit);
+      return;
     }
+    pool = TEAMS.filter(t => RESULTS.b16.includes(t.n));
   } else {
-    pool = TEAMS;
+    if (RESULTS.b4.length === 0) {
+      grid.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;padding:12px 0">🔒 ベスト4確定後に解放されます</div>';
+      updateFlatCount(stage, selected.length, limit);
+      return;
+    }
+    pool = TEAMS.filter(t => RESULTS.b4.includes(t.n));
   }
 
   grid.innerHTML = '';
@@ -509,269 +435,254 @@ function renderGrid(gridId, stage, isResult=false) {
     btn.className = 'tbtn' + (isSel ? ' sel' : '') + (atLimit ? ' dis' : '');
     btn.innerHTML = `<span class="flag">${team.f}</span>${team.n}`;
     btn.onclick = () => {
-      if(stage==='champ') {
-        selected.length=0;
-        if(!isSel) selected.push(team.n);
+      if (stage === 'champ') {
+        selected.length = 0;
+        if (!isSel) selected.push(team.n);
       } else {
-        if(isSel) selected.splice(selected.indexOf(team.n),1);
-        else if(!atLimit) selected.push(team.n);
+        if (isSel) selected.splice(selected.indexOf(team.n), 1);
+        else if (!atLimit) selected.push(team.n);
       }
-      updateFlatCount(stage, selected.length, limit, isResult);
-      renderGrid(gridId, stage, isResult);
-      if(!isResult) updateTemplate();
+      updateFlatCount(stage, selected.length, limit);
+      renderGrid(gridId, stage);
+      updateTemplate();
     };
     grid.appendChild(btn);
   });
-  updateFlatCount(stage, selected.length, limit, isResult);
+  updateFlatCount(stage, selected.length, limit);
 }
 
-function updateFlatCount(stage, count, limit, isResult=false) {
-  const prefix = isResult ? 'r' : '';
-  const el = document.getElementById(`${prefix}${stage}-count`);
-  if(!el) return;
-  if(stage==='champ' && !isResult) {
-    el.textContent = count>0 ? state.predictions[curPlayer.champ].champ[0] : '未選択';
+function updateFlatCount(stage, count, limit) {
+  const el = document.getElementById(`${stage}-count`);
+  if (!el) return;
+  if (stage === 'champ') {
+    const name = state.predictions[curPlayer.champ].champ[0];
+    el.textContent = name || '未選択';
+    el.className = 'badge' + (name ? ' ok' : '');
   } else {
     el.textContent = `${count} / ${limit}`;
+    el.className = 'badge' + (count === limit ? ' ok' : '');
   }
-  el.className = 'badge' + (count===limit ? ' ok' : '');
 }
 
 function switchPlayer(stage, player, tabEl) {
   curPlayer[stage] = player;
-  tabEl.parentElement.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
+  tabEl.parentElement.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
   tabEl.classList.add('active');
-  if(stage==='b16') {
+  if (stage === 'b16') {
     renderB16Grid(player);
   } else {
-    const map = {b4:'b4-grid', champ:'champ-grid'};
-    renderGrid(map[stage], stage);
-    if(stage==='champ') updateFlatCount('champ', state.predictions[player].champ.length, 1);
+    renderGrid(stage === 'b4' ? 'b4-grid' : 'champ-grid', stage);
   }
   updateTemplate();
 }
 
-// ==================== テンプレート（選択結果を反映・リアルタイム更新） ====================
+// テンプレート（Akacelloの予想をリアルタイム反映）
 function updateTemplate() {
   const p = state.predictions['akacello'];
-
-  // B16: グループ別に選択チームを表示
   const b16Lines = GROUPS.map(g => {
     const sel = g.teams.find(t => p.b16.includes(t.n));
-    return `  グループ${g.g}: ${sel ? sel.f + ' ' + sel.n : '（未選択）'}`;
+    return `  G${g.g}: ${sel ? sel.f + ' ' + sel.n : '（未選択）'}`;
   }).join('\n');
-
   const bonus = p.bonus ? `${teamFlag(p.bonus)} ${p.bonus}` : '（未選択）';
-
-  const b4Lines = p.b4.length > 0
-    ? p.b4.map((t,i)=>`  ${i+1}. ${teamFlag(t)} ${t}`).join('\n')
-    : '  （未選択）';
-
+  const b4Lines = p.b4.length > 0 ? p.b4.map((t,i) => `  ${i+1}. ${teamFlag(t)} ${t}`).join('\n') : '  （未選択）';
   const champ = p.champ[0] ? `${teamFlag(p.champ[0])} ${p.champ[0]}` : '（未選択）';
 
-  const text =
+  const ta = document.getElementById('template-text');
+  if (ta) ta.value =
 `⚽ W杯2026 Akacello予想
 ━━━━━━━━━━━━━━━━━━━━
-【① グループ勝者予想】締切：6/11
+【① グループ勝者】締切：6/11
 ${b16Lines}
 
-【⭐ 優勝ボーナス予想】+3点
+【⭐ ボーナス優勝予想】+3点
   ${bonus}
 
 ━━━━━━━━━━━━━━━━━━━━
-【② ベスト4予想】締切：7/10
+【② ベスト4】締切：7/10
 ${b4Lines}
 
 ━━━━━━━━━━━━━━━━━━━━
 【③ 優勝予想】締切：7/20（5点）
   ${champ}
 `;
-  const ta = document.getElementById('template-text');
-  if(ta) ta.value = text;
 }
 
 function copyTemplate() {
-  const ta = document.getElementById('template-text');
-  navigator.clipboard.writeText(ta.value).then(()=>{
+  navigator.clipboard.writeText(document.getElementById('template-text').value).then(() => {
     const msg = document.getElementById('copy-msg');
-    msg.style.display='block';
-    setTimeout(()=>msg.style.display='none',2000);
+    msg.style.display = 'block';
+    setTimeout(() => msg.style.display = 'none', 2000);
   });
 }
 
-// ==================== 保存 ====================
 function savePredictions() { saveState(); flash('save-msg'); }
 function flash(id) {
-  const el=document.getElementById(id);
-  el.style.display='block';
-  setTimeout(()=>el.style.display='none',2500);
+  const el = document.getElementById(id);
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 2500);
 }
 
-// ==================== 比較ビュー ====================
+// 予想比較
 function renderCompare() {
-  const res = RESULTS;
   const grid = document.getElementById('compare-grid');
   grid.innerHTML = '';
 
   function pillClass(team, stage) {
-    if(!res[stage].length) return 'pending';
-    return res[stage].includes(team) ? 'hit' : 'miss';
+    if (!RESULTS[stage].length) return 'pending';
+    return RESULTS[stage].includes(team) ? 'hit' : 'miss';
   }
   function bonusPillClass(team) {
-    if(!res.champ.length) return 'pending';
-    return res.champ[0]===team ? 'bonus-hit' : 'miss';
+    if (!RESULTS.champ.length) return 'pending';
+    return RESULTS.champ[0] === team ? 'bonus-hit' : 'miss';
   }
-  function pillIcon(cls) {
-    return cls==='hit'?'✅':cls==='miss'?'❌':cls==='bonus-hit'?'⭐':'';
+  function icon(cls) {
+    return cls === 'hit' ? '✅' : cls === 'miss' ? '❌' : cls === 'bonus-hit' ? '⭐' : '';
   }
 
-  ['kei','akacello'].forEach(player => {
+  ['kei', 'akacello'].forEach(player => {
     const p = state.predictions[player];
     const col = document.createElement('div');
-    col.className='cplayer';
-    let html = `<h3>🎯 ${player==='kei'?'Kei':'Akacello'}</h3>`;
+    col.className = 'cplayer';
+    let html = `<h3>${player === 'kei' ? 'Kei' : 'Akacello'}</h3>`;
 
-    // B16 グループ別
-    html += `<div class="stage-label">🔵 グループ勝者予想（${p.b16.length}/12）</div>`;
-    if(!p.b16.length) {
-      html+=`<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
+    html += `<div class="stage-label">① グループ勝者（${p.b16.length}/12）</div>`;
+    if (!p.b16.length) {
+      html += `<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
     } else {
       GROUPS.forEach(g => {
         const sel = g.teams.find(t => p.b16.includes(t.n));
-        if(sel) {
-          const cls=pillClass(sel.n,'b16');
-          html+=`<span class="team-pill ${cls}"><small style="opacity:.6">G${g.g}</small> ${sel.f} ${sel.n} ${pillIcon(cls)}</span>`;
+        if (sel) {
+          const cls = pillClass(sel.n, 'b16');
+          html += `<span class="team-pill ${cls}"><small style="opacity:.5">G${g.g}</small> ${sel.f} ${sel.n} ${icon(cls)}</span>`;
         }
       });
     }
 
-    html += `<div class="stage-label">⭐ 優勝ボーナス</div>`;
-    if(!p.bonus) html+=`<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
-    else { const cls=bonusPillClass(p.bonus); html+=`<span class="team-pill ${cls}">${teamFlag(p.bonus)} ${p.bonus} ${pillIcon(cls)}</span>`; }
+    html += `<div class="stage-label">⭐ ボーナス</div>`;
+    if (!p.bonus) html += `<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
+    else { const cls = bonusPillClass(p.bonus); html += `<span class="team-pill ${cls}">${teamFlag(p.bonus)} ${p.bonus} ${icon(cls)}</span>`; }
 
-    html += `<div class="stage-label">🟡 ベスト4予想（${p.b4.length}/4）</div>`;
-    if(!p.b4.length) html+=`<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
-    else p.b4.forEach(t=>{const cls=pillClass(t,'b4');html+=`<span class="team-pill ${cls}">${teamFlag(t)} ${t} ${pillIcon(cls)}</span>`;});
+    html += `<div class="stage-label">② ベスト4（${p.b4.length}/4）</div>`;
+    if (!p.b4.length) html += `<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
+    else p.b4.forEach(t => { const cls = pillClass(t, 'b4'); html += `<span class="team-pill ${cls}">${teamFlag(t)} ${t} ${icon(cls)}</span>`; });
 
-    html += `<div class="stage-label">🔴 優勝予想</div>`;
-    if(!p.champ.length) html+=`<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
-    else { const t=p.champ[0];const cls=pillClass(t,'champ');html+=`<span class="team-pill ${cls}">${teamFlag(t)} ${t} ${pillIcon(cls)}</span>`; }
+    html += `<div class="stage-label">③ 優勝予想</div>`;
+    if (!p.champ.length) html += `<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
+    else { const t = p.champ[0]; const cls = pillClass(t, 'champ'); html += `<span class="team-pill ${cls}">${teamFlag(t)} ${t} ${icon(cls)}</span>`; }
 
-    col.innerHTML=html;
+    col.innerHTML = html;
     grid.appendChild(col);
   });
 }
 
-// ==================== スコア ====================
+// スコア
 function calcScore(player) {
   const p = state.predictions[player];
-  const r = RESULTS;
   let s = {b16:0, bonus:0, b4:0, champ:0};
-  if(r.b16.length) p.b16.forEach(t=>{if(r.b16.includes(t))s.b16+=POINTS.b16;});
-  if(r.champ.length && p.bonus) s.bonus = r.champ[0]===p.bonus ? POINTS.bonus : 0;
-  if(r.b4.length) p.b4.forEach(t=>{if(r.b4.includes(t))s.b4+=POINTS.b4;});
-  if(r.champ.length && p.champ.length) s.champ = r.champ[0]===p.champ[0] ? POINTS.champ : 0;
+  if (RESULTS.b16.length) p.b16.forEach(t => { if (RESULTS.b16.includes(t)) s.b16 += POINTS.b16; });
+  if (RESULTS.champ.length && p.bonus) s.bonus = RESULTS.champ[0] === p.bonus ? POINTS.bonus : 0;
+  if (RESULTS.b4.length) p.b4.forEach(t => { if (RESULTS.b4.includes(t)) s.b4 += POINTS.b4; });
+  if (RESULTS.champ.length && p.champ.length) s.champ = RESULTS.champ[0] === p.champ[0] ? POINTS.champ : 0;
   return s;
 }
 
 function renderScores() {
-  const ks=calcScore('kei'), as=calcScore('akacello');
-  const kt=ks.b16+ks.bonus+ks.b4+ks.champ, at=as.b16+as.bonus+as.b4+as.champ;
-  const draw=kt===at;
+  const ks = calcScore('kei'), as = calcScore('akacello');
+  const kt = ks.b16+ks.bonus+ks.b4+ks.champ, at = as.b16+as.bonus+as.b4+as.champ;
+  const draw = kt === at;
 
-  document.getElementById('score-board').innerHTML = ['kei','akacello'].map(p=>{
-    const s=p==='kei'?ks:as, t=p==='kei'?kt:at, win=p==='kei'?(kt>=at):(at>=kt);
+  document.getElementById('score-board').innerHTML = ['kei','akacello'].map(p => {
+    const s = p==='kei' ? ks : as, t = p==='kei' ? kt : at;
+    const win = p==='kei' ? kt >= at : at >= kt;
     return `<div class="score-card ${win&&!draw?'winner':''}">
-      <div class="pname">🎯 ${p==='kei'?'Kei':'Akacello'} ${win&&!draw?'👑':''}</div>
+      <div class="pname">${p==='kei'?'Kei':'Akacello'} ${win&&!draw?'👑':''}</div>
       <div class="total">${t}</div>
       <div class="breakdown">グループ勝者：<span>${s.b16}点</span><br>ボーナス：<span>${s.bonus}点</span><br>ベスト4：<span>${s.b4}点</span><br>優勝予想：<span>${s.champ}点</span></div>
     </div>`;
   }).join('');
 
-  const hasPred = state.predictions.kei.b16.length>0||state.predictions.akacello.b16.length>0;
-  document.getElementById('no-data-msg').style.display = hasPred?'none':'block';
-  if(!hasPred) return;
+  const hasPred = state.predictions.kei.b16.length > 0 || state.predictions.akacello.b16.length > 0;
+  document.getElementById('no-data-msg').style.display = hasPred ? 'none' : 'block';
+  if (!hasPred) return;
 
-  const actual=RESULTS.champ[0]||null;
+  const actual = RESULTS.champ[0] || null;
 
   // B16
-  document.getElementById('dtb16').style.display='block';
-  const allB16=[...new Set([...state.predictions.kei.b16,...state.predictions.akacello.b16,...RESULTS.b16])];
-  document.getElementById('tb16').innerHTML = allB16.map(t=>{
-    const act=RESULTS.b16.includes(t), hasRes=RESULTS.b16.length>0;
-    const kp=state.predictions.kei.b16.includes(t), ap=state.predictions.akacello.b16.includes(t);
+  document.getElementById('dtb16').style.display = 'block';
+  const allB16 = [...new Set([...state.predictions.kei.b16,...state.predictions.akacello.b16,...RESULTS.b16])];
+  document.getElementById('tb16').innerHTML = allB16.map(t => {
+    const act = RESULTS.b16.includes(t), hasRes = RESULTS.b16.length > 0;
+    const kp = state.predictions.kei.b16.includes(t), ap = state.predictions.akacello.b16.includes(t);
     const g = teamGroup(t);
-    const res=hasRes?(act?'<span class="hit">✅ 通過</span>':'<span class="miss">❌ 敗退</span>'):'<span class="pend">未定</span>';
-    const kl=!kp?'－':(hasRes?(act?'<span class="hit">+1</span>':'<span class="miss">×</span>'):'<span class="pend">？</span>');
-    const al=!ap?'－':(hasRes?(act?'<span class="hit">+1</span>':'<span class="miss">×</span>'):'<span class="pend">？</span>');
+    const res = hasRes ? (act ? '<span class="hit">✅ 通過</span>' : '<span class="miss">❌ 敗退</span>') : '<span class="pend">未定</span>';
+    const kl = !kp ? '－' : (hasRes ? (act ? '<span class="hit">+1</span>' : '<span class="miss">×</span>') : '<span class="pend">？</span>');
+    const al = !ap ? '－' : (hasRes ? (act ? '<span class="hit">+1</span>' : '<span class="miss">×</span>') : '<span class="pend">？</span>');
     return `<tr><td><small style="opacity:.5">G${g}</small> ${teamFlag(t)} ${t}</td><td>${res}</td><td>${kl}</td><td>${al}</td></tr>`;
   }).join('');
 
   // Bonus
-  document.getElementById('dtbonus').style.display='block';
-  document.getElementById('tbonus').innerHTML = ['kei','akacello'].map(p=>{
-    const b=state.predictions[p].bonus, name=p==='kei'?'Kei':'Akacello';
-    if(!b) return `<tr><td>${name}</td><td colspan="3" class="pend">未入力</td></tr>`;
-    const hit=actual&&b===actual;
-    return `<tr><td>${name}</td><td>${teamFlag(b)} ${b}</td><td>${actual?teamFlag(actual)+' '+actual:'<span class="pend">未定</span>'}</td><td>${!actual?'<span class="pend">－</span>':hit?'<span class="hit">+3</span>':'<span class="miss">0</span>'}</td></tr>`;
+  document.getElementById('dtbonus').style.display = 'block';
+  document.getElementById('tbonus').innerHTML = ['kei','akacello'].map(p => {
+    const b = state.predictions[p].bonus, name = p==='kei'?'Kei':'Akacello';
+    if (!b) return `<tr><td>${name}</td><td colspan="3" class="pend">未入力</td></tr>`;
+    const hit = actual && b === actual;
+    return `<tr><td>${name}</td><td>${teamFlag(b)} ${b}</td><td>${actual ? teamFlag(actual)+' '+actual : '<span class="pend">未定</span>'}</td><td>${!actual ? '<span class="pend">－</span>' : hit ? '<span class="hit">+3</span>' : '<span class="miss">0</span>'}</td></tr>`;
   }).join('');
 
   // B4
-  document.getElementById('dtb4').style.display='block';
-  const allB4=[...new Set([...state.predictions.kei.b4,...state.predictions.akacello.b4,...RESULTS.b4])];
-  document.getElementById('tb4').innerHTML = allB4.map(t=>{
-    const act=RESULTS.b4.includes(t), hasRes=RESULTS.b4.length>0;
-    const kp=state.predictions.kei.b4.includes(t), ap=state.predictions.akacello.b4.includes(t);
-    const res=hasRes?(act?'<span class="hit">✅ 残留</span>':'<span class="miss">❌ 敗退</span>'):'<span class="pend">未定</span>';
-    const kl=!kp?'－':(hasRes?(act?'<span class="hit">+3</span>':'<span class="miss">×</span>'):'<span class="pend">？</span>');
-    const al=!ap?'－':(hasRes?(act?'<span class="hit">+3</span>':'<span class="miss">×</span>'):'<span class="pend">？</span>');
+  document.getElementById('dtb4').style.display = 'block';
+  const allB4 = [...new Set([...state.predictions.kei.b4,...state.predictions.akacello.b4,...RESULTS.b4])];
+  document.getElementById('tb4').innerHTML = allB4.map(t => {
+    const act = RESULTS.b4.includes(t), hasRes = RESULTS.b4.length > 0;
+    const kp = state.predictions.kei.b4.includes(t), ap = state.predictions.akacello.b4.includes(t);
+    const res = hasRes ? (act ? '<span class="hit">✅ 残留</span>' : '<span class="miss">❌ 敗退</span>') : '<span class="pend">未定</span>';
+    const kl = !kp ? '－' : (hasRes ? (act ? '<span class="hit">+3</span>' : '<span class="miss">×</span>') : '<span class="pend">？</span>');
+    const al = !ap ? '－' : (hasRes ? (act ? '<span class="hit">+3</span>' : '<span class="miss">×</span>') : '<span class="pend">？</span>');
     return `<tr><td>${teamFlag(t)} ${t}</td><td>${res}</td><td>${kl}</td><td>${al}</td></tr>`;
   }).join('');
 
   // Champ
-  document.getElementById('dtchamp').style.display='block';
-  document.getElementById('tchamp').innerHTML = ['kei','akacello'].map(p=>{
-    const pred=state.predictions[p].champ[0], name=p==='kei'?'Kei':'Akacello';
-    if(!pred) return `<tr><td>${name}</td><td colspan="3" class="pend">未入力</td></tr>`;
-    const hit=actual&&pred===actual;
-    return `<tr><td>${name}</td><td>${teamFlag(pred)} ${pred}</td><td>${actual?teamFlag(actual)+' '+actual:'<span class="pend">未定</span>'}</td><td>${!actual?'<span class="pend">－</span>':hit?'<span class="hit">+5</span>':'<span class="miss">0</span>'}</td></tr>`;
+  document.getElementById('dtchamp').style.display = 'block';
+  document.getElementById('tchamp').innerHTML = ['kei','akacello'].map(p => {
+    const pred = state.predictions[p].champ[0], name = p==='kei'?'Kei':'Akacello';
+    if (!pred) return `<tr><td>${name}</td><td colspan="3" class="pend">未入力</td></tr>`;
+    const hit = actual && pred === actual;
+    return `<tr><td>${name}</td><td>${teamFlag(pred)} ${pred}</td><td>${actual ? teamFlag(actual)+' '+actual : '<span class="pend">未定</span>'}</td><td>${!actual ? '<span class="pend">－</span>' : hit ? '<span class="hit">+5</span>' : '<span class="miss">0</span>'}</td></tr>`;
   }).join('');
 }
 
-// ==================== 日程 ====================
+// 日程
 function renderSchedule() {
   const sections = [
     { title:'📌 予想の締切', matches:[
-      {date:'6/11（木）',teams:'締切①：グループ勝者予想 + ボーナス予想',venue:'大会開幕前までに入力',round:'締切',cls:'round-final'},
-      {date:'7/10（金）',teams:'締切②：ベスト4予想',venue:'ラウンド16開始前までに入力',round:'締切',cls:'round-r16'},
-      {date:'7/20（月）',teams:'締切③：優勝予想（本命）',venue:'準決勝開始前までに入力',round:'締切',cls:'round-sf'},
+      {date:'6/11（木）', teams:'締切①：グループ勝者 + ボーナス予想', venue:'大会開幕前', round:'締切', cls:'round-final'},
+      {date:'7/10（金）', teams:'締切②：ベスト4予想', venue:'R16開始前', round:'締切', cls:'round-r16'},
+      {date:'7/20（月）', teams:'締切③：優勝予想', venue:'準決勝前', round:'締切', cls:'round-sf'},
     ]},
-    { title:'🔵 グループステージ', matches:[
-      {date:'6/11（木）',teams:'開幕戦：メキシコ vs TBD',venue:'アステカ、メキシコシティ',round:'グループ',cls:'round-group'},
-      {date:'6/11 〜 7/2',teams:'グループステージ 全試合（12グループ）',venue:'アメリカ・カナダ・メキシコ 各都市',round:'グループ',cls:'round-group'},
-      {date:'7/2（木）',teams:'グループステージ 最終節',venue:'各会場',round:'グループ',cls:'round-group'},
+    { title:'グループステージ', matches:[
+      {date:'6/11 〜 7/2', teams:'グループステージ 全試合（12グループ）', venue:'米・加・墨 各都市', round:'GS', cls:'round-group'},
     ]},
-    { title:'🟠 ラウンド32（ベスト32）', matches:[
-      {date:'7/4（土）〜 7/7（火）',teams:'ラウンド32 全試合',venue:'各会場',round:'R32',cls:'round-r32'},
+    { title:'ラウンド32', matches:[
+      {date:'7/4 〜 7/7', teams:'ラウンド32（ベスト32）', venue:'各会場', round:'R32', cls:'round-r32'},
     ]},
-    { title:'🟡 ラウンド16（ベスト16）', matches:[
-      {date:'7/10（金）〜 7/13（月）',teams:'ラウンド16 全試合',venue:'各会場',round:'R16',cls:'round-r16'},
+    { title:'ラウンド16', matches:[
+      {date:'7/10 〜 7/13', teams:'ラウンド16（ベスト16）', venue:'各会場', round:'R16', cls:'round-r16'},
     ]},
-    { title:'🟢 準々決勝（ベスト8）', matches:[
-      {date:'7/17（金）〜 7/18（土）',teams:'準々決勝 4試合',venue:'各会場',round:'QF',cls:'round-qf'},
+    { title:'準々決勝', matches:[
+      {date:'7/17 〜 7/18', teams:'準々決勝 4試合', venue:'各会場', round:'QF', cls:'round-qf'},
     ]},
-    { title:'🔴 準決勝（ベスト4）', matches:[
-      {date:'7/21（火）',teams:'準決勝 第1試合',venue:'MetLife Stadium, NJ',round:'SF',cls:'round-sf'},
-      {date:'7/22（水）',teams:'準決勝 第2試合',venue:'AT&T Stadium, Dallas',round:'SF',cls:'round-sf'},
+    { title:'準決勝', matches:[
+      {date:'7/21（火）', teams:'準決勝 第1試合', venue:'MetLife Stadium, NJ', round:'SF', cls:'round-sf'},
+      {date:'7/22（水）', teams:'準決勝 第2試合', venue:'AT&T Stadium, Dallas', round:'SF', cls:'round-sf'},
     ]},
-    { title:'🏆 決勝', matches:[
-      {date:'7/25（土）',teams:'3位決定戦',venue:'各会場',round:'3位',cls:'round-qf'},
-      {date:'7/26（日）',teams:'🏆 決勝',venue:'MetLife Stadium, East Rutherford, NJ',round:'決勝',cls:'round-final'},
+    { title:'決勝', matches:[
+      {date:'7/25（土）', teams:'3位決定戦', venue:'各会場', round:'3位', cls:'round-qf'},
+      {date:'7/26（日）', teams:'🏆 決勝', venue:'MetLife Stadium, East Rutherford, NJ', round:'決勝', cls:'round-final'},
     ]},
   ];
-  document.getElementById('schedule-content').innerHTML = sections.map(s=>`
+  document.getElementById('schedule-content').innerHTML = sections.map(s => `
     <div class="schedule-section"><h3>${s.title}</h3>
-    ${s.matches.map(m=>`<div class="match-row">
+    ${s.matches.map(m => `<div class="match-row">
       <div class="match-date">${m.date}</div>
       <div class="match-teams">${m.teams}</div>
       <div class="match-venue">${m.venue}</div>
@@ -779,23 +690,21 @@ function renderSchedule() {
     </div>`).join('')}</div>`).join('');
 }
 
-// ==================== ビュー切替 ====================
 function showView(id, btn) {
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   btn.classList.add('active');
-  if(id==='compare') renderCompare();
-  if(id==='scores') renderScores();
-  if(id==='schedule') renderSchedule();
-  if(id==='predict') updateTemplate();
+  if (id === 'compare') renderCompare();
+  if (id === 'scores') renderScores();
+  if (id === 'schedule') renderSchedule();
+  if (id === 'predict') updateTemplate();
 }
 
-// ==================== 初期化 ====================
 loadState();
 renderB16Grid(curPlayer.b16);
-renderGrid('b4-grid','b4');
-renderGrid('champ-grid','champ');
+renderGrid('b4-grid', 'b4');
+renderGrid('champ-grid', 'champ');
 updateTemplate();
 </script>
 </body>
