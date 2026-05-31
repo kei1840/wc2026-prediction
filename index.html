@@ -135,10 +135,10 @@
       </thead>
       <tbody>
         <tr>
-          <td><strong>① グループ勝者</strong></td>
-          <td>各グループ（A〜L）から1チームずつ、計12チームを予想</td>
+          <td><strong>① ベスト16予想</strong></td>
+          <td>ベスト16に残る16チームを予想（1グループ最大3チームまで）</td>
           <td style="white-space:nowrap;color:var(--accent)">6/11<br><small>開幕前</small></td>
-          <td>1チーム <strong>1点</strong>（最大12点）</td>
+          <td>1チーム <strong>1点</strong>（最大16点）</td>
         </tr>
         <tr>
           <td><strong>　＋ボーナス</strong></td>
@@ -160,7 +160,7 @@
         </tr>
       </tbody>
     </table>
-    <p style="margin-top:12px;font-size:0.8rem;color:var(--muted)">合計最大：<strong style="color:var(--text)">32点</strong>（12 + 3 + 12 + 5）</p>
+    <p style="margin-top:12px;font-size:0.8rem;color:var(--muted)">合計最大：<strong style="color:var(--text)">36点</strong>（16 + 3 + 12 + 5）</p>
   </div>
 
   <div class="card">
@@ -182,16 +182,16 @@
 
   <!-- ステージ1 -->
   <div class="card">
-    <h3>① グループ勝者予想 <small style="color:var(--muted);font-weight:400">締切：6/11</small></h3>
+    <h3>① ベスト16予想 <small style="color:var(--muted);font-weight:400">締切：6/11</small></h3>
     <div class="player-tabs">
       <button class="ptab active" onclick="switchPlayer('b16','kei',this)">Kei</button>
       <button class="ptab" onclick="switchPlayer('b16','akacello',this)">Akacello</button>
     </div>
-    <div class="count-line">選択：<span id="b16-count" class="badge">0 / 12</span></div>
+    <div class="count-line">選択：<span id="b16-count" class="badge">0 / 16</span></div>
     <div id="b16-grid"></div>
 
     <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
-      <div class="note">⭐ ボーナス予想：選んだ12チームの中から優勝国を1チーム選ぶ（的中で+3点）</div>
+      <div class="note">⭐ ボーナス予想：選んだ16チームの中から優勝国を1チーム選ぶ（的中で+3点）</div>
       <div class="count-line">ボーナス：<span id="bonus-count" class="badge">未選択</span></div>
       <div class="team-grid" id="bonus-grid"></div>
     </div>
@@ -233,7 +233,7 @@
   <div class="score-board" id="score-board"></div>
 
   <div class="dtable" id="dtb16" style="display:none">
-    <div class="thead">① グループ勝者（各1点）</div>
+    <div class="thead">① ベスト16予想（各1点）</div>
     <table><thead><tr><th>チーム</th><th>結果</th><th>Kei</th><th>Akacello</th></tr></thead>
     <tbody id="tb16"></tbody></table>
   </div>
@@ -285,6 +285,8 @@ function teamFlag(name) { return TEAMS.find(t=>t.n===name)?.f||''; }
 function teamGroup(name) { return GROUPS.find(g=>g.teams.some(t=>t.n===name))?.g||''; }
 
 const POINTS = {b16:1, b4:3, champ:5, bonus:3};
+const B16_MAX = 16;
+const GROUP_MAX = 3;
 
 // 結果データ（Claudeが大会進行に合わせて更新）
 const RESULTS = {
@@ -303,12 +305,12 @@ let state = {
 let curPlayer = {b16:'kei', b4:'kei', champ:'kei'};
 
 function loadState() {
-  try { const s = localStorage.getItem('wc2026v3'); if(s) state = JSON.parse(s); } catch(e){}
+  try { const s = localStorage.getItem('wc2026v4'); if(s) state = JSON.parse(s); } catch(e){}
   ['kei','akacello'].forEach(p => { if(state.predictions[p].bonus===undefined) state.predictions[p].bonus=null; });
 }
-function saveState() { localStorage.setItem('wc2026v3', JSON.stringify(state)); }
+function saveState() { localStorage.setItem('wc2026v4', JSON.stringify(state)); }
 
-// B16グリッド（グループ別・1グループ1チーム）
+// B16グリッド（グループ別・1グループ最大3チーム・合計16チーム）
 function renderB16Grid(player) {
   const grid = document.getElementById('b16-grid');
   const selected = state.predictions[player].b16;
@@ -318,10 +320,10 @@ function renderB16Grid(player) {
     const sec = document.createElement('div');
     sec.className = 'group-section';
 
-    const groupSel = group.teams.find(t => selected.includes(t.n));
+    const groupSels = group.teams.filter(t => selected.includes(t.n));
     const header = document.createElement('div');
     header.className = 'group-header';
-    header.textContent = `グループ ${group.g}${groupSel ? '  → ' + groupSel.f + ' ' + groupSel.n : '  （未選択）'}`;
+    header.textContent = `グループ ${group.g}  ${groupSels.length ? groupSels.map(t=>t.f+' '+t.n).join('・') : '（未選択）'}`;
     sec.appendChild(header);
 
     const ggrid = document.createElement('div');
@@ -329,7 +331,9 @@ function renderB16Grid(player) {
 
     group.teams.forEach(team => {
       const isSel = selected.includes(team.n);
-      const disabled = !isSel && !!groupSel;
+      const totalFull = selected.length >= B16_MAX;
+      const groupFull = groupSels.length >= GROUP_MAX;
+      const disabled = !isSel && (totalFull || groupFull);
       const btn = document.createElement('button');
       btn.className = 'tbtn' + (isSel ? ' sel' : '') + (disabled ? ' dis' : '');
       btn.innerHTML = `<span class="flag">${team.f}</span>${team.n}`;
@@ -337,7 +341,7 @@ function renderB16Grid(player) {
         if (isSel) {
           selected.splice(selected.indexOf(team.n), 1);
           if (state.predictions[player].bonus === team.n) state.predictions[player].bonus = null;
-        } else if (!groupSel) {
+        } else if (!totalFull && !groupFull) {
           selected.push(team.n);
         }
         renderB16Grid(player);
@@ -391,8 +395,8 @@ function updateB16Count(player) {
   const el = document.getElementById('b16-count');
   if (!el) return;
   const count = state.predictions[player].b16.length;
-  el.textContent = `${count} / 12`;
-  el.className = 'badge' + (count === 12 ? ' ok' : '');
+  el.textContent = `${count} / 16`;
+  el.className = 'badge' + (count === B16_MAX ? ' ok' : '');
 }
 
 function updateBonusCount(player) {
@@ -480,8 +484,8 @@ function switchPlayer(stage, player, tabEl) {
 function updateTemplate() {
   const p = state.predictions['akacello'];
   const b16Lines = GROUPS.map(g => {
-    const sel = g.teams.find(t => p.b16.includes(t.n));
-    return `  G${g.g}: ${sel ? sel.f + ' ' + sel.n : '（未選択）'}`;
+    const sels = g.teams.filter(t => p.b16.includes(t.n));
+    return `  G${g.g}: ${sels.length ? sels.map(t=>t.f+' '+t.n).join('・') : '（未選択）'}`;
   }).join('\n');
   const bonus = p.bonus ? `${teamFlag(p.bonus)} ${p.bonus}` : '（未選択）';
   const b4Lines = p.b4.length > 0 ? p.b4.map((t,i) => `  ${i+1}. ${teamFlag(t)} ${t}`).join('\n') : '  （未選択）';
@@ -491,7 +495,7 @@ function updateTemplate() {
   if (ta) ta.value =
 `⚽ W杯2026 Akacello予想
 ━━━━━━━━━━━━━━━━━━━━
-【① グループ勝者】締切：6/11
+【① ベスト16予想】締切：6/11
 ${b16Lines}
 
 【⭐ ボーナス優勝予想】+3点
@@ -545,16 +549,16 @@ function renderCompare() {
     col.className = 'cplayer';
     let html = `<h3>${player === 'kei' ? 'Kei' : 'Akacello'}</h3>`;
 
-    html += `<div class="stage-label">① グループ勝者（${p.b16.length}/12）</div>`;
+    html += `<div class="stage-label">① ベスト16予想（${p.b16.length}/16）</div>`;
     if (!p.b16.length) {
       html += `<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
     } else {
       GROUPS.forEach(g => {
-        const sel = g.teams.find(t => p.b16.includes(t.n));
-        if (sel) {
+        const sels = g.teams.filter(t => p.b16.includes(t.n));
+        sels.forEach(sel => {
           const cls = pillClass(sel.n, 'b16');
           html += `<span class="team-pill ${cls}"><small style="opacity:.5">G${g.g}</small> ${sel.f} ${sel.n} ${icon(cls)}</span>`;
-        }
+        });
       });
     }
 
@@ -597,7 +601,7 @@ function renderScores() {
     return `<div class="score-card ${win&&!draw?'winner':''}">
       <div class="pname">${p==='kei'?'Kei':'Akacello'} ${win&&!draw?'👑':''}</div>
       <div class="total">${t}</div>
-      <div class="breakdown">グループ勝者：<span>${s.b16}点</span><br>ボーナス：<span>${s.bonus}点</span><br>ベスト4：<span>${s.b4}点</span><br>優勝予想：<span>${s.champ}点</span></div>
+      <div class="breakdown">ベスト16：<span>${s.b16}点</span><br>ボーナス：<span>${s.bonus}点</span><br>ベスト4：<span>${s.b4}点</span><br>優勝予想：<span>${s.champ}点</span></div>
     </div>`;
   }).join('');
 
