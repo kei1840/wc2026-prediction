@@ -202,14 +202,7 @@
 
   <div class="card">
     <h3>📱 Akacello → Keiへの予想の伝え方</h3>
-    <p class="sub">Akacelloは自分のデバイスから入力できないので、LINEや<br>メッセージでKeiに予想を送ってください。下のボタンでテンプレを生成できます。</p>
-    <button class="save-btn" style="margin-top:0;background:var(--primary);border:1.5px solid var(--accent);color:var(--accent)" onclick="generateTemplate()">📋 予想テンプレートを生成する</button>
-    <div id="template-box" style="display:none;margin-top:14px">
-      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:8px">↓ このテキストをLINEなどで送ってもらう</p>
-      <textarea id="template-text" style="width:100%;height:220px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.8rem;padding:12px;resize:vertical;font-family:monospace" readonly></textarea>
-      <button class="save-btn" style="margin-top:8px;background:var(--green)" onclick="copyTemplate()">📋 コピーする</button>
-      <div id="copy-msg" style="text-align:center;margin-top:6px;font-size:0.82rem;color:var(--green);display:none">✅ コピーしました！</div>
-    </div>
+    <p class="sub" style="margin-bottom:0">「予想入力」タブを開くとテンプレートが自動生成されます。<br>AkacelloはそれをワンクリックでコピーしてKeiにLINEで送るだけです。</p>
   </div>
 </div>
 
@@ -217,7 +210,16 @@
 <div id="predict" class="view">
   <div class="info-box">
     📌 各ステージの予想入力画面です。KeiとAkacelloそれぞれ入力してください。<br>
-    ⚠️ 各ステージは試合開始前に入力・保存してください。入力後はお互いの予想が「予想比較」で見られます。
+    ⚠️ 各ステージは試合開始前に入力・保存してください。
+  </div>
+
+  <!-- Akacello用テンプレ -->
+  <div class="card" style="border-color:var(--bonus)">
+    <h3 style="color:#c39bd3">📱 Akacello → Kei 予想テンプレ</h3>
+    <p class="sub">AkacelloはこのテキストをコピーしてLINEでKeiに送ってください。Keiが代わりに入力します。</p>
+    <textarea id="template-text" style="width:100%;height:200px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.78rem;padding:12px;resize:none;font-family:monospace;line-height:1.6" readonly></textarea>
+    <button class="save-btn" style="margin-top:8px;background:var(--bonus);color:#fff" onclick="copyTemplate()">📋 ワンクリックでコピー → LINEで送る</button>
+    <div id="copy-msg" style="text-align:center;margin-top:8px;font-size:0.85rem;color:var(--green);display:none">✅ コピーしました！LINEに貼り付けてKeiに送ってください</div>
   </div>
 
   <!-- Stage 1 -->
@@ -737,7 +739,6 @@ ${teams16}
 優勝:
 `;
   document.getElementById('template-text').value = text;
-  document.getElementById('template-box').style.display = 'block';
 }
 
 function copyTemplate() {
@@ -758,6 +759,7 @@ function showView(id, btn) {
   if(id==='compare') renderCompare();
   if(id==='scores') renderScores();
   if(id==='schedule') renderSchedule();
+  if(id==='predict') generateTemplate();
 }
 
 // ==================== 初期化 ====================
