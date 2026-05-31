@@ -495,8 +495,34 @@ function renderGrid(gridId, stage, isResult=false) {
   const player = isResult ? null : curPlayer[stage];
   const selected = isResult ? state.results[stage] : state.predictions[player][stage];
 
+  // 予想時：選択肢を結果に基づいて絞る
+  let pool;
+  if (!isResult) {
+    if (stage === 'b4') {
+      // ベスト16確定チームのみ
+      if (state.results.b16.length === 0) {
+        grid.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;padding:12px 0">🔒 ベスト16の結果が確定したら選択できます（「結果入力」タブで登録）</div>';
+        updateFlatCount(stage, selected.length, limit, isResult);
+        return;
+      }
+      pool = TEAMS.filter(t => state.results.b16.includes(t.n));
+    } else if (stage === 'champ') {
+      // ベスト4確定チームのみ
+      if (state.results.b4.length === 0) {
+        grid.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;padding:12px 0">🔒 ベスト4の結果が確定したら選択できます（「結果入力」タブで登録）</div>';
+        updateFlatCount(stage, selected.length, limit, isResult);
+        return;
+      }
+      pool = TEAMS.filter(t => state.results.b4.includes(t.n));
+    } else {
+      pool = TEAMS;
+    }
+  } else {
+    pool = TEAMS;
+  }
+
   grid.innerHTML = '';
-  TEAMS.forEach(team => {
+  pool.forEach(team => {
     const isSel = selected.includes(team.n);
     const atLimit = selected.length >= limit && !isSel;
     const btn = document.createElement('button');
