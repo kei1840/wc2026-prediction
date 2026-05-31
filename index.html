@@ -117,8 +117,7 @@
 <nav>
   <button class="active" onclick="showView('rules',this)">📋 ルール</button>
   <button onclick="showView('predict',this)">📝 予想入力</button>
-  <button onclick="showView('compare',this)">👀 予想比較</button>
-  <button onclick="showView('scores',this)">📊 スコア</button>
+  <button onclick="showView('result',this)">📊 結果・スコア</button>
   <button onclick="showView('schedule',this)">📅 日程</button>
 </nav>
 
@@ -232,16 +231,12 @@
   <div class="msg" id="save-msg">✅ 保存しました！</div>
 </div>
 
-<!-- 予想比較 -->
-<div id="compare" class="view">
-  <div class="compare-grid" id="compare-grid"></div>
-</div>
-
-<!-- スコア -->
-<div id="scores" class="view">
+<!-- 結果・スコア（統合） -->
+<div id="result" class="view">
   <div class="score-board" id="score-board"></div>
+  <div class="compare-grid" id="compare-grid"></div>
 
-  <div class="dtable" id="dtb24" style="display:none">
+  <div class="dtable" id="dtb24" style="display:none;margin-top:16px">
     <div class="thead">① グループ突破（各1点）</div>
     <table><thead><tr><th>チーム</th><th>結果</th><th>Kei</th><th>Akacello</th></tr></thead>
     <tbody id="tb24"></tbody></table>
@@ -660,11 +655,6 @@ function renderScores() {
 // 日程
 function renderSchedule() {
   const sections = [
-    { title:'📌 予想の締切', matches:[
-      {date:'6/11（木）', teams:'締切①：グループ突破予想', venue:'大会開幕前', round:'締切', cls:'round-final'},
-      {date:'7/17（木）', teams:'締切②：ベスト8予想', venue:'準々決勝前', round:'締切', cls:'round-qf'},
-      {date:'7/25（土）', teams:'締切③：優勝予想', venue:'決勝前日', round:'締切', cls:'round-sf'},
-    ]},
     { title:'グループステージ', matches:[
       {date:'6/11 〜 7/2', teams:'グループステージ 全試合（12グループ）', venue:'米・加・墨 各都市', round:'GS', cls:'round-group'},
     ]},
@@ -701,8 +691,7 @@ function showView(id, btn) {
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   btn.classList.add('active');
-  if (id === 'compare') renderCompare();
-  if (id === 'scores') renderScores();
+  if (id === 'result') { renderCompare(); renderScores(); }
   if (id === 'schedule') renderSchedule();
   if (id === 'predict') { renderScorerInput(); updateTemplate(); }
 }
