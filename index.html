@@ -14,9 +14,7 @@
     --muted: #7a9ab8;
     --green: #2ecc71;
     --red: #e74c3c;
-    --orange: #f39c12;
     --border: #2a4a6a;
-    --bonus: #9b59b6;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'Helvetica Neue', Arial, sans-serif; min-height: 100vh; }
@@ -55,7 +53,7 @@
   .tbtn .flag { font-size: 1.05rem; }
   .tbtn:hover { border-color: var(--accent); }
   .tbtn.sel { background: rgba(232,200,74,0.15); border-color: var(--accent); color: var(--accent); }
-  .tbtn.sel-bonus { background: rgba(155,89,182,0.18); border-color: var(--bonus); color: #c39bd3; }
+  .tbtn.sel-bonus { background: rgba(232,200,74,0.1); border-color: var(--accent); color: var(--accent); border-style: dashed; }
   .tbtn.dis { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
 
   .save-btn { width: 100%; padding: 13px; background: var(--accent); color: var(--bg); border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; cursor: pointer; margin-top: 6px; }
@@ -70,7 +68,7 @@
   .team-pill { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 14px; font-size: 0.8rem; margin: 3px 3px 3px 0; border: 1px solid var(--border); background: rgba(255,255,255,0.04); }
   .team-pill.hit { border-color: var(--green); color: var(--green); background: rgba(46,204,113,0.08); }
   .team-pill.miss { border-color: var(--red); color: #e57373; background: rgba(231,76,60,0.08); }
-  .team-pill.bonus-hit { border-color: var(--bonus); color: #c39bd3; background: rgba(155,89,182,0.1); }
+  .team-pill.bonus-hit { border-color: var(--accent); color: var(--accent); background: rgba(232,200,74,0.08); }
   .team-pill.pending { border-color: var(--border); color: var(--muted); }
 
   /* スコアボード */
@@ -103,12 +101,12 @@
   .round-group { background: rgba(30,100,200,0.25); color: #7ab4ff; }
   .round-r32 { background: rgba(232,200,74,0.2); color: var(--accent); }
   .round-r16 { background: rgba(46,204,113,0.2); color: var(--green); }
-  .round-qf { background: rgba(243,156,18,0.2); color: var(--orange); }
+  .round-qf { background: rgba(232,200,74,0.15); color: var(--accent); }
   .round-sf { background: rgba(231,76,60,0.2); color: var(--red); }
   .round-final { background: rgba(232,200,74,0.35); color: var(--accent); }
 
   .info-box { background: rgba(232,200,74,0.07); border: 1px solid rgba(232,200,74,0.25); border-radius: 8px; padding: 11px 14px; margin-bottom: 16px; font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
-  .bonus-note { background: rgba(155,89,182,0.1); border: 1px solid rgba(155,89,182,0.35); border-radius: 8px; padding: 10px 14px; font-size: 0.82rem; color: #c39bd3; margin-bottom: 14px; }
+  .bonus-note { background: rgba(232,200,74,0.06); border: 1px solid rgba(232,200,74,0.25); border-radius: 8px; padding: 10px 14px; font-size: 0.82rem; color: var(--muted); margin-bottom: 14px; }
 
   @media(max-width:580px) {
     .compare-grid, .score-board { grid-template-columns: 1fr; }
@@ -182,9 +180,9 @@
         <div style="font-size:1.6rem;font-weight:700;color:#7ab4ff">16点</div>
         <div style="font-size:0.72rem;color:var(--muted)">16チーム × 1点</div>
       </div>
-      <div style="background:rgba(155,89,182,0.15);border:1px solid var(--bonus);border-radius:8px;padding:12px;text-align:center">
+      <div style="background:rgba(232,200,74,0.08);border:1px solid var(--accent);border-radius:8px;padding:12px;text-align:center;border-style:dashed">
         <div style="font-size:0.75rem;color:var(--muted)">ボーナス</div>
-        <div style="font-size:1.6rem;font-weight:700;color:#c39bd3">3点</div>
+        <div style="font-size:1.6rem;font-weight:700;color:var(--accent)">3点</div>
         <div style="font-size:0.72rem;color:var(--muted)">優勝的中のみ</div>
       </div>
       <div style="background:rgba(232,200,74,0.12);border:1px solid var(--accent);border-radius:8px;padding:12px;text-align:center">
@@ -219,11 +217,11 @@
   </div>
 
   <!-- Akacello用テンプレ -->
-  <div class="card" style="border-color:var(--bonus)">
-    <h3 style="color:#c39bd3">📱 Akacello → Kei 予想テンプレ</h3>
+  <div class="card" style="border-color:var(--border)">
+    <h3>📱 Akacello → Kei 予想テンプレ</h3>
     <p class="sub">AkacelloはこのテキストをコピーしてLINEでKeiに送ってください。Keiが代わりに入力します。</p>
     <textarea id="template-text" style="width:100%;height:200px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.78rem;padding:12px;resize:none;font-family:monospace;line-height:1.6" readonly></textarea>
-    <button class="save-btn" style="margin-top:8px;background:var(--bonus);color:#fff" onclick="copyTemplate()">📋 ワンクリックでコピー → LINEで送る</button>
+    <button class="save-btn" style="margin-top:8px" onclick="copyTemplate()">📋 ワンクリックでコピー → LINEで送る</button>
     <div id="copy-msg" style="text-align:center;margin-top:8px;font-size:0.85rem;color:var(--green);display:none">✅ コピーしました！LINEに貼り付けてKeiに送ってください</div>
   </div>
 
