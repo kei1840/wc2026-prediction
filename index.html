@@ -165,7 +165,7 @@
           <td><strong style="color:var(--red)">③ 優勝予想</strong></td>
           <td>優勝チームを1チーム選ぶ（本命）</td>
           <td style="white-space:nowrap;color:var(--accent)">7/20（月）<br><small>準決勝前</small></td>
-          <td>的中で <strong>10点</strong></td>
+          <td>的中で <strongg>5点</strong></td>
         </tr>
       </tbody>
     </table>
@@ -191,7 +191,7 @@
       </div>
       <div style="background:rgba(231,76,60,0.12);border:1px solid var(--red);border-radius:8px;padding:12px;text-align:center">
         <div style="font-size:0.75rem;color:var(--muted)">優勝予想</div>
-        <div style="font-size:1.6rem;font-weight:700;color:var(--red)">10点</div>
+        <div style="font-size:1.6rem;font-weight:700;color:var(--red)"g>5点</div>
         <div style="font-size:0.72rem;color:var(--muted)">的中のみ</div>
       </div>
       <div style="background:rgba(46,204,113,0.12);border:1px solid var(--green);border-radius:8px;padding:12px;text-align:center;grid-column:span 1">
@@ -228,7 +228,7 @@
   <div class="card">
     <h3>🔵 ステージ1：ベスト16予想 <small style="color:var(--muted);font-size:0.75rem;">締切：6/11（大会開幕前）</small></h3>
     <p class="sub">グループステージを突破してベスト16に残る16チームを選択。さらに優勝予想（ボーナス）も選べます。</p>
-    <div class="bonus-note">⭐ 優勝ボーナス：ここで優勝チームも予想できます。最終的に優勝したら <strong>+3点</strong>（10点とは別）</div>
+    <div class="bonus-note">⭐ 優勝ボーナス：ここで優勝チームも予想できます。最終的に優勝したら <strong>+3点</strong>（5点とは別）</div>
     <div class="player-tabs">
       <button class="ptab active" onclick="switchPlayer('b16','kei',this)">🎯 Kei</button>
       <button class="ptab" onclick="switchPlayer('b16','akacello',this)">🎯 Akacello</button>
@@ -303,7 +303,7 @@
   </div>
 
   <div class="dtable" id="dtchamp" style="display:none">
-    <div class="thead">🔴 優勝予想（10点）</div>
+    <div class="thead">🔴 優勝予想（5点）</div>
     <table><thead><tr><th></th><th>予想</th><th>結果</th><th>点数</th></tr></thead>
     <tbody id="tchamp"></tbody></table>
   </div>
@@ -340,7 +340,7 @@ function teamFlag(name) { return TEAMS.find(t=>t.n===name)?.f||''; }
 function teamGroup(name) { return GROUPS.find(g=>g.teams.some(t=>t.n===name))?.g||''; }
 
 const LIMITS = {b16:12, b4:4, champ:1};
-const POINTS = {b16:1, b4:3, champ:10, bonus:3};
+const POINTS = {b16:1, b4:3, champ:5, bonus:3};
 
 // ==================== 結果データ（Claudeが大会進行に合わせて更新） ====================
 const RESULTS = {
@@ -583,7 +583,7 @@ ${b16Lines}
 ${b4Lines}
 
 ━━━━━━━━━━━━━━━━━━━━
-【③ 優勝予想】締切：7/20（10点）
+【③ 優勝予想】締切：7/20（5点）
   ${champ}
 `;
   const ta = document.getElementById('template-text');
@@ -734,7 +734,7 @@ function renderScores() {
     const pred=state.predictions[p].champ[0], name=p==='kei'?'Kei':'Akacello';
     if(!pred) return `<tr><td>${name}</td><td colspan="3" class="pend">未入力</td></tr>`;
     const hit=actual&&pred===actual;
-    return `<tr><td>${name}</td><td>${teamFlag(pred)} ${pred}</td><td>${actual?teamFlag(actual)+' '+actual:'<span class="pend">未定</span>'}</td><td>${!actual?'<span class="pend">－</span>':hit?'<span class="hit">+10</span>':'<span class="miss">0</span>'}</td></tr>`;
+    return `<tr><td>${name}</td><td>${teamFlag(pred)} ${pred}</td><td>${actual?teamFlag(actual)+' '+actual:'<span class="pend">未定</span>'}</td><td>${!actual?'<span class="pend">－</span>':hit?'<span class="hit">+5</span>':'<span class="miss">0</span>'}</td></tr>`;
   }).join('');
 }
 
