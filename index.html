@@ -119,15 +119,102 @@
 </header>
 
 <nav>
-  <button class="active" onclick="showView('predict',this)">📝 予想入力</button>
+  <button class="active" onclick="showView('rules',this)">📋 ルール</button>
+  <button onclick="showView('predict',this)">📝 予想入力</button>
   <button onclick="showView('compare',this)">👀 予想比較</button>
   <button onclick="showView('results',this)">🏆 結果入力</button>
   <button onclick="showView('scores',this)">📊 スコア</button>
   <button onclick="showView('schedule',this)">📅 日程</button>
 </nav>
 
+<!-- ============ ルール ============ -->
+<div id="rules" class="view active">
+  <div class="card">
+    <h3>⚽ ゲーム概要</h3>
+    <p class="sub" style="margin-bottom:0">KeiとAkacelloの2人で、W杯2026の結果を予想して点数を競うゲームです。<br>予想は3段階。大会が進むにつれて締切が来るので、締切前に必ず入力してください。</p>
+  </div>
+
+  <div class="card">
+    <h3>📌 予想の3ステージ＆締切</h3>
+    <table style="margin-top:8px">
+      <thead>
+        <tr><th>ステージ</th><th>内容</th><th style="white-space:nowrap">締切</th><th>配点</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:#7ab4ff">① ベスト16</strong></td>
+          <td>48チームの中からラウンド16に残る16チームを選ぶ</td>
+          <td style="white-space:nowrap;color:var(--accent)">6/11（木）<br><small>大会開幕前</small></td>
+          <td>1チーム <strong>1点</strong></td>
+        </tr>
+        <tr>
+          <td><strong style="color:#9b59b6">　＋ボーナス</strong></td>
+          <td>ステージ①と同時に優勝国も予想できる（任意）</td>
+          <td style="white-space:nowrap;color:var(--accent)">6/11（木）</td>
+          <td>的中で <strong>+3点</strong></td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--accent)">② ベスト4</strong></td>
+          <td>準決勝に残る4チームを選ぶ</td>
+          <td style="white-space:nowrap;color:var(--accent)">7/10（金）<br><small>R16開始前</small></td>
+          <td>1チーム <strong>3点</strong></td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--red)">③ 優勝予想</strong></td>
+          <td>優勝チームを1チーム選ぶ（本命）</td>
+          <td style="white-space:nowrap;color:var(--accent)">7/20（月）<br><small>準決勝前</small></td>
+          <td>的中で <strong>10点</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>🏆 最大得点</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:10px">
+      <div style="background:rgba(30,100,200,0.15);border:1px solid #2a5aaa;border-radius:8px;padding:12px;text-align:center">
+        <div style="font-size:0.75rem;color:var(--muted)">ベスト16</div>
+        <div style="font-size:1.6rem;font-weight:700;color:#7ab4ff">16点</div>
+        <div style="font-size:0.72rem;color:var(--muted)">16チーム × 1点</div>
+      </div>
+      <div style="background:rgba(155,89,182,0.15);border:1px solid var(--bonus);border-radius:8px;padding:12px;text-align:center">
+        <div style="font-size:0.75rem;color:var(--muted)">ボーナス</div>
+        <div style="font-size:1.6rem;font-weight:700;color:#c39bd3">3点</div>
+        <div style="font-size:0.72rem;color:var(--muted)">優勝的中のみ</div>
+      </div>
+      <div style="background:rgba(232,200,74,0.12);border:1px solid var(--accent);border-radius:8px;padding:12px;text-align:center">
+        <div style="font-size:0.75rem;color:var(--muted)">ベスト4</div>
+        <div style="font-size:1.6rem;font-weight:700;color:var(--accent)">12点</div>
+        <div style="font-size:0.72rem;color:var(--muted)">4チーム × 3点</div>
+      </div>
+      <div style="background:rgba(231,76,60,0.12);border:1px solid var(--red);border-radius:8px;padding:12px;text-align:center">
+        <div style="font-size:0.75rem;color:var(--muted)">優勝予想</div>
+        <div style="font-size:1.6rem;font-weight:700;color:var(--red)">10点</div>
+        <div style="font-size:0.72rem;color:var(--muted)">的中のみ</div>
+      </div>
+      <div style="background:rgba(46,204,113,0.12);border:1px solid var(--green);border-radius:8px;padding:12px;text-align:center;grid-column:span 1">
+        <div style="font-size:0.75rem;color:var(--muted)">合計最大</div>
+        <div style="font-size:1.6rem;font-weight:700;color:var(--green)">41点</div>
+        <div style="font-size:0.72rem;color:var(--muted)">全部的中した場合</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📱 Akacello → Keiへの予想の伝え方</h3>
+    <p class="sub">Akacelloは自分のデバイスから入力できないので、LINEや<br>メッセージでKeiに予想を送ってください。下のボタンでテンプレを生成できます。</p>
+    <button class="save-btn" style="margin-top:0;background:var(--primary);border:1.5px solid var(--accent);color:var(--accent)" onclick="generateTemplate()">📋 予想テンプレートを生成する</button>
+    <div id="template-box" style="display:none;margin-top:14px">
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:8px">↓ このテキストをLINEなどで送ってもらう</p>
+      <textarea id="template-text" style="width:100%;height:220px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.8rem;padding:12px;resize:vertical;font-family:monospace" readonly></textarea>
+      <button class="save-btn" style="margin-top:8px;background:var(--green)" onclick="copyTemplate()">📋 コピーする</button>
+      <div id="copy-msg" style="text-align:center;margin-top:6px;font-size:0.82rem;color:var(--green);display:none">✅ コピーしました！</div>
+    </div>
+  </div>
+</div>
+
 <!-- ============ 予想入力 ============ -->
-<div id="predict" class="view active">
+<div id="predict" class="view">
   <div class="info-box">
     📌 各ステージの予想入力画面です。KeiとAkacelloそれぞれ入力してください。<br>
     ⚠️ 各ステージは試合開始前に入力・保存してください。入力後はお互いの予想が「予想比較」で見られます。
@@ -600,6 +687,66 @@ function renderSchedule() {
       `).join('')}
     </div>
   `).join('');
+}
+
+// ==================== テンプレート生成 ====================
+function generateTemplate() {
+  const teams16 = TEAMS.map((t,i)=>`  ${String(i+1).padStart(2,'0')}. ${t.f} ${t.n}`).join('\n');
+  const text = `⚽ W杯2026 Akacello予想シート
+━━━━━━━━━━━━━━━━━━━━
+📅 締切：6/11（木）大会開幕前
+
+【① ベスト16予想】残ると思う16チームを選んでKeiに送ってください
+
+${teams16}
+
+▼ 選んだ16チームを書いてください（番号でもチーム名でもOK）:
+1.
+2.
+3.
+4.
+5.
+6.
+7.
+8.
+9.
+10.
+11.
+12.
+13.
+14.
+15.
+16.
+
+【⭐ ボーナス予想（任意）】優勝国を予想（的中で+3点）
+優勝予想:
+
+━━━━━━━━━━━━━━━━━━━━
+📅 締切：7/10（金）ベスト16開始前
+
+【② ベスト4予想】準決勝に残る4チームを選んでください
+1.
+2.
+3.
+4.
+
+━━━━━━━━━━━━━━━━━━━━
+📅 締切：7/20（月）準決勝前
+
+【③ 優勝予想（本命）】1チームだけ（的中で10点）
+優勝:
+`;
+  document.getElementById('template-text').value = text;
+  document.getElementById('template-box').style.display = 'block';
+}
+
+function copyTemplate() {
+  const ta = document.getElementById('template-text');
+  navigator.clipboard.writeText(ta.value).then(()=>{
+    const msg = document.getElementById('copy-msg');
+    msg.style.display='block';
+    setTimeout(()=>msg.style.display='none',2000);
+  });
 }
 
 // ==================== ビュー切替 ====================
