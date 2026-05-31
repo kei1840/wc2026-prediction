@@ -46,6 +46,11 @@
   .badge.warn { background: var(--red); color: #fff; }
 
   .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 7px; }
+  /* グループ表示 */
+  .group-section { margin-bottom: 14px; }
+  .group-header { font-size: 0.75rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; padding: 4px 0 6px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+  .group-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  @media(max-width:520px) { .group-grid { grid-template-columns: repeat(2, 1fr); } }
   .tbtn { padding: 7px 9px; border-radius: 8px; border: 1.5px solid var(--border); background: rgba(255,255,255,0.03); color: var(--text); cursor: pointer; font-size: 0.8rem; text-align: left; transition: all 0.15s; display: flex; align-items: center; gap: 5px; }
   .tbtn .flag { font-size: 1.05rem; }
   .tbtn:hover { border-color: var(--accent); }
@@ -232,11 +237,16 @@
       <button class="ptab" onclick="switchPlayer('b16','akacello',this)">🎯 Akacello</button>
     </div>
     <div class="count-line">
-      ベスト16選択：<span id="b16-count" class="badge">0 / 16</span>
+      グループ勝者選択：<span id="b16-count" class="badge">0 / 12</span>
       　優勝ボーナス予想：<span id="bonus-count" class="badge">未選択</span>
     </div>
-    <div class="team-grid" id="b16-grid"></div>
-    <div style="margin-top:12px;font-size:0.8rem;color:var(--bonus);">💜 紫枠 = 優勝ボーナス予想中（もう一度クリックで解除）</div>
+    <div id="b16-grid"></div>
+
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+      <div class="bonus-note" style="margin-bottom:10px">⭐ 優勝ボーナス予想：上で選んだ12チームの中から優勝国を1チーム選ぶ（的中で+3点）</div>
+      <div class="count-line">ボーナス予想：<span id="bonus-count" class="badge">未選択</span></div>
+      <div class="team-grid" id="bonus-grid"></div>
+    </div>
   </div>
 
   <!-- Stage 2 -->
@@ -334,23 +344,28 @@
 </div>
 
 <script>
-// ==================== データ ====================
-const TEAMS = [
-  {n:'アルゼンチン',f:'🇦🇷'},{n:'ブラジル',f:'🇧🇷'},{n:'フランス',f:'🇫🇷'},{n:'スペイン',f:'🇪🇸'},
-  {n:'イングランド',f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},{n:'ドイツ',f:'🇩🇪'},{n:'ポルトガル',f:'🇵🇹'},{n:'オランダ',f:'🇳🇱'},
-  {n:'日本',f:'🇯🇵'},{n:'アメリカ',f:'🇺🇸'},{n:'メキシコ',f:'🇲🇽'},{n:'カナダ',f:'🇨🇦'},
-  {n:'コロンビア',f:'🇨🇴'},{n:'ウルグアイ',f:'🇺🇾'},{n:'エクアドル',f:'🇪🇨'},{n:'ベネズエラ',f:'🇻🇪'},
-  {n:'チリ',f:'🇨🇱'},{n:'パラグアイ',f:'🇵🇾'},{n:'ペルー',f:'🇵🇪'},{n:'モロッコ',f:'🇲🇦'},
-  {n:'セネガル',f:'🇸🇳'},{n:'エジプト',f:'🇪🇬'},{n:'ナイジェリア',f:'🇳🇬'},{n:'コートジボワール',f:'🇨🇮'},
-  {n:'南アフリカ',f:'🇿🇦'},{n:'カメルーン',f:'🇨🇲'},{n:'ガーナ',f:'🇬🇭'},{n:'チュニジア',f:'🇹🇳'},
-  {n:'コンゴ',f:'🇨🇩'},{n:'韓国',f:'🇰🇷'},{n:'オーストラリア',f:'🇦🇺'},{n:'イラン',f:'🇮🇷'},
-  {n:'サウジアラビア',f:'🇸🇦'},{n:'中国',f:'🇨🇳'},{n:'イラク',f:'🇮🇶'},{n:'ウズベキスタン',f:'🇺🇿'},
-  {n:'ヨルダン',f:'🇯🇴'},{n:'クロアチア',f:'🇭🇷'},{n:'ベルギー',f:'🇧🇪'},{n:'イタリア',f:'🇮🇹'},
-  {n:'スイス',f:'🇨🇭'},{n:'オーストリア',f:'🇦🇹'},{n:'トルコ',f:'🇹🇷'},{n:'スコットランド',f:'🏴󠁧󠁢󠁳󠁣󠁴󠁿'},
-  {n:'セルビア',f:'🇷🇸'},{n:'ニュージーランド',f:'🇳🇿'},{n:'パナマ',f:'🇵🇦'},{n:'コスタリカ',f:'🇨🇷'},
+// ==================== グループデータ（2026 W杯 12グループ） ====================
+const GROUPS = [
+  {g:'A', teams:[{n:'アメリカ',f:'🇺🇸'},{n:'パナマ',f:'🇵🇦'},{n:'モロッコ',f:'🇲🇦'},{n:'ニュージーランド',f:'🇳🇿'}]},
+  {g:'B', teams:[{n:'メキシコ',f:'🇲🇽'},{n:'エクアドル',f:'🇪🇨'},{n:'スイス',f:'🇨🇭'},{n:'コンゴ',f:'🇨🇩'}]},
+  {g:'C', teams:[{n:'カナダ',f:'🇨🇦'},{n:'コロンビア',f:'🇨🇴'},{n:'スコットランド',f:'🏴󠁧󠁢󠁳󠁣󠁴󠁿'},{n:'コートジボワール',f:'🇨🇮'}]},
+  {g:'D', teams:[{n:'アルゼンチン',f:'🇦🇷'},{n:'チリ',f:'🇨🇱'},{n:'クロアチア',f:'🇭🇷'},{n:'韓国',f:'🇰🇷'}]},
+  {g:'E', teams:[{n:'ブラジル',f:'🇧🇷'},{n:'ウルグアイ',f:'🇺🇾'},{n:'セルビア',f:'🇷🇸'},{n:'オーストラリア',f:'🇦🇺'}]},
+  {g:'F', teams:[{n:'フランス',f:'🇫🇷'},{n:'パラグアイ',f:'🇵🇾'},{n:'ベルギー',f:'🇧🇪'},{n:'チュニジア',f:'🇹🇳'}]},
+  {g:'G', teams:[{n:'スペイン',f:'🇪🇸'},{n:'ペルー',f:'🇵🇪'},{n:'トルコ',f:'🇹🇷'},{n:'ガーナ',f:'🇬🇭'}]},
+  {g:'H', teams:[{n:'イングランド',f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},{n:'ベネズエラ',f:'🇻🇪'},{n:'オーストリア',f:'🇦🇹'},{n:'セネガル',f:'🇸🇳'}]},
+  {g:'I', teams:[{n:'ドイツ',f:'🇩🇪'},{n:'コスタリカ',f:'🇨🇷'},{n:'日本',f:'🇯🇵'},{n:'カメルーン',f:'🇨🇲'}]},
+  {g:'J', teams:[{n:'ポルトガル',f:'🇵🇹'},{n:'オランダ',f:'🇳🇱'},{n:'南アフリカ',f:'🇿🇦'},{n:'イラン',f:'🇮🇷'}]},
+  {g:'K', teams:[{n:'イタリア',f:'🇮🇹'},{n:'エジプト',f:'🇪🇬'},{n:'ヨルダン',f:'🇯🇴'},{n:'ウズベキスタン',f:'🇺🇿'}]},
+  {g:'L', teams:[{n:'中国',f:'🇨🇳'},{n:'サウジアラビア',f:'🇸🇦'},{n:'イラク',f:'🇮🇶'},{n:'ナイジェリア',f:'🇳🇬'}]},
 ];
 
-const LIMITS = {b16:16, b4:4, champ:1};
+// フラットなチームリスト（B4・優勝予想などで使用）
+const TEAMS = GROUPS.flatMap(g => g.teams);
+function teamFlag(name) { return TEAMS.find(t=>t.n===name)?.f||''; }
+function teamGroup(name) { return GROUPS.find(g=>g.teams.some(t=>t.n===name))?.g||''; }
+
+const LIMITS = {b16:12, b4:4, champ:1}; // b16は12グループ×1チーム
 const POINTS = {b16:1, b4:3, champ:10, bonus:3};
 
 let state = {
@@ -364,110 +379,223 @@ let state = {
 let curPlayer = {b16:'kei', b4:'kei', champ:'kei'};
 
 function loadState() {
-  try { const s = localStorage.getItem('wc2026v2'); if(s) state = JSON.parse(s); } catch(e){}
-  // migrate old data
-  ['kei','akacello'].forEach(p => { if(!state.predictions[p].bonus && state.predictions[p].bonus !== null) state.predictions[p].bonus = null; });
+  try { const s = localStorage.getItem('wc2026v3'); if(s) state = JSON.parse(s); } catch(e){}
+  ['kei','akacello'].forEach(p => { if(state.predictions[p].bonus===undefined) state.predictions[p].bonus=null; });
 }
-function saveState() { localStorage.setItem('wc2026v2', JSON.stringify(state)); }
+function saveState() { localStorage.setItem('wc2026v3', JSON.stringify(state)); }
 
-// ==================== グリッド ====================
-function teamFlag(name) { return TEAMS.find(t=>t.n===name)?.f||''; }
+// ==================== B16グリッド（グループ別・1グループ1チーム） ====================
+function renderB16Grid(player) {
+  const grid = document.getElementById('b16-grid');
+  const selected = state.predictions[player].b16;
+  grid.innerHTML = '';
 
+  GROUPS.forEach(group => {
+    const sec = document.createElement('div');
+    sec.className = 'group-section';
+
+    const groupSel = group.teams.find(t => selected.includes(t.n));
+    const header = document.createElement('div');
+    header.className = 'group-header';
+    header.textContent = `グループ ${group.g}${groupSel ? '  → ' + groupSel.f + ' ' + groupSel.n : '  （未選択）'}`;
+    sec.appendChild(header);
+
+    const ggrid = document.createElement('div');
+    ggrid.className = 'group-grid';
+
+    group.teams.forEach(team => {
+      const isSel = selected.includes(team.n);
+      const groupHasSel = !!groupSel;
+      const disabled = !isSel && groupHasSel;
+
+      const btn = document.createElement('button');
+      btn.className = 'tbtn' + (isSel ? ' sel' : '') + (disabled ? ' dis' : '');
+      btn.innerHTML = `<span class="flag">${team.f}</span>${team.n}`;
+      btn.onclick = () => {
+        if (isSel) {
+          // 解除
+          selected.splice(selected.indexOf(team.n), 1);
+          if (state.predictions[player].bonus === team.n) state.predictions[player].bonus = null;
+        } else if (!groupHasSel) {
+          // 選択
+          selected.push(team.n);
+        }
+        refreshB16(player);
+      };
+      ggrid.appendChild(btn);
+    });
+
+    sec.appendChild(ggrid);
+    grid.appendChild(sec);
+  });
+
+  updateB16Count(player);
+  renderBonusGrid(player);
+}
+
+function renderBonusGrid(player) {
+  const grid = document.getElementById('bonus-grid');
+  if (!grid) return;
+  const selected = state.predictions[player].b16;
+  const bonusTeam = state.predictions[player].bonus;
+  grid.innerHTML = '';
+
+  if (selected.length === 0) {
+    grid.innerHTML = '<span style="color:var(--muted);font-size:0.8rem;">先にグループ勝者を選んでください</span>';
+    updateBonusCount(player);
+    return;
+  }
+
+  // 選んだ12チームのみ表示
+  selected.forEach(name => {
+    const team = TEAMS.find(t => t.n === name);
+    if (!team) return;
+    const isBonus = name === bonusTeam;
+    const btn = document.createElement('button');
+    btn.className = 'tbtn' + (isBonus ? ' sel-bonus' : '');
+    btn.innerHTML = `<span class="flag">${team.f}</span>${team.n}`;
+    btn.onclick = () => {
+      state.predictions[player].bonus = isBonus ? null : name;
+      renderBonusGrid(player);
+      updateBonusCount(player);
+      updateTemplate();
+    };
+    grid.appendChild(btn);
+  });
+
+  updateBonusCount(player);
+}
+
+function refreshB16(player) {
+  updateB16Count(player);
+  renderB16Grid(player);
+  updateTemplate();
+}
+
+function updateB16Count(player) {
+  const el = document.getElementById('b16-count');
+  if (!el) return;
+  const count = state.predictions[player].b16.length;
+  el.textContent = `${count} / 12`;
+  el.className = 'badge' + (count === 12 ? ' ok' : '');
+}
+
+function updateBonusCount(player) {
+  const el = document.getElementById('bonus-count');
+  if (!el) return;
+  const b = state.predictions[player].bonus;
+  el.textContent = b ? `${teamFlag(b)} ${b}` : '未選択';
+  el.className = 'badge' + (b ? ' ok' : '');
+}
+
+// ==================== フラットグリッド（B4・優勝・結果） ====================
 function renderGrid(gridId, stage, isResult=false) {
   const grid = document.getElementById(gridId);
   const limit = LIMITS[stage];
   const player = isResult ? null : curPlayer[stage];
   const selected = isResult ? state.results[stage] : state.predictions[player][stage];
-  const bonusTeam = (!isResult && stage==='b16') ? state.predictions[player].bonus : null;
 
   grid.innerHTML = '';
   TEAMS.forEach(team => {
     const isSel = selected.includes(team.n);
-    const isBonus = stage==='b16' && !isResult && team.n === bonusTeam;
     const atLimit = selected.length >= limit && !isSel;
-
     const btn = document.createElement('button');
-    btn.className = 'tbtn' + (isBonus ? ' sel-bonus' : isSel ? ' sel' : '') + (atLimit && !isBonus ? ' dis' : '');
+    btn.className = 'tbtn' + (isSel ? ' sel' : '') + (atLimit ? ' dis' : '');
     btn.innerHTML = `<span class="flag">${team.f}</span>${team.n}`;
-
     btn.onclick = () => {
-      if (stage === 'b16' && !isResult) {
-        if (isSel) {
-          // deselect from b16
-          selected.splice(selected.indexOf(team.n),1);
-          // also clear bonus if this was bonus team
-          if (state.predictions[player].bonus === team.n) state.predictions[player].bonus = null;
-        } else if (isBonus) {
-          // was bonus only, toggle bonus off
-          state.predictions[player].bonus = null;
-        } else if (!atLimit) {
-          // select as b16
-          selected.push(team.n);
-          // if already in bonus slot, keep it
-        } else {
-          // at limit — allow setting as bonus only
-          if (bonusTeam === team.n) {
-            state.predictions[player].bonus = null;
-          } else {
-            state.predictions[player].bonus = team.n;
-          }
-        }
-        updateCount('b16', selected.length, 16);
-        updateBonusCount(player);
-        renderGrid('b16-grid','b16');
-        return;
-      }
-      if (stage==='champ') {
+      if(stage==='champ') {
         selected.length=0;
         if(!isSel) selected.push(team.n);
       } else {
         if(isSel) selected.splice(selected.indexOf(team.n),1);
         else if(!atLimit) selected.push(team.n);
       }
-      updateCount(stage, selected.length, limit, isResult);
+      updateFlatCount(stage, selected.length, limit, isResult);
       renderGrid(gridId, stage, isResult);
+      if(!isResult) updateTemplate();
     };
     grid.appendChild(btn);
   });
-  updateCount(stage, selected.length, limit, isResult);
-  if(!isResult && stage==='b16') updateBonusCount(player);
+  updateFlatCount(stage, selected.length, limit, isResult);
 }
 
-function updateCount(stage, count, limit, isResult=false) {
+function updateFlatCount(stage, count, limit, isResult=false) {
   const prefix = isResult ? 'r' : '';
   const el = document.getElementById(`${prefix}${stage}-count`);
   if(!el) return;
-  if(stage==='champ' && !isResult) { el.textContent = count>0 ? TEAMS.find(t=>t.n===state.predictions[curPlayer.champ].champ[0])?.n||'選択中' : '未選択'; }
-  else { el.textContent = `${count} / ${limit}`; }
+  if(stage==='champ' && !isResult) {
+    el.textContent = count>0 ? state.predictions[curPlayer.champ].champ[0] : '未選択';
+  } else {
+    el.textContent = `${count} / ${limit}`;
+  }
   el.className = 'badge' + (count===limit ? ' ok' : '');
-}
-
-function updateBonusCount(player) {
-  const el = document.getElementById('bonus-count');
-  if(!el) return;
-  const b = state.predictions[player].bonus;
-  el.textContent = b ? `${teamFlag(b)} ${b}` : '未選択';
-  el.className = 'badge' + (b ? ' ok' : '');
 }
 
 function switchPlayer(stage, player, tabEl) {
   curPlayer[stage] = player;
   tabEl.parentElement.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
   tabEl.classList.add('active');
-  const map = {b16:'b16-grid', b4:'b4-grid', champ:'champ-grid'};
-  renderGrid(map[stage], stage);
-  if(stage==='champ') updateCount('champ', state.predictions[player].champ.length, 1);
+  if(stage==='b16') {
+    renderB16Grid(player);
+  } else {
+    const map = {b4:'b4-grid', champ:'champ-grid'};
+    renderGrid(map[stage], stage);
+    if(stage==='champ') updateFlatCount('champ', state.predictions[player].champ.length, 1);
+  }
+  updateTemplate();
+}
+
+// ==================== テンプレート（選択結果を反映・リアルタイム更新） ====================
+function updateTemplate() {
+  const p = state.predictions['akacello'];
+
+  // B16: グループ別に選択チームを表示
+  const b16Lines = GROUPS.map(g => {
+    const sel = g.teams.find(t => p.b16.includes(t.n));
+    return `  グループ${g.g}: ${sel ? sel.f + ' ' + sel.n : '（未選択）'}`;
+  }).join('\n');
+
+  const bonus = p.bonus ? `${teamFlag(p.bonus)} ${p.bonus}` : '（未選択）';
+
+  const b4Lines = p.b4.length > 0
+    ? p.b4.map((t,i)=>`  ${i+1}. ${teamFlag(t)} ${t}`).join('\n')
+    : '  （未選択）';
+
+  const champ = p.champ[0] ? `${teamFlag(p.champ[0])} ${p.champ[0]}` : '（未選択）';
+
+  const text =
+`⚽ W杯2026 Akacello予想
+━━━━━━━━━━━━━━━━━━━━
+【① グループ勝者予想】締切：6/11
+${b16Lines}
+
+【⭐ 優勝ボーナス予想】+3点
+  ${bonus}
+
+━━━━━━━━━━━━━━━━━━━━
+【② ベスト4予想】締切：7/10
+${b4Lines}
+
+━━━━━━━━━━━━━━━━━━━━
+【③ 優勝予想】締切：7/20（10点）
+  ${champ}
+`;
+  const ta = document.getElementById('template-text');
+  if(ta) ta.value = text;
+}
+
+function copyTemplate() {
+  const ta = document.getElementById('template-text');
+  navigator.clipboard.writeText(ta.value).then(()=>{
+    const msg = document.getElementById('copy-msg');
+    msg.style.display='block';
+    setTimeout(()=>msg.style.display='none',2000);
+  });
 }
 
 // ==================== 保存 ====================
-function savePredictions() {
-  saveState();
-  flash('save-msg');
-}
-function saveResults() {
-  saveState();
-  flash('result-msg');
-}
+function savePredictions() { saveState(); flash('save-msg'); }
+function saveResults()     { saveState(); flash('result-msg'); }
 function flash(id) {
   const el=document.getElementById(id);
   el.style.display='block';
@@ -478,9 +606,10 @@ function flash(id) {
 function renderCompare() {
   const res = state.results;
   const grid = document.getElementById('compare-grid');
+  grid.innerHTML = '';
 
   function pillClass(team, stage) {
-    if(res[stage].length===0) return 'pending';
+    if(!res[stage].length) return 'pending';
     return res[stage].includes(team) ? 'hit' : 'miss';
   }
   function bonusPillClass(team) {
@@ -488,45 +617,43 @@ function renderCompare() {
     return res.champ[0]===team ? 'bonus-hit' : 'miss';
   }
   function pillIcon(cls) {
-    if(cls==='hit') return '✅';
-    if(cls==='miss') return '❌';
-    if(cls==='bonus-hit') return '⭐';
-    return '';
+    return cls==='hit'?'✅':cls==='miss'?'❌':cls==='bonus-hit'?'⭐':'';
   }
 
-  ['kei','akacello'].forEach((player,i) => {
+  ['kei','akacello'].forEach(player => {
     const p = state.predictions[player];
-    const col = document.getElementById(`cplayer-${player}`) || (() => {
-      const d = document.createElement('div');
-      d.className='cplayer';
-      d.id=`cplayer-${player}`;
-      grid.appendChild(d);
-      return d;
-    })();
-
+    const col = document.createElement('div');
+    col.className='cplayer';
     let html = `<h3>🎯 ${player==='kei'?'Kei':'Akacello'}</h3>`;
 
-    // B16
-    html += `<div class="stage-label">🔵 ベスト16予想（${p.b16.length}/16）</div>`;
-    if(p.b16.length===0) html+=`<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
-    else p.b16.forEach(t=>{const cls=pillClass(t,'b16');html+=`<span class="team-pill ${cls}">${teamFlag(t)} ${t} ${pillIcon(cls)}</span>`;});
+    // B16 グループ別
+    html += `<div class="stage-label">🔵 グループ勝者予想（${p.b16.length}/12）</div>`;
+    if(!p.b16.length) {
+      html+=`<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
+    } else {
+      GROUPS.forEach(g => {
+        const sel = g.teams.find(t => p.b16.includes(t.n));
+        if(sel) {
+          const cls=pillClass(sel.n,'b16');
+          html+=`<span class="team-pill ${cls}"><small style="opacity:.6">G${g.g}</small> ${sel.f} ${sel.n} ${pillIcon(cls)}</span>`;
+        }
+      });
+    }
 
-    // Bonus
-    html += `<div class="stage-label">⭐ 優勝ボーナス予想</div>`;
+    html += `<div class="stage-label">⭐ 優勝ボーナス</div>`;
     if(!p.bonus) html+=`<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
-    else {const cls=bonusPillClass(p.bonus);html+=`<span class="team-pill ${cls}">${teamFlag(p.bonus)} ${p.bonus} ${pillIcon(cls)}</span>`;}
+    else { const cls=bonusPillClass(p.bonus); html+=`<span class="team-pill ${cls}">${teamFlag(p.bonus)} ${p.bonus} ${pillIcon(cls)}</span>`; }
 
-    // B4
     html += `<div class="stage-label">🟡 ベスト4予想（${p.b4.length}/4）</div>`;
-    if(p.b4.length===0) html+=`<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
+    if(!p.b4.length) html+=`<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
     else p.b4.forEach(t=>{const cls=pillClass(t,'b4');html+=`<span class="team-pill ${cls}">${teamFlag(t)} ${t} ${pillIcon(cls)}</span>`;});
 
-    // Champ
     html += `<div class="stage-label">🔴 優勝予想</div>`;
-    if(p.champ.length===0) html+=`<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
-    else {const t=p.champ[0];const cls=pillClass(t,'champ');html+=`<span class="team-pill ${cls}">${teamFlag(t)} ${t} ${pillIcon(cls)}</span>`;}
+    if(!p.champ.length) html+=`<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
+    else { const t=p.champ[0];const cls=pillClass(t,'champ');html+=`<span class="team-pill ${cls}">${teamFlag(t)} ${t} ${pillIcon(cls)}</span>`; }
 
     col.innerHTML=html;
+    grid.appendChild(col);
   });
 }
 
@@ -543,26 +670,16 @@ function calcScore(player) {
 }
 
 function renderScores() {
-  const ks = calcScore('kei');
-  const as = calcScore('akacello');
-  const kt = ks.b16+ks.bonus+ks.b4+ks.champ;
-  const at = as.b16+as.bonus+as.b4+as.champ;
+  const ks=calcScore('kei'), as=calcScore('akacello');
+  const kt=ks.b16+ks.bonus+ks.b4+ks.champ, at=as.b16+as.bonus+as.b4+as.champ;
+  const draw=kt===at;
 
-  const board = document.getElementById('score-board');
-  const draw = kt===at;
-  board.innerHTML = ['kei','akacello'].map((p,i)=>{
-    const s = p==='kei'?ks:as;
-    const t = p==='kei'?kt:at;
-    const win = p==='kei'?(kt>=at):(at>=kt);
+  document.getElementById('score-board').innerHTML = ['kei','akacello'].map(p=>{
+    const s=p==='kei'?ks:as, t=p==='kei'?kt:at, win=p==='kei'?(kt>=at):(at>=kt);
     return `<div class="score-card ${win&&!draw?'winner':''}">
       <div class="pname">🎯 ${p==='kei'?'Kei':'Akacello'} ${win&&!draw?'👑':''}</div>
       <div class="total">${t}</div>
-      <div class="breakdown">
-        ベスト16：<span>${s.b16}点</span><br>
-        ボーナス：<span>${s.bonus}点</span><br>
-        ベスト4：<span>${s.b4}点</span><br>
-        優勝予想：<span>${s.champ}点</span>
-      </div>
+      <div class="breakdown">グループ勝者：<span>${s.b16}点</span><br>ボーナス：<span>${s.bonus}点</span><br>ベスト4：<span>${s.b4}点</span><br>優勝予想：<span>${s.champ}点</span></div>
     </div>`;
   }).join('');
 
@@ -570,184 +687,91 @@ function renderScores() {
   document.getElementById('no-data-msg').style.display = hasPred?'none':'block';
   if(!hasPred) return;
 
-  // B16 detail
+  const actual=state.results.champ[0]||null;
+
+  // B16
   document.getElementById('dtb16').style.display='block';
-  const allB16 = [...new Set([...state.predictions.kei.b16,...state.predictions.akacello.b16,...state.results.b16])].sort();
+  const allB16=[...new Set([...state.predictions.kei.b16,...state.predictions.akacello.b16,...state.results.b16])];
   document.getElementById('tb16').innerHTML = allB16.map(t=>{
-    const act=state.results.b16.includes(t);
-    const hasRes=state.results.b16.length>0;
-    const kp=state.predictions.kei.b16.includes(t);
-    const ap=state.predictions.akacello.b16.includes(t);
+    const act=state.results.b16.includes(t), hasRes=state.results.b16.length>0;
+    const kp=state.predictions.kei.b16.includes(t), ap=state.predictions.akacello.b16.includes(t);
+    const g = teamGroup(t);
     const res=hasRes?(act?'<span class="hit">✅ 通過</span>':'<span class="miss">❌ 敗退</span>'):'<span class="pend">未定</span>';
     const kl=!kp?'－':(hasRes?(act?'<span class="hit">+1</span>':'<span class="miss">×</span>'):'<span class="pend">？</span>');
     const al=!ap?'－':(hasRes?(act?'<span class="hit">+1</span>':'<span class="miss">×</span>'):'<span class="pend">？</span>');
-    return `<tr><td>${teamFlag(t)} ${t}</td><td>${res}</td><td>${kl}</td><td>${al}</td></tr>`;
+    return `<tr><td><small style="opacity:.5">G${g}</small> ${teamFlag(t)} ${t}</td><td>${res}</td><td>${kl}</td><td>${al}</td></tr>`;
   }).join('');
 
-  // Bonus detail
+  // Bonus
   document.getElementById('dtbonus').style.display='block';
-  const actual=state.results.champ[0]||null;
   document.getElementById('tbonus').innerHTML = ['kei','akacello'].map(p=>{
-    const b=state.predictions[p].bonus;
-    const name=p==='kei'?'Kei':'Akacello';
+    const b=state.predictions[p].bonus, name=p==='kei'?'Kei':'Akacello';
     if(!b) return `<tr><td>${name}</td><td colspan="3" class="pend">未入力</td></tr>`;
     const hit=actual&&b===actual;
-    const pts=!actual?'<span class="pend">－</span>':(hit?'<span class="hit">+3</span>':'<span class="miss">0</span>');
-    return `<tr><td>${name}</td><td>${teamFlag(b)} ${b}</td><td>${actual?teamFlag(actual)+' '+actual:'<span class="pend">未定</span>'}</td><td>${pts}</td></tr>`;
+    return `<tr><td>${name}</td><td>${teamFlag(b)} ${b}</td><td>${actual?teamFlag(actual)+' '+actual:'<span class="pend">未定</span>'}</td><td>${!actual?'<span class="pend">－</span>':hit?'<span class="hit">+3</span>':'<span class="miss">0</span>'}</td></tr>`;
   }).join('');
 
-  // B4 detail
+  // B4
   document.getElementById('dtb4').style.display='block';
-  const allB4=[...new Set([...state.predictions.kei.b4,...state.predictions.akacello.b4,...state.results.b4])].sort();
+  const allB4=[...new Set([...state.predictions.kei.b4,...state.predictions.akacello.b4,...state.results.b4])];
   document.getElementById('tb4').innerHTML = allB4.map(t=>{
-    const act=state.results.b4.includes(t);
-    const hasRes=state.results.b4.length>0;
-    const kp=state.predictions.kei.b4.includes(t);
-    const ap=state.predictions.akacello.b4.includes(t);
+    const act=state.results.b4.includes(t), hasRes=state.results.b4.length>0;
+    const kp=state.predictions.kei.b4.includes(t), ap=state.predictions.akacello.b4.includes(t);
     const res=hasRes?(act?'<span class="hit">✅ 残留</span>':'<span class="miss">❌ 敗退</span>'):'<span class="pend">未定</span>';
     const kl=!kp?'－':(hasRes?(act?'<span class="hit">+3</span>':'<span class="miss">×</span>'):'<span class="pend">？</span>');
     const al=!ap?'－':(hasRes?(act?'<span class="hit">+3</span>':'<span class="miss">×</span>'):'<span class="pend">？</span>');
     return `<tr><td>${teamFlag(t)} ${t}</td><td>${res}</td><td>${kl}</td><td>${al}</td></tr>`;
   }).join('');
 
-  // Champ detail
+  // Champ
   document.getElementById('dtchamp').style.display='block';
   document.getElementById('tchamp').innerHTML = ['kei','akacello'].map(p=>{
-    const pred=state.predictions[p].champ[0];
-    const name=p==='kei'?'Kei':'Akacello';
+    const pred=state.predictions[p].champ[0], name=p==='kei'?'Kei':'Akacello';
     if(!pred) return `<tr><td>${name}</td><td colspan="3" class="pend">未入力</td></tr>`;
     const hit=actual&&pred===actual;
-    const pts=!actual?'<span class="pend">－</span>':(hit?'<span class="hit">+10</span>':'<span class="miss">0</span>');
-    return `<tr><td>${name}</td><td>${teamFlag(pred)} ${pred}</td><td>${actual?teamFlag(actual)+' '+actual:'<span class="pend">未定</span>'}</td><td>${pts}</td></tr>`;
+    return `<tr><td>${name}</td><td>${teamFlag(pred)} ${pred}</td><td>${actual?teamFlag(actual)+' '+actual:'<span class="pend">未定</span>'}</td><td>${!actual?'<span class="pend">－</span>':hit?'<span class="hit">+10</span>':'<span class="miss">0</span>'}</td></tr>`;
   }).join('');
 }
 
 // ==================== 日程 ====================
 function renderSchedule() {
   const sections = [
-    {
-      title:'📌 予想の締切',
-      matches:[
-        {date:'6/11（木）',teams:'予想締切①：ベスト16 + ボーナス予想',venue:'大会開幕前までに入力',round:'締切',cls:'round-final'},
-        {date:'7/10（金）',teams:'予想締切②：ベスト4予想',venue:'ラウンド16開始前までに入力',round:'締切',cls:'round-r16'},
-        {date:'7/20（月）',teams:'予想締切③：優勝予想（本命）',venue:'準決勝開始前までに入力',round:'締切',cls:'round-sf'},
-      ]
-    },
-    {
-      title:'🔵 グループステージ',
-      matches:[
-        {date:'6/11（木）',teams:'開幕戦：メキシコ vs TBD',venue:'アステカ、メキシコシティ',round:'グループ',cls:'round-group'},
-        {date:'6/11 〜 7/2',teams:'グループステージ 全試合',venue:'アメリカ・カナダ・メキシコ 各都市',round:'グループ',cls:'round-group'},
-        {date:'7/2（木）',teams:'グループステージ 最終節',venue:'各会場',round:'グループ',cls:'round-group'},
-      ]
-    },
-    {
-      title:'🟠 ラウンド32（ベスト32）',
-      matches:[
-        {date:'7/4（土）〜 7/7（火）',teams:'ラウンド32 全試合',venue:'各会場',round:'R32',cls:'round-r32'},
-      ]
-    },
-    {
-      title:'🟡 ラウンド16（ベスト16）',
-      matches:[
-        {date:'7/10（金）〜 7/13（月）',teams:'ラウンド16 全試合',venue:'各会場',round:'R16',cls:'round-r16'},
-      ]
-    },
-    {
-      title:'🟢 準々決勝（ベスト8）',
-      matches:[
-        {date:'7/17（金）〜 7/18（土）',teams:'準々決勝 4試合',venue:'各会場',round:'QF',cls:'round-qf'},
-      ]
-    },
-    {
-      title:'🔴 準決勝（ベスト4）',
-      matches:[
-        {date:'7/21（火）',teams:'準決勝 第1試合',venue:'MetLife Stadium, NJ',round:'SF',cls:'round-sf'},
-        {date:'7/22（水）',teams:'準決勝 第2試合',venue:'AT&T Stadium, Dallas',round:'SF',cls:'round-sf'},
-      ]
-    },
-    {
-      title:'🏆 決勝',
-      matches:[
-        {date:'7/25（土）',teams:'3位決定戦',venue:'各会場',round:'3位',cls:'round-qf'},
-        {date:'7/26（日）',teams:'🏆 決勝',venue:'MetLife Stadium, East Rutherford, NJ',round:'決勝',cls:'round-final'},
-      ]
-    },
+    { title:'📌 予想の締切', matches:[
+      {date:'6/11（木）',teams:'締切①：グループ勝者予想 + ボーナス予想',venue:'大会開幕前までに入力',round:'締切',cls:'round-final'},
+      {date:'7/10（金）',teams:'締切②：ベスト4予想',venue:'ラウンド16開始前までに入力',round:'締切',cls:'round-r16'},
+      {date:'7/20（月）',teams:'締切③：優勝予想（本命）',venue:'準決勝開始前までに入力',round:'締切',cls:'round-sf'},
+    ]},
+    { title:'🔵 グループステージ', matches:[
+      {date:'6/11（木）',teams:'開幕戦：メキシコ vs TBD',venue:'アステカ、メキシコシティ',round:'グループ',cls:'round-group'},
+      {date:'6/11 〜 7/2',teams:'グループステージ 全試合（12グループ）',venue:'アメリカ・カナダ・メキシコ 各都市',round:'グループ',cls:'round-group'},
+      {date:'7/2（木）',teams:'グループステージ 最終節',venue:'各会場',round:'グループ',cls:'round-group'},
+    ]},
+    { title:'🟠 ラウンド32（ベスト32）', matches:[
+      {date:'7/4（土）〜 7/7（火）',teams:'ラウンド32 全試合',venue:'各会場',round:'R32',cls:'round-r32'},
+    ]},
+    { title:'🟡 ラウンド16（ベスト16）', matches:[
+      {date:'7/10（金）〜 7/13（月）',teams:'ラウンド16 全試合',venue:'各会場',round:'R16',cls:'round-r16'},
+    ]},
+    { title:'🟢 準々決勝（ベスト8）', matches:[
+      {date:'7/17（金）〜 7/18（土）',teams:'準々決勝 4試合',venue:'各会場',round:'QF',cls:'round-qf'},
+    ]},
+    { title:'🔴 準決勝（ベスト4）', matches:[
+      {date:'7/21（火）',teams:'準決勝 第1試合',venue:'MetLife Stadium, NJ',round:'SF',cls:'round-sf'},
+      {date:'7/22（水）',teams:'準決勝 第2試合',venue:'AT&T Stadium, Dallas',round:'SF',cls:'round-sf'},
+    ]},
+    { title:'🏆 決勝', matches:[
+      {date:'7/25（土）',teams:'3位決定戦',venue:'各会場',round:'3位',cls:'round-qf'},
+      {date:'7/26（日）',teams:'🏆 決勝',venue:'MetLife Stadium, East Rutherford, NJ',round:'決勝',cls:'round-final'},
+    ]},
   ];
-
-  const container = document.getElementById('schedule-content');
-  container.innerHTML = sections.map(s=>`
-    <div class="schedule-section">
-      <h3>${s.title}</h3>
-      ${s.matches.map(m=>`
-        <div class="match-row">
-          <div class="match-date">${m.date}</div>
-          <div class="match-teams">${m.teams}</div>
-          <div class="match-venue">${m.venue}</div>
-          <span class="match-round ${m.cls}">${m.round}</span>
-        </div>
-      `).join('')}
-    </div>
-  `).join('');
-}
-
-// ==================== テンプレート生成 ====================
-function generateTemplate() {
-  const teams16 = TEAMS.map((t,i)=>`  ${String(i+1).padStart(2,'0')}. ${t.f} ${t.n}`).join('\n');
-  const text = `⚽ W杯2026 Akacello予想シート
-━━━━━━━━━━━━━━━━━━━━
-📅 締切：6/11（木）大会開幕前
-
-【① ベスト16予想】残ると思う16チームを選んでKeiに送ってください
-
-${teams16}
-
-▼ 選んだ16チームを書いてください（番号でもチーム名でもOK）:
-1.
-2.
-3.
-4.
-5.
-6.
-7.
-8.
-9.
-10.
-11.
-12.
-13.
-14.
-15.
-16.
-
-【⭐ ボーナス予想（任意）】優勝国を予想（的中で+3点）
-優勝予想:
-
-━━━━━━━━━━━━━━━━━━━━
-📅 締切：7/10（金）ベスト16開始前
-
-【② ベスト4予想】準決勝に残る4チームを選んでください
-1.
-2.
-3.
-4.
-
-━━━━━━━━━━━━━━━━━━━━
-📅 締切：7/20（月）準決勝前
-
-【③ 優勝予想（本命）】1チームだけ（的中で10点）
-優勝:
-`;
-  document.getElementById('template-text').value = text;
-}
-
-function copyTemplate() {
-  const ta = document.getElementById('template-text');
-  navigator.clipboard.writeText(ta.value).then(()=>{
-    const msg = document.getElementById('copy-msg');
-    msg.style.display='block';
-    setTimeout(()=>msg.style.display='none',2000);
-  });
+  document.getElementById('schedule-content').innerHTML = sections.map(s=>`
+    <div class="schedule-section"><h3>${s.title}</h3>
+    ${s.matches.map(m=>`<div class="match-row">
+      <div class="match-date">${m.date}</div>
+      <div class="match-teams">${m.teams}</div>
+      <div class="match-venue">${m.venue}</div>
+      <span class="match-round ${m.cls}">${m.round}</span>
+    </div>`).join('')}</div>`).join('');
 }
 
 // ==================== ビュー切替 ====================
@@ -759,17 +783,18 @@ function showView(id, btn) {
   if(id==='compare') renderCompare();
   if(id==='scores') renderScores();
   if(id==='schedule') renderSchedule();
-  if(id==='predict') generateTemplate();
+  if(id==='predict') updateTemplate();
 }
 
 // ==================== 初期化 ====================
 loadState();
-renderGrid('b16-grid','b16');
+renderB16Grid(curPlayer.b16);
 renderGrid('b4-grid','b4');
 renderGrid('champ-grid','champ');
 renderGrid('rb16-grid','b16',true);
 renderGrid('rb4-grid','b4',true);
 renderGrid('rchamp-grid','champ',true);
+updateTemplate();
 </script>
 </body>
 </html>
