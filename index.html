@@ -125,7 +125,6 @@
   <button class="active" onclick="showView('rules',this)">📋 ルール</button>
   <button onclick="showView('predict',this)">📝 予想入力</button>
   <button onclick="showView('compare',this)">👀 予想比較</button>
-  <button onclick="showView('results',this)">🏆 結果入力</button>
   <button onclick="showView('scores',this)">📊 スコア</button>
   <button onclick="showView('schedule',this)">📅 日程</button>
 </nav>
@@ -281,29 +280,6 @@
   <div class="compare-grid" id="compare-grid"></div>
 </div>
 
-<!-- ============ 結果入力 ============ -->
-<div id="results" class="view">
-  <div class="info-box">⚠️ 大会終了後、実際の結果をここに入力してください。採点に使われます。</div>
-
-  <div class="card">
-    <h3>🔵 実際のベスト16</h3>
-    <div class="count-line">選択数：<span id="rb16-count" class="badge">0 / 16</span></div>
-    <div class="team-grid" id="rb16-grid"></div>
-  </div>
-  <div class="card">
-    <h3>🟡 実際のベスト4</h3>
-    <div class="count-line">選択数：<span id="rb4-count" class="badge">0 / 4</span></div>
-    <div class="team-grid" id="rb4-grid"></div>
-  </div>
-  <div class="card">
-    <h3>🔴 実際の優勝チーム</h3>
-    <div class="team-grid" id="rchamp-grid"></div>
-  </div>
-
-  <button class="save-btn" onclick="saveResults()">💾 結果を保存する</button>
-  <div class="msg" id="result-msg">✅ 結果を保存しました！</div>
-</div>
-
 <!-- ============ スコア ============ -->
 <div id="scores" class="view">
   <div class="score-board" id="score-board"></div>
@@ -363,15 +339,21 @@ const TEAMS = GROUPS.flatMap(g => g.teams);
 function teamFlag(name) { return TEAMS.find(t=>t.n===name)?.f||''; }
 function teamGroup(name) { return GROUPS.find(g=>g.teams.some(t=>t.n===name))?.g||''; }
 
-const LIMITS = {b16:12, b4:4, champ:1}; // b16は12グループ×1チーム
+const LIMITS = {b16:12, b4:4, champ:1};
 const POINTS = {b16:1, b4:3, champ:10, bonus:3};
+
+// ==================== 結果データ（Claudeが大会進行に合わせて更新） ====================
+const RESULTS = {
+  b16:   [], // ベスト16通過チーム（確定後にClaudeが入力）
+  b4:    [], // ベスト4チーム（確定後にClaudeが入力）
+  champ: [], // 優勝チーム（確定後にClaudeが入力）
+};
 
 let state = {
   predictions: {
     kei:      {b16:[], bonus:null, b4:[], champ:[]},
     akacello: {b16:[], bonus:null, b4:[], champ:[]},
   },
-  results: {b16:[], b4:[], champ:[]},
 };
 
 let curPlayer = {b16:'kei', b4:'kei', champ:'kei'};
@@ -491,27 +473,27 @@ function renderGrid(gridId, stage, isResult=false) {
   const grid = document.getElementById(gridId);
   const limit = LIMITS[stage];
   const player = isResult ? null : curPlayer[stage];
-  const selected = isResult ? state.results[stage] : state.predictions[player][stage];
+  const selected = isResult ? RESULTS[stage] : state.predictions[player][stage];
 
   // 予想時：選択肢を結果に基づいて絞る
   let pool;
   if (!isResult) {
     if (stage === 'b4') {
       // ベスト16確定チームのみ
-      if (state.results.b16.length === 0) {
+      if (RESULTS.b16.length === 0) {
         grid.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;padding:12px 0">🔒 ベスト16の結果が確定したら選択できます（「結果入力」タブで登録）</div>';
         updateFlatCount(stage, selected.length, limit, isResult);
         return;
       }
-      pool = TEAMS.filter(t => state.results.b16.includes(t.n));
+      pool = TEAMS.filter(t => RESULTS.b16.includes(t.n));
     } else if (stage === 'champ') {
       // ベスト4確定チームのみ
-      if (state.results.b4.length === 0) {
+      if (RESULTS.b4.length === 0) {
         grid.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;padding:12px 0">🔒 ベスト4の結果が確定したら選択できます（「結果入力」タブで登録）</div>';
         updateFlatCount(stage, selected.length, limit, isResult);
         return;
       }
-      pool = TEAMS.filter(t => state.results.b4.includes(t.n));
+      pool = TEAMS.filter(t => RESULTS.b4.includes(t.n));
     } else {
       pool = TEAMS;
     }
@@ -619,7 +601,6 @@ function copyTemplate() {
 
 // ==================== 保存 ====================
 function savePredictions() { saveState(); flash('save-msg'); }
-function saveResults()     { saveState(); flash('result-msg'); }
 function flash(id) {
   const el=document.getElementById(id);
   el.style.display='block';
@@ -628,7 +609,7 @@ function flash(id) {
 
 // ==================== 比較ビュー ====================
 function renderCompare() {
-  const res = state.results;
+  const res = RESULTS;
   const grid = document.getElementById('compare-grid');
   grid.innerHTML = '';
 
@@ -684,7 +665,7 @@ function renderCompare() {
 // ==================== スコア ====================
 function calcScore(player) {
   const p = state.predictions[player];
-  const r = state.results;
+  const r = RESULTS;
   let s = {b16:0, bonus:0, b4:0, champ:0};
   if(r.b16.length) p.b16.forEach(t=>{if(r.b16.includes(t))s.b16+=POINTS.b16;});
   if(r.champ.length && p.bonus) s.bonus = r.champ[0]===p.bonus ? POINTS.bonus : 0;
@@ -711,13 +692,13 @@ function renderScores() {
   document.getElementById('no-data-msg').style.display = hasPred?'none':'block';
   if(!hasPred) return;
 
-  const actual=state.results.champ[0]||null;
+  const actual=RESULTS.champ[0]||null;
 
   // B16
   document.getElementById('dtb16').style.display='block';
-  const allB16=[...new Set([...state.predictions.kei.b16,...state.predictions.akacello.b16,...state.results.b16])];
+  const allB16=[...new Set([...state.predictions.kei.b16,...state.predictions.akacello.b16,...RESULTS.b16])];
   document.getElementById('tb16').innerHTML = allB16.map(t=>{
-    const act=state.results.b16.includes(t), hasRes=state.results.b16.length>0;
+    const act=RESULTS.b16.includes(t), hasRes=RESULTS.b16.length>0;
     const kp=state.predictions.kei.b16.includes(t), ap=state.predictions.akacello.b16.includes(t);
     const g = teamGroup(t);
     const res=hasRes?(act?'<span class="hit">✅ 通過</span>':'<span class="miss">❌ 敗退</span>'):'<span class="pend">未定</span>';
@@ -737,9 +718,9 @@ function renderScores() {
 
   // B4
   document.getElementById('dtb4').style.display='block';
-  const allB4=[...new Set([...state.predictions.kei.b4,...state.predictions.akacello.b4,...state.results.b4])];
+  const allB4=[...new Set([...state.predictions.kei.b4,...state.predictions.akacello.b4,...RESULTS.b4])];
   document.getElementById('tb4').innerHTML = allB4.map(t=>{
-    const act=state.results.b4.includes(t), hasRes=state.results.b4.length>0;
+    const act=RESULTS.b4.includes(t), hasRes=RESULTS.b4.length>0;
     const kp=state.predictions.kei.b4.includes(t), ap=state.predictions.akacello.b4.includes(t);
     const res=hasRes?(act?'<span class="hit">✅ 残留</span>':'<span class="miss">❌ 敗退</span>'):'<span class="pend">未定</span>';
     const kl=!kp?'－':(hasRes?(act?'<span class="hit">+3</span>':'<span class="miss">×</span>'):'<span class="pend">？</span>');
@@ -815,9 +796,6 @@ loadState();
 renderB16Grid(curPlayer.b16);
 renderGrid('b4-grid','b4');
 renderGrid('champ-grid','champ');
-renderGrid('rb16-grid','b16',true);
-renderGrid('rb4-grid','b4',true);
-renderGrid('rchamp-grid','champ',true);
 updateTemplate();
 </script>
 </body>
