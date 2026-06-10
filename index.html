@@ -396,7 +396,7 @@ const AKACELLO_SEED = {
 
 const KEI_SCORER_SEED = {
   scorer_early: 'アルバレス', scorer_early_flag: '🇦🇷',
-  scorer: 'ハヴァーツ', scorer_flag: '🇩🇪',
+  scorer: '', scorer_flag: '',
 };
 
 const KEI_B24_SEED = ['メキシコ','チェコ','スイス','カタール','ブラジル','モロッコ','アメリカ','トルコ','ドイツ','エクアドル','日本','スウェーデン','ベルギー','イラン','スペイン','ウルグアイ','フランス','ノルウェー','アルゼンチン','オーストリア','ポルトガル','コロンビア','イングランド','クロアチア'];
@@ -422,8 +422,8 @@ function loadState() {
   const ks = state.predictions.kei;
   if(!ks.scorer_early)       ks.scorer_early       = KEI_SCORER_SEED.scorer_early;
   if(!ks.scorer_early_flag)  ks.scorer_early_flag  = KEI_SCORER_SEED.scorer_early_flag;
-  if(!ks.scorer)             ks.scorer             = KEI_SCORER_SEED.scorer;
-  if(!ks.scorer_flag)        ks.scorer_flag        = KEI_SCORER_SEED.scorer_flag;
+  // ③得点王（締切7/10）は旧シード値「ハヴァーツ」が入っていた場合はクリア
+  if(ks.scorer === 'ハヴァーツ' && ks.scorer_flag === '🇩🇪') { ks.scorer = ''; ks.scorer_flag = ''; }
   saveState();
 }
 function saveState() { localStorage.setItem('wc2026v6', JSON.stringify(state)); }
