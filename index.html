@@ -276,6 +276,14 @@
 <!-- 結果・スコア（統合） -->
 <div id="result" class="view">
 
+  <!-- 結果取得ボタン -->
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+    <button id="fetch-btn" onclick="fetchResults()" style="display:flex;align-items:center;gap:6px;padding:10px 18px;background:var(--primary);border:1.5px solid var(--border);border-radius:10px;color:var(--text);cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s">
+      🔄 最新結果を取得
+    </button>
+    <span id="fetch-msg" style="font-size:0.8rem;color:var(--muted)"></span>
+  </div>
+
   <div class="score-board" id="score-board"></div>
   <div class="compare-grid" id="compare-grid"></div>
 
@@ -730,6 +738,71 @@ function renderCompare() {
     col.innerHTML = html;
     grid.appendChild(col);
   });
+}
+
+// ESPN英語→日本語チーム名マッピング
+const EN_TO_JA = {
+  'Mexico':'メキシコ','South Korea':'韓国','Korea Republic':'韓国','South Africa':'南アフリカ','Czech Republic':'チェコ','Czechia':'チェコ',
+  'Canada':'カナダ','Switzerland':'スイス','Qatar':'カタール','Bosnia and Herzegovina':'ボスニア','Bosnia & Herzegovina':'ボスニア',
+  'Brazil':'ブラジル','Morocco':'モロッコ','Haiti':'ハイチ','Scotland':'スコットランド',
+  'United States':'アメリカ','USA':'アメリカ','Paraguay':'パラグアイ','Australia':'オーストラリア','Turkey':'トルコ',
+  'Germany':'ドイツ','Curaçao':'キュラソー',"Curaçao":'キュラソー',"Côte d'Ivoire":'コートジボワール','Ivory Coast':'コートジボワール','Ecuador':'エクアドル',
+  'Netherlands':'オランダ','Japan':'日本','Sweden':'スウェーデン','Tunisia':'チュニジア',
+  'Belgium':'ベルギー','Egypt':'エジプト','Iran':'イラン','New Zealand':'ニュージーランド',
+  'Spain':'スペイン','Cape Verde':'カーボベルデ','Saudi Arabia':'サウジアラビア','Uruguay':'ウルグアイ',
+  'France':'フランス','Senegal':'セネガル','Iraq':'イラク','Norway':'ノルウェー',
+  'Argentina':'アルゼンチン','Algeria':'アルジェリア','Austria':'オーストリア','Jordan':'ヨルダン',
+  'Portugal':'ポルトガル','Uzbekistan':'ウズベキスタン','Colombia':'コロンビア','Congo DR':'コンゴ','DR Congo':'コンゴ',
+  'England':'イングランド','Croatia':'クロアチア','Ghana':'ガーナ','Panama':'パナマ',
+};
+
+async function fetchResults() {
+  const btn = document.getElementById('fetch-btn');
+  const msg = document.getElementById('fetch-msg');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ 取得中...';
+  msg.textContent = '';
+
+  try {
+    // ESPN公開API - WC2026グループ順位表
+    const r = await fetch('https://site.api.espn.com/apis/v2/sports/soccer/fifa.world/standings?season=2026', {cache:'no-store'});
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+
+    const newB24 = [];
+    const groups = data.children || data.standings?.entries || [];
+
+    // グループごとに上位2チームを取得
+    (data.children || []).forEach(group => {
+      const entries = group.standings?.entries || [];
+      // 順位でソート（rank または position）
+      const sorted = entries.sort((a,b) => (a.stats?.find(s=>s.name==='rank')?.value||99) - (b.stats?.find(s=>s.name==='rank')?.value||99));
+      sorted.slice(0,2).forEach(e => {
+        const enName = e.team?.displayName || e.team?.name || '';
+        const jaName = EN_TO_JA[enName];
+        if (jaName && !newB24.includes(jaName)) newB24.push(jaName);
+      });
+    });
+
+    if (newB24.length > 0) {
+      RESULTS.b24 = newB24;
+      saveResults();
+      renderCompare();
+      renderScores();
+      renderHome();
+      msg.style.color = 'var(--green)';
+      msg.textContent = `✅ ${newB24.length}チーム更新 (${new Date().toLocaleTimeString('ja-JP')})`;
+    } else {
+      msg.style.color = 'var(--muted)';
+      msg.textContent = '大会データ未開始、または取得データなし';
+    }
+  } catch(e) {
+    msg.style.color = 'var(--red)';
+    msg.textContent = '取得失敗: ' + e.message;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🔄 最新結果を取得';
+  }
 }
 
 // スコア
