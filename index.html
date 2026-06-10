@@ -387,6 +387,8 @@ const KEI_SCORER_SEED = {
   scorer: 'ハヴァーツ', scorer_flag: '🇩🇪',
 };
 
+const KEI_B24_SEED = ['メキシコ','チェコ','スイス','カタール','ブラジル','モロッコ','アメリカ','トルコ','ドイツ','エクアドル','日本','スウェーデン','ベルギー','イラン','スペイン','ウルグアイ','フランス','ノルウェー','アルゼンチン','オーストリア','ポルトガル','コロンビア','イングランド','クロアチア'];
+
 function loadState() {
   try { const s = localStorage.getItem('wc2026v6'); if(s) state = JSON.parse(s); } catch(e){}
   ['kei','akacello'].forEach(p => {
@@ -399,6 +401,10 @@ function loadState() {
   if(state.predictions.akacello.b24.length === 0) {
     state.predictions.akacello = {...AKACELLO_SEED};
     saveState();
+  }
+  // KeiのB24データが消えていたら復元
+  if(!state.predictions.kei.b24 || state.predictions.kei.b24.length === 0) {
+    state.predictions.kei.b24 = [...KEI_B24_SEED];
   }
   // Keiの得点王データを個別にフォールバック（名前だけあって国旗がないケースもカバー）
   const ks = state.predictions.kei;
