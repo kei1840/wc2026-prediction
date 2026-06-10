@@ -46,7 +46,6 @@
   .group-section { margin-bottom: 12px; }
   .group-header { font-size: 0.75rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; padding: 4px 0 6px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
   .group-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-  @media(max-width:520px) { .group-grid { grid-template-columns: repeat(2, 1fr); } }
 
   .tbtn { padding: 7px 9px; border-radius: 8px; border: 1.5px solid var(--border); background: rgba(255,255,255,0.03); color: var(--text); cursor: pointer; font-size: 0.8rem; text-align: left; transition: all 0.15s; display: flex; align-items: center; gap: 5px; }
   .tbtn .flag { font-size: 1.05rem; }
@@ -75,15 +74,11 @@
   .score-card .breakdown { margin-top: 12px; font-size: 0.8rem; color: var(--muted); line-height: 2; }
   .score-card .breakdown span { color: var(--text); font-weight: 600; }
 
-  .dtable { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 14px; }
-  .dtable .thead { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 600; }
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-  th { padding: 9px 14px; text-align: left; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); }
-  td { padding: 8px 14px; border-bottom: 1px solid rgba(42,74,106,0.4); }
+  th { padding: 9px 14px; text-align: left; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { padding: 8px 14px; border-bottom: 1px solid rgba(42,74,106,0.4); vertical-align: top; }
   tr:last-child td { border-bottom: none; }
-  .hit { color: var(--green); }
-  .miss { color: var(--red); }
-  .pend { color: var(--muted); }
 
   .schedule-section { margin-bottom: 20px; }
   .schedule-section h3 { font-size: 0.88rem; color: var(--accent); margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
@@ -101,9 +96,22 @@
 
   .note { background: rgba(232,200,74,0.06); border: 1px solid rgba(232,200,74,0.2); border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
 
-  @media(max-width:580px) {
+  @media(max-width:600px) {
+    .view { padding: 12px; }
+    .card { padding: 14px; }
     .compare-grid, .score-board { grid-template-columns: 1fr; }
-    .team-grid { grid-template-columns: repeat(auto-fill, minmax(108px,1fr)); }
+    .team-grid { grid-template-columns: repeat(auto-fill, minmax(100px,1fr)); }
+    .score-card .total { font-size: 2.4rem; }
+    .score-card .breakdown { font-size: 0.82rem; }
+    .score-card { padding: 16px; }
+    .match-row { flex-wrap: wrap; gap: 4px; padding: 8px 10px; }
+    .match-venue { display: none; }
+    header h1 { font-size: 1.05rem; }
+    nav button { font-size: 0.7rem; padding: 11px 4px; min-width: 56px; }
+    .tbtn { font-size: 0.78rem; padding: 6px 7px; }
+    .group-grid { grid-template-columns: repeat(2, 1fr); }
+    .cplayer h3 { font-size: 0.88rem; }
+    .stage-label { margin: 10px 0 5px; }
   }
 </style>
 </head>
@@ -133,7 +141,7 @@
   <div class="card">
     <h3>📌 ルール</h3>
     <p class="sub">Keiとakacelloが3ステージで予想。点数が高い方が勝ち。</p>
-    <table>
+    <div class="table-wrap"><table>
       <thead>
         <tr><th>ステージ</th><th>内容</th><th>締切</th><th>配点</th></tr>
       </thead>
@@ -169,7 +177,7 @@
           <td>的中 <strong>5点</strong></td>
         </tr>
       </tbody>
-    </table>
+    </table></div>
     <p style="margin-top:12px;font-size:0.8rem;color:var(--muted)">合計最大：<strong style="color:var(--text)">65点</strong>（24 + 7 + 24 + 5 + 5）</p>
   </div>
 
@@ -516,7 +524,7 @@ function updateScorerEarlyBadge() {
   if (!el) return;
   const p = state.predictions[curPlayer.b24];
   const val = p.scorer_early, flag = p.scorer_early_flag || '';
-  el.textContent = val ? `${flag} ${val}`.trim() : '未入力';
+  el.textContent = val ? `${val} ${flag}`.trim() : '未入力';
   el.className = 'badge' + (val ? ' ok' : '');
 }
 function renderScorerEarlyInput(player) {
@@ -563,7 +571,7 @@ function updateScorerBadge() {
   if (!el) return;
   const p = state.predictions[curPlayer.scorer];
   const val = p.scorer, flag = p.scorer_flag || '';
-  el.textContent = val ? `${flag} ${val}`.trim() : '未入力';
+  el.textContent = val ? `${val} ${flag}`.trim() : '未入力';
   el.className = 'badge' + (val ? ' ok' : '');
 }
 function renderScorerInput() {
@@ -589,9 +597,9 @@ function updateTemplate() {
     const sels = g.teams.filter(t => p.b24.includes(t.n));
     return `  G${g.g}: ${sels.length ? sels.map(t=>t.f+' '+t.n).join('・') : '（未選択）'}`;
   }).join('\n');
-  const scorerEarly = p.scorer_early ? `${p.scorer_early_flag||''} ${p.scorer_early}`.trim() : '（未入力）';
+  const scorerEarly = p.scorer_early ? `${p.scorer_early}${p.scorer_early_flag?' '+p.scorer_early_flag:''}` : '（未入力）';
   const b8Lines = p.b8.length > 0 ? p.b8.map((t,i) => `  ${i+1}. ${teamFlag(t)} ${t}`).join('\n') : '  （未選択）';
-  const scorer = p.scorer ? `${p.scorer_flag||''} ${p.scorer}`.trim() : '（未入力）';
+  const scorer = p.scorer ? `${p.scorer}${p.scorer_flag?' '+p.scorer_flag:''}` : '（未入力）';
   const champ = p.champ[0] ? `${teamFlag(p.champ[0])} ${p.champ[0]}` : '（未選択）';
 
   const ta = document.getElementById('template-text');
@@ -674,8 +682,8 @@ function renderCompare() {
     if (!p.scorer_early) html += `<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
     else {
       const cls = !RESULTS.scorer ? 'pending' : (p.scorer_early === RESULTS.scorer ? 'hit' : 'miss');
-      const ef = p.scorer_early_flag || '⚽';
-      html += `<span class="team-pill ${cls}">${ef} ${p.scorer_early} ${icon(cls)}</span>`;
+      const ef = p.scorer_early_flag || '';
+      html += `<span class="team-pill ${cls}">${p.scorer_early}${ef?' '+ef:''} ${icon(cls)}</span>`;
     }
 
     html += `<div class="stage-label">② ベスト8（${p.b8.length}/8）</div>`;
@@ -687,8 +695,8 @@ function renderCompare() {
     else {
       const scorerResult = RESULTS.scorer || null;
       const scorerCls = !scorerResult ? 'pending' : (p.scorer === scorerResult ? 'hit' : 'miss');
-      const sf = p.scorer_flag || '⚽';
-      html += `<span class="team-pill ${scorerCls}">${sf} ${p.scorer} ${icon(scorerCls)}</span>`;
+      const sf = p.scorer_flag || '';
+      html += `<span class="team-pill ${scorerCls}">${p.scorer}${sf?' '+sf:''} ${icon(scorerCls)}</span>`;
     }
 
     html += `<div class="stage-label">④ 優勝予想</div>`;
@@ -771,7 +779,7 @@ function renderHome() {
   const statusLines = [
     `グループ突破確定：${RESULTS.b24.length}/24チーム`,
     `ベスト8確定：${RESULTS.b8.length}/8チーム`,
-    `得点王：${RESULTS.scorer ? (RESULTS.scorer_flag||'')+ ' ' +RESULTS.scorer : '未確定'}`,
+    `得点王：${RESULTS.scorer ? RESULTS.scorer+(RESULTS.scorer_flag?' '+RESULTS.scorer_flag:'') : '未確定'}`,
     `優勝：${champName ? teamFlag(champName)+' '+champName : '未確定'}`,
   ];
 
