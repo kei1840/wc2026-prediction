@@ -791,8 +791,8 @@ async function fetchResults() {
   msg.textContent = '';
 
   try {
-    // 開幕前チェック（2026-06-19開幕）
-    if (new Date() < new Date('2026-06-19')) {
+    // 開幕前チェック（6/11開幕済み）
+    if (false) {
       msg.style.color = 'var(--muted)';
       msg.textContent = '⏳ 大会は6/19開幕予定。開幕後に取得してください';
       btn.disabled = false;
@@ -965,9 +965,9 @@ function showView(id, btn) {
   btn.classList.add('active');
   if (id === 'home') renderHome();
   if (id === 'result') {
-    // 開幕（6/19）以降のみ取得ボタン表示
+    // 開幕済み（6/11〜）：常に表示
     const wrap = document.getElementById('fetch-wrap');
-    if (wrap) wrap.style.display = new Date() >= new Date('2026-06-19') ? 'flex' : 'none';
+    if (wrap) wrap.style.display = 'flex';
     renderCompare(); renderScores();
   }
   if (id === 'schedule') renderSchedule();
