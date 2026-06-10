@@ -617,13 +617,18 @@ function renderCompare() {
     if (!p.b24.length) {
       html += `<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
     } else {
+      html += `<table style="width:100%;border-collapse:collapse;font-size:0.8rem">`;
       GROUPS.forEach(g => {
         const sels = g.teams.filter(t => p.b24.includes(t.n));
-        sels.forEach(sel => {
+        if (!sels.length) return;
+        const teams = sels.map(sel => {
           const cls = pillClass(sel.n, 'b24');
-          html += `<span class="team-pill ${cls}"><small style="opacity:.5">G${g.g}</small> ${sel.f} ${sel.n} ${icon(cls)}</span>`;
-        });
+          const color = cls==='hit' ? 'var(--green)' : cls==='miss' ? '#e57373' : 'var(--text)';
+          return `<span style="color:${color}">${sel.f} ${sel.n} ${icon(cls)}</span>`;
+        }).join('<span style="color:var(--border)"> ／ </span>');
+        html += `<tr><td style="color:var(--accent);font-weight:700;padding:3px 8px 3px 0;white-space:nowrap;width:2em">G${g.g}</td><td style="padding:3px 0">${teams}</td></tr>`;
       });
+      html += `</table>`;
     }
 
     html += `<div class="stage-label">⭐ 得点王ボーナス</div>`;
