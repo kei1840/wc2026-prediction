@@ -125,7 +125,7 @@
 <div id="rules" class="view active">
   <div class="card">
     <h3>📌 ルール</h3>
-    <p class="sub">KeiとAkacelloが3ステージで予想。点数が高い方が勝ち。</p>
+    <p class="sub">Keiとakacelloが3ステージで予想。点数が高い方が勝ち。</p>
     <table>
       <thead>
         <tr><th>ステージ</th><th>内容</th><th>締切</th><th>配点</th></tr>
@@ -167,17 +167,17 @@
   </div>
 
   <div class="card">
-    <h3>📱 Akacelloの予想の送り方</h3>
-    <p class="sub" style="margin-bottom:0">「予想入力」タブでAkacelloタブを選んで予想を入力 → テンプレートが自動生成されるので、コピーしてKeiにLINEで送る。Keiが代わりに保存する。</p>
+    <h3>📱 akacelloの予想の送り方</h3>
+    <p class="sub" style="margin-bottom:0">「予想入力」タブでakacelloタブを選んで予想を入力 → テンプレートが自動生成されるので、コピーしてKeiにLINEで送る。Keiが代わりに保存する。</p>
   </div>
 </div>
 
 <!-- 予想入力 -->
 <div id="predict" class="view">
-  <!-- Akacello用テンプレ -->
+  <!-- akacello用テンプレ -->
   <div class="card">
-    <h3>📱 Akacello → Kei 予想テンプレ</h3>
-    <p class="sub">Akacelloタブで予想を選ぶと自動でテキストが更新されます。コピーしてKeiにLINEで送ってください。</p>
+    <h3>📱 akacello → Kei 予想テンプレ</h3>
+    <p class="sub">akacelloタブで予想を選ぶと自動でテキストが更新されます。コピーしてKeiにLINEで送ってください。</p>
     <textarea id="template-text" style="width:100%;height:200px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.78rem;padding:12px;resize:none;font-family:monospace;line-height:1.6" readonly></textarea>
     <button class="save-btn" style="margin-top:8px" onclick="copyTemplate()">📋 コピーしてLINEで送る</button>
     <div id="copy-msg" style="text-align:center;margin-top:8px;font-size:0.85rem;color:var(--green);display:none">✅ コピーしました！</div>
@@ -188,7 +188,7 @@
     <h3>① グループ突破予想 <small style="color:var(--muted);font-weight:400">締切：6/11　各グループから2チーム選択</small></h3>
     <div class="player-tabs">
       <button class="ptab active" onclick="switchPlayer('b24','kei',this)">Kei</button>
-      <button class="ptab" onclick="switchPlayer('b24','akacello',this)">Akacello</button>
+      <button class="ptab" onclick="switchPlayer('b24','akacello',this)">akacello</button>
     </div>
     <div class="count-line">選択：<span id="b24-count" class="badge">0 / 24</span></div>
     <div id="b24-grid"></div>
@@ -211,7 +211,7 @@
     <h3>② ベスト8予想 <small style="color:var(--muted);font-weight:400">締切：7/17</small></h3>
     <div class="player-tabs">
       <button class="ptab active" onclick="switchPlayer('b8','kei',this)">Kei</button>
-      <button class="ptab" onclick="switchPlayer('b8','akacello',this)">Akacello</button>
+      <button class="ptab" onclick="switchPlayer('b8','akacello',this)">akacello</button>
     </div>
     <div class="count-line">選択：<span id="b8-count" class="badge">0 / 8</span></div>
     <div class="team-grid" id="b8-grid"></div>
@@ -222,7 +222,7 @@
     <h3>③ 得点王予想 <small style="color:var(--muted);font-weight:400">締切：7/10　選手名を入力</small></h3>
     <div class="player-tabs">
       <button class="ptab active" onclick="switchScorer('kei',this)">Kei</button>
-      <button class="ptab" onclick="switchScorer('akacello',this)">Akacello</button>
+      <button class="ptab" onclick="switchScorer('akacello',this)">akacello</button>
     </div>
     <div style="display:flex;gap:8px;align-items:center">
       <input id="scorer-input" type="text" placeholder="例：ムバッペ、ネイマール、三笘..." maxlength="40"
@@ -238,7 +238,7 @@
     <h3>④ 優勝予想 <small style="color:var(--muted);font-weight:400">締切：7/25</small></h3>
     <div class="player-tabs">
       <button class="ptab active" onclick="switchPlayer('champ','kei',this)">Kei</button>
-      <button class="ptab" onclick="switchPlayer('champ','akacello',this)">Akacello</button>
+      <button class="ptab" onclick="switchPlayer('champ','akacello',this)">akacello</button>
     </div>
     <div class="count-line">選択：<span id="champ-count" class="badge">未選択</span></div>
     <div class="team-grid" id="champ-grid"></div>
@@ -256,7 +256,7 @@
 
   <div class="dtable" id="dtb24" style="display:none;margin-top:16px">
     <div class="thead">① グループ突破（各1点）</div>
-    <table><thead><tr><th>チーム</th><th>結果</th><th>Kei</th><th>Akacello</th></tr></thead>
+    <table><thead><tr><th>チーム</th><th>結果</th><th>Kei</th><th>akacello</th></tr></thead>
     <tbody id="tb24"></tbody></table>
   </div>
 
@@ -268,7 +268,7 @@
 
   <div class="dtable" id="dtb8" style="display:none">
     <div class="thead">② ベスト8（各3点）</div>
-    <table><thead><tr><th>チーム</th><th>結果</th><th>Kei</th><th>Akacello</th></tr></thead>
+    <table><thead><tr><th>チーム</th><th>結果</th><th>Kei</th><th>akacello</th></tr></thead>
     <tbody id="tb8"></tbody></table>
   </div>
 
@@ -532,7 +532,7 @@ function renderScorerInput() {
   updateScorerBadge();
 }
 
-// テンプレート（Akacelloの予想をリアルタイム反映）
+// テンプレート（akacelloの予想をリアルタイム反映）
 function updateTemplate() {
   const p = state.predictions['akacello'];
   const b24Lines = GROUPS.map(g => {
@@ -546,7 +546,7 @@ function updateTemplate() {
 
   const ta = document.getElementById('template-text');
   if (ta) ta.value =
-`⚽ W杯2026 Akacello予想
+`⚽ W杯2026 akacello予想
 ━━━━━━━━━━━━━━━━━━━━
 【① グループ突破（各グループ2チーム）】締切：6/11
 ${b24Lines}
@@ -600,7 +600,7 @@ function renderCompare() {
     const p = state.predictions[player];
     const col = document.createElement('div');
     col.className = 'cplayer';
-    let html = `<h3>${player === 'kei' ? 'Kei' : 'Akacello'}</h3>`;
+    let html = `<h3>${player === 'kei' ? 'Kei' : 'akacello'}</h3>`;
 
     html += `<div class="stage-label">① グループ突破（${p.b24.length}/24）</div>`;
     if (!p.b24.length) {
@@ -664,7 +664,7 @@ function renderScores() {
     const s = p==='kei' ? ks : as, t = p==='kei' ? kt : at;
     const win = p==='kei' ? kt >= at : at >= kt;
     return `<div class="score-card ${win&&!draw?'winner':''}">
-      <div class="pname">${p==='kei'?'Kei':'Akacello'} ${win&&!draw?'👑':''}</div>
+      <div class="pname">${p==='kei'?'Kei':'akacello'} ${win&&!draw?'👑':''}</div>
       <div class="total">${t}</div>
       <div class="breakdown">グループ突破：<span>${s.b24}点</span><br>⭐得点王ボーナス：<span>${s.scorer_early}点</span><br>ベスト8：<span>${s.b8}点</span><br>得点王：<span>${s.scorer}点</span><br>優勝予想：<span>${s.champ}点</span></div>
     </div>`;
@@ -692,7 +692,7 @@ function renderScores() {
   // Scorer Early
   document.getElementById('dtscorer-early').style.display = 'block';
   document.getElementById('tscorer-early').innerHTML = ['kei','akacello'].map(p => {
-    const pred = state.predictions[p].scorer_early, name = p==='kei'?'Kei':'Akacello';
+    const pred = state.predictions[p].scorer_early, name = p==='kei'?'Kei':'akacello';
     if (!pred) return `<tr><td>${name}</td><td colspan="3" class="pend">未入力</td></tr>`;
     const hit = RESULTS.scorer && pred === RESULTS.scorer;
     return `<tr><td>${name}</td><td>⚽ ${pred}</td><td>${RESULTS.scorer || '<span class="pend">未定</span>'}</td><td>${!RESULTS.scorer ? '<span class="pend">－</span>' : hit ? '<span class="hit">+7</span>' : '<span class="miss">0</span>'}</td></tr>`;
@@ -713,7 +713,7 @@ function renderScores() {
   // Scorer
   document.getElementById('dtscorer').style.display = 'block';
   document.getElementById('tscorer').innerHTML = ['kei','akacello'].map(p => {
-    const pred = state.predictions[p].scorer, name = p==='kei'?'Kei':'Akacello';
+    const pred = state.predictions[p].scorer, name = p==='kei'?'Kei':'akacello';
     if (!pred) return `<tr><td>${name}</td><td colspan="3" class="pend">未入力</td></tr>`;
     const hit = RESULTS.scorer && pred === RESULTS.scorer;
     return `<tr><td>${name}</td><td>⚽ ${pred}</td><td>${RESULTS.scorer || '<span class="pend">未定</span>'}</td><td>${!RESULTS.scorer ? '<span class="pend">－</span>' : hit ? '<span class="hit">+5</span>' : '<span class="miss">0</span>'}</td></tr>`;
@@ -722,7 +722,7 @@ function renderScores() {
   // Champ
   document.getElementById('dtchamp').style.display = 'block';
   document.getElementById('tchamp').innerHTML = ['kei','akacello'].map(p => {
-    const pred = state.predictions[p].champ[0], name = p==='kei'?'Kei':'Akacello';
+    const pred = state.predictions[p].champ[0], name = p==='kei'?'Kei':'akacello';
     if (!pred) return `<tr><td>${name}</td><td colspan="3" class="pend">未入力</td></tr>`;
     const hit = actual && pred === actual;
     return `<tr><td>${name}</td><td>${teamFlag(pred)} ${pred}</td><td>${actual ? teamFlag(actual)+' '+actual : '<span class="pend">未定</span>'}</td><td>${!actual ? '<span class="pend">－</span>' : hit ? '<span class="hit">+5</span>' : '<span class="miss">0</span>'}</td></tr>`;
