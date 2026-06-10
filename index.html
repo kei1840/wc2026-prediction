@@ -191,12 +191,17 @@
 <!-- 予想入力 -->
 <div id="predict" class="view">
   <!-- akacello用テンプレ -->
-  <div class="card">
-    <h3>📱 akacello → Kei 予想テンプレ</h3>
-    <p class="sub">akacelloタブで予想を選ぶと自動でテキストが更新されます。コピーしてKeiにLINEで送ってください。</p>
-    <textarea id="template-text" style="width:100%;height:200px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.78rem;padding:12px;resize:none;font-family:monospace;line-height:1.6" readonly></textarea>
-    <button class="save-btn" style="margin-top:8px" onclick="copyTemplate()">📋 コピーしてLINEで送る</button>
-    <div id="copy-msg" style="text-align:center;margin-top:8px;font-size:0.85rem;color:var(--green);display:none">✅ コピーしました！</div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div onclick="toggleTemplate()" style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none">
+      <span style="font-size:0.95rem;font-weight:700">📱 akacello → Kei 予想テンプレ</span>
+      <span id="tmpl-icon" style="color:var(--muted);font-size:0.8rem;transition:transform 0.2s">▶ 開く</span>
+    </div>
+    <div id="tmpl-body" style="display:none;padding:0 18px 16px">
+      <p class="sub" style="margin-bottom:10px">akacelloタブで予想を選ぶと自動更新。コピーしてKeiにLINEで送ってください。</p>
+      <textarea id="template-text" style="width:100%;height:200px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.78rem;padding:12px;resize:none;font-family:monospace;line-height:1.6" readonly></textarea>
+      <button class="save-btn" style="margin-top:8px" onclick="copyTemplate()">📋 コピーしてLINEで送る</button>
+      <div id="copy-msg" style="text-align:center;margin-top:8px;font-size:0.85rem;color:var(--green);display:none">✅ コピーしました！</div>
+    </div>
   </div>
 
   <!-- ステージ1 -->
@@ -635,6 +640,14 @@ ${b8Lines}
 【④ 優勝予想】締切：7/25（5点）
   ${champ}
 `;
+}
+
+let tmplOpen = false;
+function toggleTemplate() {
+  tmplOpen = !tmplOpen;
+  document.getElementById('tmpl-body').style.display = tmplOpen ? 'block' : 'none';
+  document.getElementById('tmpl-icon').textContent = tmplOpen ? '▼ 閉じる' : '▶ 開く';
+  if (tmplOpen) updateTemplate();
 }
 
 function copyTemplate() {
