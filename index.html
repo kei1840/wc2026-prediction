@@ -144,6 +144,12 @@
           <td>1チーム <strong>3点</strong>（最大24点）</td>
         </tr>
         <tr>
+          <td><strong>　＋得点王ボーナス</strong></td>
+          <td>①と同時に得点王を予想（選手名、任意）</td>
+          <td style="white-space:nowrap;color:var(--accent)">6/11</td>
+          <td>的中 <strong>+3点</strong></td>
+        </tr>
+        <tr>
           <td><strong>③ 得点王予想</strong></td>
           <td>大会得点王の選手名を予想（自由記述）</td>
           <td style="white-space:nowrap;color:var(--accent)">7/10<br><small>R16前</small></td>
@@ -157,7 +163,7 @@
         </tr>
       </tbody>
     </table>
-    <p style="margin-top:12px;font-size:0.8rem;color:var(--muted)">合計最大：<strong style="color:var(--text)">58点</strong>（24 + 24 + 5 + 5）</p>
+    <p style="margin-top:12px;font-size:0.8rem;color:var(--muted)">合計最大：<strong style="color:var(--text)">61点</strong>（24 + 3 + 24 + 5 + 5）</p>
   </div>
 
   <div class="card">
@@ -186,6 +192,17 @@
     </div>
     <div class="count-line">選択：<span id="b24-count" class="badge">0 / 24</span></div>
     <div id="b24-grid"></div>
+
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+      <div class="note" style="margin-bottom:10px">⭐ 得点王ボーナス予想（+3点）：開幕前に予想するお楽しみ枠。的中すれば+3点。</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="scorer-early-input" type="text" placeholder="例：ムバッペ、エンバペ、三笘..." maxlength="40"
+          style="flex:1;padding:10px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:0.9rem;outline:none"
+          oninput="onScorerEarlyInput()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        <button onclick="clearScorerEarly()" style="padding:9px 14px;background:none;border:1.5px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:0.82rem">クリア</button>
+      </div>
+      <div class="count-line" style="margin-top:8px">入力：<span id="scorer-early-badge" class="badge">未入力</span></div>
+    </div>
   </div>
 
   <!-- ステージ2 -->
@@ -242,6 +259,12 @@
     <tbody id="tb24"></tbody></table>
   </div>
 
+  <div class="dtable" id="dtscorer-early" style="display:none">
+    <div class="thead">⭐ 得点王ボーナス予想（+3点）</div>
+    <table><thead><tr><th></th><th>予想</th><th>結果</th><th>点数</th></tr></thead>
+    <tbody id="tscorer-early"></tbody></table>
+  </div>
+
   <div class="dtable" id="dtb8" style="display:none">
     <div class="thead">② ベスト8（各3点）</div>
     <table><thead><tr><th>チーム</th><th>結果</th><th>Kei</th><th>Akacello</th></tr></thead>
@@ -292,16 +315,16 @@ const POINTS = {b24:1, b8:3, champ:5};
 
 // 結果データ（Claudeが大会進行に合わせて更新）
 const RESULTS = {
-  b24:   [],   // グループ突破24チーム（各グループ上位2）
-  b8:    [],   // ベスト8（準々決勝進出8チーム）
-  scorer: '',  // 得点王選手名
-  champ: [],   // 優勝チーム
+  b24:          [],  // グループ突破24チーム（各グループ上位2）
+  b8:           [],  // ベスト8（準々決勝進出8チーム）
+  scorer:       '',  // 得点王選手名（最終）
+  champ:        [],  // 優勝チーム
 };
 
 let state = {
   predictions: {
-    kei:      {b24:[], b8:[], scorer:'', champ:[]},
-    akacello: {b24:[], b8:[], scorer:'', champ:[]},
+    kei:      {b24:[], scorer_early:'', b8:[], scorer:'', champ:[]},
+    akacello: {b24:[], scorer_early:'', b8:[], scorer:'', champ:[]},
   },
 };
 
@@ -309,7 +332,10 @@ let curPlayer = {b24:'kei', b8:'kei', scorer:'kei', champ:'kei'};
 
 function loadState() {
   try { const s = localStorage.getItem('wc2026v6'); if(s) state = JSON.parse(s); } catch(e){}
-  ['kei','akacello'].forEach(p => { if(state.predictions[p].scorer===undefined) state.predictions[p].scorer=''; });
+  ['kei','akacello'].forEach(p => {
+    if(state.predictions[p].scorer===undefined) state.predictions[p].scorer='';
+    if(state.predictions[p].scorer_early===undefined) state.predictions[p].scorer_early='';
+  });
 }
 function saveState() { localStorage.setItem('wc2026v6', JSON.stringify(state)); }
 
@@ -434,13 +460,42 @@ function switchPlayer(stage, player, tabEl) {
   tabEl.classList.add('active');
   if (stage === 'b24') {
     renderB24Grid(player);
+    renderScorerEarlyInput(player);
   } else {
     renderGrid(stage === 'b8' ? 'b8-grid' : 'champ-grid', stage);
   }
   updateTemplate();
 }
 
-// 得点王
+// 得点王ボーナス（6/11）
+function onScorerEarlyInput() {
+  const val = document.getElementById('scorer-early-input').value.trim();
+  state.predictions[curPlayer.b24].scorer_early = val;
+  updateScorerEarlyBadge();
+  updateTemplate();
+}
+function clearScorerEarly() {
+  state.predictions[curPlayer.b24].scorer_early = '';
+  const input = document.getElementById('scorer-early-input');
+  if (input) input.value = '';
+  updateScorerEarlyBadge();
+  updateTemplate();
+}
+function updateScorerEarlyBadge() {
+  const el = document.getElementById('scorer-early-badge');
+  if (!el) return;
+  const val = state.predictions[curPlayer.b24].scorer_early;
+  el.textContent = val || '未入力';
+  el.className = 'badge' + (val ? ' ok' : '');
+}
+function renderScorerEarlyInput(player) {
+  const p = player || curPlayer.b24;
+  const input = document.getElementById('scorer-early-input');
+  if (input) input.value = state.predictions[p].scorer_early || '';
+  updateScorerEarlyBadge();
+}
+
+// 得点王（7/10）
 function switchScorer(player, tabEl) {
   curPlayer.scorer = player;
   tabEl.parentElement.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
@@ -483,6 +538,7 @@ function updateTemplate() {
     const sels = g.teams.filter(t => p.b24.includes(t.n));
     return `  G${g.g}: ${sels.length ? sels.map(t=>t.f+' '+t.n).join('・') : '（未選択）'}`;
   }).join('\n');
+  const scorerEarly = p.scorer_early || '（未入力）';
   const b8Lines = p.b8.length > 0 ? p.b8.map((t,i) => `  ${i+1}. ${teamFlag(t)} ${t}`).join('\n') : '  （未選択）';
   const scorer = p.scorer || '（未入力）';
   const champ = p.champ[0] ? `${teamFlag(p.champ[0])} ${p.champ[0]}` : '（未選択）';
@@ -493,6 +549,9 @@ function updateTemplate() {
 ━━━━━━━━━━━━━━━━━━━━
 【① グループ突破（各グループ2チーム）】締切：6/11
 ${b24Lines}
+
+【⭐ 得点王ボーナス予想】締切：6/11（+3点）
+  ${scorerEarly}
 
 ━━━━━━━━━━━━━━━━━━━━
 【② ベスト8】締切：7/17
@@ -555,6 +614,13 @@ function renderCompare() {
       });
     }
 
+    html += `<div class="stage-label">⭐ 得点王ボーナス</div>`;
+    if (!p.scorer_early) html += `<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
+    else {
+      const cls = !RESULTS.scorer ? 'pending' : (p.scorer_early === RESULTS.scorer ? 'hit' : 'miss');
+      html += `<span class="team-pill ${cls}">⚽ ${p.scorer_early} ${icon(cls)}</span>`;
+    }
+
     html += `<div class="stage-label">② ベスト8（${p.b8.length}/8）</div>`;
     if (!p.b8.length) html += `<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
     else p.b8.forEach(t => { const cls = pillClass(t, 'b8'); html += `<span class="team-pill ${cls}">${teamFlag(t)} ${t} ${icon(cls)}</span>`; });
@@ -579,8 +645,9 @@ function renderCompare() {
 // スコア
 function calcScore(player) {
   const p = state.predictions[player];
-  let s = {b24:0, b8:0, scorer:0, champ:0};
+  let s = {b24:0, scorer_early:0, b8:0, scorer:0, champ:0};
   if (RESULTS.b24.length) p.b24.forEach(t => { if (RESULTS.b24.includes(t)) s.b24 += POINTS.b24; });
+  if (RESULTS.scorer && p.scorer_early) s.scorer_early = RESULTS.scorer === p.scorer_early ? 3 : 0;
   if (RESULTS.b8.length) p.b8.forEach(t => { if (RESULTS.b8.includes(t)) s.b8 += POINTS.b8; });
   if (RESULTS.scorer && p.scorer) s.scorer = RESULTS.scorer === p.scorer ? 5 : 0;
   if (RESULTS.champ.length && p.champ.length) s.champ = RESULTS.champ[0] === p.champ[0] ? POINTS.champ : 0;
@@ -589,7 +656,7 @@ function calcScore(player) {
 
 function renderScores() {
   const ks = calcScore('kei'), as = calcScore('akacello');
-  const kt = ks.b24+ks.b8+ks.scorer+ks.champ, at = as.b24+as.b8+as.scorer+as.champ;
+  const kt = ks.b24+ks.scorer_early+ks.b8+ks.scorer+ks.champ, at = as.b24+as.scorer_early+as.b8+as.scorer+as.champ;
   const draw = kt === at;
 
   document.getElementById('score-board').innerHTML = ['kei','akacello'].map(p => {
@@ -598,7 +665,7 @@ function renderScores() {
     return `<div class="score-card ${win&&!draw?'winner':''}">
       <div class="pname">${p==='kei'?'Kei':'Akacello'} ${win&&!draw?'👑':''}</div>
       <div class="total">${t}</div>
-      <div class="breakdown">グループ突破：<span>${s.b24}点</span><br>ベスト8：<span>${s.b8}点</span><br>得点王：<span>${s.scorer}点</span><br>優勝予想：<span>${s.champ}点</span></div>
+      <div class="breakdown">グループ突破：<span>${s.b24}点</span><br>⭐得点王ボーナス：<span>${s.scorer_early}点</span><br>ベスト8：<span>${s.b8}点</span><br>得点王：<span>${s.scorer}点</span><br>優勝予想：<span>${s.champ}点</span></div>
     </div>`;
   }).join('');
 
@@ -619,6 +686,15 @@ function renderScores() {
     const kl = !kp ? '－' : (hasRes ? (act ? '<span class="hit">+1</span>' : '<span class="miss">×</span>') : '<span class="pend">？</span>');
     const al = !ap ? '－' : (hasRes ? (act ? '<span class="hit">+1</span>' : '<span class="miss">×</span>') : '<span class="pend">？</span>');
     return `<tr><td><small style="opacity:.5">G${g}</small> ${teamFlag(t)} ${t}</td><td>${res}</td><td>${kl}</td><td>${al}</td></tr>`;
+  }).join('');
+
+  // Scorer Early
+  document.getElementById('dtscorer-early').style.display = 'block';
+  document.getElementById('tscorer-early').innerHTML = ['kei','akacello'].map(p => {
+    const pred = state.predictions[p].scorer_early, name = p==='kei'?'Kei':'Akacello';
+    if (!pred) return `<tr><td>${name}</td><td colspan="3" class="pend">未入力</td></tr>`;
+    const hit = RESULTS.scorer && pred === RESULTS.scorer;
+    return `<tr><td>${name}</td><td>⚽ ${pred}</td><td>${RESULTS.scorer || '<span class="pend">未定</span>'}</td><td>${!RESULTS.scorer ? '<span class="pend">－</span>' : hit ? '<span class="hit">+3</span>' : '<span class="miss">0</span>'}</td></tr>`;
   }).join('');
 
   // B8
@@ -698,6 +774,7 @@ function showView(id, btn) {
 
 loadState();
 renderB24Grid(curPlayer.b24);
+renderScorerEarlyInput(curPlayer.b24);
 renderGrid('b8-grid', 'b8');
 renderScorerInput();
 renderGrid('champ-grid', 'champ');
