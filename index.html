@@ -363,9 +363,9 @@ function makeFlagPicker(currentFlag, onChange) {
 let RESULTS = { b24:[], b8:[], scorer:'', scorer_flag:'', champ:[] };
 
 function loadResults() {
-  try { const s = localStorage.getItem('wc2026v6_results'); if(s) RESULTS = JSON.parse(s); } catch(e) {}
+  try { const s = localStorage.getItem('wc2026v6_results2'); if(s) RESULTS = JSON.parse(s); } catch(e) {}
 }
-function saveResults() { localStorage.setItem('wc2026v6_results', JSON.stringify(RESULTS)); }
+function saveResults() { localStorage.setItem('wc2026v6_results2', JSON.stringify(RESULTS)); }
 
 let state = {
   predictions: {
