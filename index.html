@@ -283,8 +283,8 @@
 <!-- 結果・スコア（統合） -->
 <div id="result" class="view">
 
-  <!-- 結果取得ボタン -->
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+  <!-- 結果取得ボタン（大会開幕後のみ表示） -->
+  <div id="fetch-wrap" style="display:none;align-items:center;gap:10px;margin-bottom:16px">
     <button id="fetch-btn" onclick="fetchResults()" style="display:flex;align-items:center;gap:6px;padding:10px 18px;background:var(--primary);border:1.5px solid var(--border);border-radius:10px;color:var(--text);cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s">
       🔄 最新結果を取得
     </button>
@@ -952,7 +952,12 @@ function showView(id, btn) {
   document.getElementById(id).classList.add('active');
   btn.classList.add('active');
   if (id === 'home') renderHome();
-  if (id === 'result') { renderCompare(); renderScores(); }
+  if (id === 'result') {
+    // 開幕（6/19）以降のみ取得ボタン表示
+    const wrap = document.getElementById('fetch-wrap');
+    if (wrap) wrap.style.display = new Date() >= new Date('2026-06-19') ? 'flex' : 'none';
+    renderCompare(); renderScores();
+  }
   if (id === 'schedule') renderSchedule();
   if (id === 'predict') { renderScorerInput(); updateTemplate(); }
 }
