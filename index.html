@@ -393,11 +393,13 @@ function loadState() {
     state.predictions.akacello = {...AKACELLO_SEED};
     saveState();
   }
-  // Keiの得点王データが未入力なら初期値をセット
-  if(!state.predictions.kei.scorer_early) {
-    Object.assign(state.predictions.kei, KEI_SCORER_SEED);
-    saveState();
-  }
+  // Keiの得点王データを個別にフォールバック（名前だけあって国旗がないケースもカバー）
+  const ks = state.predictions.kei;
+  if(!ks.scorer_early)       ks.scorer_early       = KEI_SCORER_SEED.scorer_early;
+  if(!ks.scorer_early_flag)  ks.scorer_early_flag  = KEI_SCORER_SEED.scorer_early_flag;
+  if(!ks.scorer)             ks.scorer             = KEI_SCORER_SEED.scorer;
+  if(!ks.scorer_flag)        ks.scorer_flag        = KEI_SCORER_SEED.scorer_flag;
+  saveState();
 }
 function saveState() { localStorage.setItem('wc2026v6', JSON.stringify(state)); }
 
