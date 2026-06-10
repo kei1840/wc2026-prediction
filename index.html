@@ -805,18 +805,30 @@ async function fetchResults() {
     const data = await r.json();
 
     const newB24 = [];
-    const groups = data.children || data.standings?.entries || [];
+    let completedGroups = 0;
+    let partialGroups = 0;
 
-    // グループごとに上位2チームを取得
+    // グループごとに上位2チームを取得（グループ完了済みのみ）
     (data.children || []).forEach(group => {
       const entries = group.standings?.entries || [];
-      // 順位でソート（rank または position）
-      const sorted = entries.sort((a,b) => (a.stats?.find(s=>s.name==='rank')?.value||99) - (b.stats?.find(s=>s.name==='rank')?.value||99));
-      sorted.slice(0,2).forEach(e => {
-        const enName = e.team?.displayName || e.team?.name || '';
-        const jaName = EN_TO_JA[enName];
-        if (jaName && !newB24.includes(jaName)) newB24.push(jaName);
-      });
+      const getGP = e => e.stats?.find(s => s.abbreviation === 'GP' || s.name === 'gamesPlayed')?.value ?? 0;
+      const totalGP = entries.reduce((sum, e) => sum + getGP(e), 0);
+      const minGP = entries.length ? Math.min(...entries.map(e => getGP(e))) : 0;
+
+      // GP=0なら完全に未消化 → スキップ
+      if (totalGP === 0) return;
+      partialGroups++;
+
+      // 全チームが3試合消化済み = グループ完了
+      if (minGP >= 3) {
+        completedGroups++;
+        const sorted = [...entries].sort((a,b) => (a.stats?.find(s=>s.name==='rank')?.value||99) - (b.stats?.find(s=>s.name==='rank')?.value||99));
+        sorted.slice(0,2).forEach(e => {
+          const enName = e.team?.displayName || e.team?.name || '';
+          const jaName = EN_TO_JA[enName];
+          if (jaName && !newB24.includes(jaName)) newB24.push(jaName);
+        });
+      }
     });
 
     if (newB24.length > 0) {
@@ -826,10 +838,13 @@ async function fetchResults() {
       renderScores();
       renderHome();
       msg.style.color = 'var(--green)';
-      msg.textContent = `✅ ${newB24.length}チーム更新 (${new Date().toLocaleTimeString('ja-JP')})`;
+      msg.textContent = `✅ ${newB24.length}チーム確定（${completedGroups}グループ完了）(${new Date().toLocaleTimeString('ja-JP')})`;
+    } else if (partialGroups > 0) {
+      msg.style.color = 'var(--muted)';
+      msg.textContent = `⏳ グループ進行中（完了グループ0）。試合終了後に再取得してください`;
     } else {
       msg.style.color = 'var(--muted)';
-      msg.textContent = '大会データ未開始、または取得データなし';
+      msg.textContent = '⏳ まだ試合が行われていません（GP=0）';
     }
   } catch(e) {
     msg.style.color = 'var(--red)';
