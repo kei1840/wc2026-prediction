@@ -284,11 +284,19 @@
 <div id="result" class="view">
 
   <!-- 結果取得ボタン（大会開幕後のみ表示） -->
-  <div id="fetch-wrap" style="display:none;align-items:center;gap:10px;margin-bottom:16px">
-    <button id="fetch-btn" onclick="fetchResults()" style="display:flex;align-items:center;gap:6px;padding:10px 18px;background:var(--primary);border:1.5px solid var(--border);border-radius:10px;color:var(--text);cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s">
-      🔄 最新結果を取得
-    </button>
-    <span id="fetch-msg" style="font-size:0.8rem;color:var(--muted)"></span>
+  <div id="fetch-wrap" style="display:none;flex-direction:column;gap:6px;margin-bottom:16px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <button id="fetch-btn" onclick="fetchResults()" style="display:flex;align-items:center;gap:6px;padding:10px 18px;background:var(--primary);border:1.5px solid var(--border);border-radius:10px;color:var(--text);cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s">
+        🔄 最新結果を取得
+      </button>
+      <span id="fetch-msg" style="font-size:0.8rem;color:var(--muted)"></span>
+    </div>
+    <div style="font-size:0.75rem;color:var(--muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+      <span>📡 手動取得:</span>
+      <a href="https://site.api.espn.com/apis/v2/sports/soccer/fifa.world/standings?season=2026" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none;font-family:monospace;font-size:0.7rem">ESPN公開API</a>
+      <span style="color:var(--border)">｜</span>
+      <span>🤖 自動更新: 毎朝8時（ウェブ検索）</span>
+    </div>
   </div>
 
   <div class="score-board" id="score-board"></div>
