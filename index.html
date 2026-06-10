@@ -198,20 +198,21 @@
       <button class="ptab" onclick="switchPlayer('b24','akacello',this)">akacello</button>
     </div>
     <div class="count-line">選択：<span id="b24-count" class="badge">0 / 24</span></div>
-    <div id="b24-grid"></div>
-  </div>
 
-  <!-- ①付随：得点王ボーナス -->
-  <div class="card" style="border-color:rgba(232,200,74,0.3);background:rgba(232,200,74,0.04)">
-    <h3>⭐ 得点王ボーナス予想 <small style="color:var(--muted);font-weight:400">①と同時・締切：6/11・的中で+7点</small></h3>
-    <div style="display:flex;gap:8px;align-items:center">
-      <div id="scorer-early-flag-wrap"></div>
-      <input id="scorer-early-input" type="text" placeholder="例：ムバッペ、ハヴァーツ、三笘..." maxlength="40"
-        style="flex:1;padding:10px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:0.9rem;outline:none"
-        oninput="onScorerEarlyInput()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
-      <button onclick="clearScorerEarly()" style="padding:9px 14px;background:none;border:1.5px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:0.82rem">クリア</button>
+    <!-- ①内：得点王ボーナス -->
+    <div style="background:rgba(232,200,74,0.06);border:1px solid rgba(232,200,74,0.25);border-radius:8px;padding:12px;margin-bottom:12px">
+      <div style="font-size:0.82rem;font-weight:700;color:var(--accent);margin-bottom:8px">⭐ 得点王ボーナス予想　<small style="color:var(--muted);font-weight:400">締切：6/11・的中で+7点</small></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div id="scorer-early-flag-wrap"></div>
+        <input id="scorer-early-input" type="text" placeholder="例：ムバッペ、ハヴァーツ、三笘..." maxlength="40"
+          style="flex:1;padding:9px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:0.88rem;outline:none"
+          oninput="onScorerEarlyInput()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        <button onclick="clearScorerEarly()" style="padding:8px 12px;background:none;border:1.5px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:0.8rem">クリア</button>
+      </div>
+      <div style="margin-top:6px;font-size:0.78rem">入力：<span id="scorer-early-badge" class="badge">未入力</span></div>
     </div>
-    <div class="count-line" style="margin-top:8px">入力：<span id="scorer-early-badge" class="badge">未入力</span></div>
+
+    <div id="b24-grid"></div>
   </div>
 
   <!-- ステージ2 -->
@@ -260,51 +261,6 @@
 
 <!-- 結果・スコア（統合） -->
 <div id="result" class="view">
-
-  <!-- 結果入力（折りたたみ） -->
-  <div class="card" style="margin-bottom:16px">
-    <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="toggleResultInput()">
-      <h3 style="margin:0">✏️ 結果入力（Kei専用）</h3>
-      <span id="result-toggle-icon" style="color:var(--muted);font-size:0.85rem">▼ 開く</span>
-    </div>
-    <div id="result-input-body" style="display:none;margin-top:14px">
-
-      <!-- グループ突破 -->
-      <div style="margin-bottom:16px">
-        <div style="font-size:0.82rem;font-weight:700;color:var(--accent);margin-bottom:8px">① グループ突破（各グループ2チーム確定したら入力）</div>
-        <div class="count-line">確定：<span id="res-b24-count" class="badge">0 / 24</span></div>
-        <div id="res-b24-grid"></div>
-      </div>
-
-      <!-- ベスト8 -->
-      <div style="margin-bottom:16px;padding-top:12px;border-top:1px solid var(--border)">
-        <div style="font-size:0.82rem;font-weight:700;color:var(--accent);margin-bottom:8px">② ベスト8（8チーム確定後）</div>
-        <div class="count-line">確定：<span id="res-b8-count" class="badge">0 / 8</span></div>
-        <div class="team-grid" id="res-b8-grid"></div>
-      </div>
-
-      <!-- 得点王 -->
-      <div style="margin-bottom:16px;padding-top:12px;border-top:1px solid var(--border)">
-        <div style="font-size:0.82rem;font-weight:700;color:var(--accent);margin-bottom:8px">③ 得点王（確定後）</div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <div id="res-scorer-flag-wrap"></div>
-        <input id="res-scorer-input" type="text" placeholder="選手名を入力" maxlength="40"
-            style="flex:1;padding:9px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:0.88rem;outline:none"
-            oninput="onResScorer()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
-          <button onclick="clearResScorer()" style="padding:8px 12px;background:none;border:1.5px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:0.8rem">クリア</button>
-        </div>
-        <div class="count-line" style="margin-top:6px">確定：<span id="res-scorer-badge" class="badge">未確定</span></div>
-      </div>
-
-      <!-- 優勝 -->
-      <div style="padding-top:12px;border-top:1px solid var(--border)">
-        <div style="font-size:0.82rem;font-weight:700;color:var(--accent);margin-bottom:8px">④ 優勝（確定後）</div>
-        <div class="count-line">確定：<span id="res-champ-badge" class="badge">未確定</span></div>
-        <div class="team-grid" id="res-champ-grid"></div>
-      </div>
-
-    </div>
-  </div>
 
   <div class="score-board" id="score-board"></div>
   <div class="compare-grid" id="compare-grid"></div>
@@ -744,171 +700,6 @@ function renderCompare() {
   });
 }
 
-// 結果入力UI
-let resultInputOpen = false;
-function toggleResultInput() {
-  resultInputOpen = !resultInputOpen;
-  document.getElementById('result-input-body').style.display = resultInputOpen ? 'block' : 'none';
-  document.getElementById('result-toggle-icon').textContent = resultInputOpen ? '▲ 閉じる' : '▼ 開く';
-  if (resultInputOpen) renderResultInputs();
-}
-
-function renderResultInputs() {
-  renderResB24Grid();
-  renderResB8Grid();
-  const si = document.getElementById('res-scorer-input');
-  if (si) si.value = RESULTS.scorer || '';
-  const rsfWrap = document.getElementById('res-scorer-flag-wrap');
-  if (rsfWrap) {
-    rsfWrap.innerHTML = '';
-    rsfWrap.appendChild(makeFlagPicker(RESULTS.scorer_flag, (f) => {
-      RESULTS.scorer_flag = f;
-      saveResults();
-      updateResScorer();
-      renderCompare();
-      renderScores();
-    }));
-  }
-  updateResScorer();
-  renderResChampGrid();
-}
-
-function renderResB24Grid() {
-  const grid = document.getElementById('res-b24-grid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  GROUPS.forEach(group => {
-    const sec = document.createElement('div');
-    sec.className = 'group-section';
-    const groupSels = group.teams.filter(t => RESULTS.b24.includes(t.n));
-    const header = document.createElement('div');
-    header.className = 'group-header';
-    header.textContent = `グループ ${group.g}  ${groupSels.length ? groupSels.map(t=>t.f+' '+t.n).join('・') : '（未確定）'}`;
-    sec.appendChild(header);
-    const ggrid = document.createElement('div');
-    ggrid.className = 'group-grid';
-    group.teams.forEach(team => {
-      const isSel = RESULTS.b24.includes(team.n);
-      const groupFull = groupSels.length >= 2;
-      const disabled = !isSel && groupFull;
-      const btn = document.createElement('button');
-      btn.className = 'tbtn' + (isSel ? ' sel' : '') + (disabled ? ' dis' : '');
-      btn.innerHTML = `<span class="flag">${team.f}</span>${team.n}`;
-      btn.onclick = () => {
-        if (isSel) RESULTS.b24.splice(RESULTS.b24.indexOf(team.n), 1);
-        else if (!groupFull) RESULTS.b24.push(team.n);
-        saveResults();
-        renderResB24Grid();
-        updateResB24Count();
-        renderResB8Grid();
-        renderResChampGrid();
-        renderCompare();
-        renderScores();
-      };
-      ggrid.appendChild(btn);
-    });
-    sec.appendChild(ggrid);
-    grid.appendChild(sec);
-  });
-  updateResB24Count();
-}
-
-function updateResB24Count() {
-  const el = document.getElementById('res-b24-count');
-  if (!el) return;
-  const c = RESULTS.b24.length;
-  el.textContent = `${c} / 24`;
-  el.className = 'badge' + (c === 24 ? ' ok' : '');
-}
-
-function renderResB8Grid() {
-  const grid = document.getElementById('res-b8-grid');
-  if (!grid) return;
-  const pool = RESULTS.b24.length ? TEAMS.filter(t => RESULTS.b24.includes(t.n)) : TEAMS;
-  grid.innerHTML = '';
-  pool.forEach(team => {
-    const isSel = RESULTS.b8.includes(team.n);
-    const atLimit = RESULTS.b8.length >= 8 && !isSel;
-    const btn = document.createElement('button');
-    btn.className = 'tbtn' + (isSel ? ' sel' : '') + (atLimit ? ' dis' : '');
-    btn.innerHTML = `<span class="flag">${team.f}</span>${team.n}`;
-    btn.onclick = () => {
-      if (isSel) RESULTS.b8.splice(RESULTS.b8.indexOf(team.n), 1);
-      else if (!atLimit) RESULTS.b8.push(team.n);
-      saveResults();
-      renderResB8Grid();
-      updateResB8Count();
-      renderResChampGrid();
-      renderCompare();
-      renderScores();
-    };
-    grid.appendChild(btn);
-  });
-  updateResB8Count();
-}
-
-function updateResB8Count() {
-  const el = document.getElementById('res-b8-count');
-  if (!el) return;
-  const c = RESULTS.b8.length;
-  el.textContent = `${c} / 8`;
-  el.className = 'badge' + (c === 8 ? ' ok' : '');
-}
-
-function onResScorer() {
-  RESULTS.scorer = document.getElementById('res-scorer-input').value.trim();
-  saveResults();
-  updateResScorer();
-  renderCompare();
-  renderScores();
-}
-function clearResScorer() {
-  RESULTS.scorer = '';
-  const si = document.getElementById('res-scorer-input');
-  if (si) si.value = '';
-  saveResults();
-  updateResScorer();
-  renderCompare();
-  renderScores();
-}
-function updateResScorer() {
-  const el = document.getElementById('res-scorer-badge');
-  if (!el) return;
-  const v = RESULTS.scorer, f = RESULTS.scorer_flag || '';
-  el.textContent = v ? `${f} ${v}`.trim() : '未確定';
-  el.className = 'badge' + (v ? ' ok' : '');
-}
-
-function renderResChampGrid() {
-  const grid = document.getElementById('res-champ-grid');
-  if (!grid) return;
-  const pool = RESULTS.b8.length ? TEAMS.filter(t => RESULTS.b8.includes(t.n)) : (RESULTS.b24.length ? TEAMS.filter(t => RESULTS.b24.includes(t.n)) : TEAMS);
-  grid.innerHTML = '';
-  pool.forEach(team => {
-    const isSel = RESULTS.champ.includes(team.n);
-    const btn = document.createElement('button');
-    btn.className = 'tbtn' + (isSel ? ' sel' : '');
-    btn.innerHTML = `<span class="flag">${team.f}</span>${team.n}`;
-    btn.onclick = () => {
-      RESULTS.champ = isSel ? [] : [team.n];
-      saveResults();
-      renderResChampGrid();
-      updateResChamp();
-      renderCompare();
-      renderScores();
-    };
-    grid.appendChild(btn);
-  });
-  updateResChamp();
-}
-function updateResChamp() {
-  const el = document.getElementById('res-champ-badge');
-  if (!el) return;
-  const n = RESULTS.champ[0];
-  el.textContent = n ? `${teamFlag(n)} ${n}` : '未確定';
-  el.className = 'badge' + (n ? ' ok' : '');
-}
-
 // スコア
 function calcScore(player) {
   const p = state.predictions[player];
@@ -1033,7 +824,7 @@ function showView(id, btn) {
   document.getElementById(id).classList.add('active');
   btn.classList.add('active');
   if (id === 'home') renderHome();
-  if (id === 'result') { if (resultInputOpen) renderResultInputs(); renderCompare(); renderScores(); }
+  if (id === 'result') { renderCompare(); renderScores(); }
   if (id === 'schedule') renderSchedule();
   if (id === 'predict') { renderScorerInput(); updateTemplate(); }
 }
