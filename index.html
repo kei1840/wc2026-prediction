@@ -147,7 +147,7 @@
           <td><strong>　＋得点王ボーナス</strong></td>
           <td>①と同時に得点王を予想（選手名、任意）</td>
           <td style="white-space:nowrap;color:var(--accent)">6/11</td>
-          <td>的中 <strong>+3点</strong></td>
+          <td>的中 <strong>+7点</strong></td>
         </tr>
         <tr>
           <td><strong>③ 得点王予想</strong></td>
@@ -163,7 +163,7 @@
         </tr>
       </tbody>
     </table>
-    <p style="margin-top:12px;font-size:0.8rem;color:var(--muted)">合計最大：<strong style="color:var(--text)">61点</strong>（24 + 3 + 24 + 5 + 5）</p>
+    <p style="margin-top:12px;font-size:0.8rem;color:var(--muted)">合計最大：<strong style="color:var(--text)">65点</strong>（24 + 7 + 24 + 5 + 5）</p>
   </div>
 
   <div class="card">
@@ -194,7 +194,7 @@
     <div id="b24-grid"></div>
 
     <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
-      <div class="note" style="margin-bottom:10px">⭐ 得点王ボーナス予想（+3点）：開幕前に予想するお楽しみ枠。的中すれば+3点。</div>
+      <div class="note" style="margin-bottom:10px">⭐ 得点王ボーナス予想（+7点）：開幕前に予想するお楽しみ枠。的中すれば+7点。</div>
       <div style="display:flex;gap:8px;align-items:center">
         <input id="scorer-early-input" type="text" placeholder="例：ムバッペ、エンバペ、三笘..." maxlength="40"
           style="flex:1;padding:10px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:0.9rem;outline:none"
@@ -260,7 +260,7 @@
   </div>
 
   <div class="dtable" id="dtscorer-early" style="display:none">
-    <div class="thead">⭐ 得点王ボーナス予想（+3点）</div>
+    <div class="thead">⭐ 得点王ボーナス予想（+7点）</div>
     <table><thead><tr><th></th><th>予想</th><th>結果</th><th>点数</th></tr></thead>
     <tbody id="tscorer-early"></tbody></table>
   </div>
@@ -550,7 +550,7 @@ function updateTemplate() {
 【① グループ突破（各グループ2チーム）】締切：6/11
 ${b24Lines}
 
-【⭐ 得点王ボーナス予想】締切：6/11（+3点）
+【⭐ 得点王ボーナス予想】締切：6/11（+7点）
   ${scorerEarly}
 
 ━━━━━━━━━━━━━━━━━━━━
@@ -647,7 +647,7 @@ function calcScore(player) {
   const p = state.predictions[player];
   let s = {b24:0, scorer_early:0, b8:0, scorer:0, champ:0};
   if (RESULTS.b24.length) p.b24.forEach(t => { if (RESULTS.b24.includes(t)) s.b24 += POINTS.b24; });
-  if (RESULTS.scorer && p.scorer_early) s.scorer_early = RESULTS.scorer === p.scorer_early ? 3 : 0;
+  if (RESULTS.scorer && p.scorer_early) s.scorer_early = RESULTS.scorer === p.scorer_early ? 7 : 0;
   if (RESULTS.b8.length) p.b8.forEach(t => { if (RESULTS.b8.includes(t)) s.b8 += POINTS.b8; });
   if (RESULTS.scorer && p.scorer) s.scorer = RESULTS.scorer === p.scorer ? 5 : 0;
   if (RESULTS.champ.length && p.champ.length) s.champ = RESULTS.champ[0] === p.champ[0] ? POINTS.champ : 0;
@@ -694,7 +694,7 @@ function renderScores() {
     const pred = state.predictions[p].scorer_early, name = p==='kei'?'Kei':'Akacello';
     if (!pred) return `<tr><td>${name}</td><td colspan="3" class="pend">未入力</td></tr>`;
     const hit = RESULTS.scorer && pred === RESULTS.scorer;
-    return `<tr><td>${name}</td><td>⚽ ${pred}</td><td>${RESULTS.scorer || '<span class="pend">未定</span>'}</td><td>${!RESULTS.scorer ? '<span class="pend">－</span>' : hit ? '<span class="hit">+3</span>' : '<span class="miss">0</span>'}</td></tr>`;
+    return `<tr><td>${name}</td><td>⚽ ${pred}</td><td>${RESULTS.scorer || '<span class="pend">未定</span>'}</td><td>${!RESULTS.scorer ? '<span class="pend">－</span>' : hit ? '<span class="hit">+7</span>' : '<span class="miss">0</span>'}</td></tr>`;
   }).join('');
 
   // B8
