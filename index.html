@@ -198,7 +198,8 @@
   <div class="card" style="border-color:rgba(232,200,74,0.3);background:rgba(232,200,74,0.04)">
     <h3>⭐ 得点王ボーナス予想 <small style="color:var(--muted);font-weight:400">①と同時・締切：6/11・的中で+7点</small></h3>
     <div style="display:flex;gap:8px;align-items:center">
-      <input id="scorer-early-input" type="text" placeholder="例：ムバッペ、エンバペ、三笘..." maxlength="40"
+      <div id="scorer-early-flag-wrap"></div>
+      <input id="scorer-early-input" type="text" placeholder="例：ムバッペ、ハヴァーツ、三笘..." maxlength="40"
         style="flex:1;padding:10px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:0.9rem;outline:none"
         oninput="onScorerEarlyInput()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
       <button onclick="clearScorerEarly()" style="padding:9px 14px;background:none;border:1.5px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:0.82rem">クリア</button>
@@ -225,7 +226,8 @@
       <button class="ptab" onclick="switchScorer('akacello',this)">akacello</button>
     </div>
     <div style="display:flex;gap:8px;align-items:center">
-      <input id="scorer-input" type="text" placeholder="例：ムバッペ、ネイマール、三笘..." maxlength="40"
+      <div id="scorer-flag-wrap"></div>
+      <input id="scorer-input" type="text" placeholder="例：ムバッペ、ハヴァーツ、三笘..." maxlength="40"
         style="flex:1;padding:10px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:0.9rem;outline:none"
         oninput="onScorerInput()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
       <button onclick="clearScorer()" style="padding:9px 14px;background:none;border:1.5px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:0.82rem">クリア</button>
@@ -278,7 +280,8 @@
       <div style="margin-bottom:16px;padding-top:12px;border-top:1px solid var(--border)">
         <div style="font-size:0.82rem;font-weight:700;color:var(--accent);margin-bottom:8px">③ 得点王（確定後）</div>
         <div style="display:flex;gap:8px;align-items:center">
-          <input id="res-scorer-input" type="text" placeholder="選手名を入力" maxlength="40"
+          <div id="res-scorer-flag-wrap"></div>
+        <input id="res-scorer-input" type="text" placeholder="選手名を入力" maxlength="40"
             style="flex:1;padding:9px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:0.88rem;outline:none"
             oninput="onResScorer()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
           <button onclick="clearResScorer()" style="padding:8px 12px;background:none;border:1.5px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:0.8rem">クリア</button>
@@ -359,7 +362,43 @@ function teamGroup(name) { return GROUPS.find(g=>g.teams.some(t=>t.n===name))?.g
 
 const POINTS = {b24:1, b8:3, champ:5};
 
-let RESULTS = { b24:[], b8:[], scorer:'', champ:[] };
+// 国旗ピッカー生成
+function makeFlagPicker(currentFlag, onChange) {
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'position:relative;display:inline-block';
+
+  const btn = document.createElement('button');
+  btn.style.cssText = 'padding:9px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:1.1rem;min-width:44px';
+  btn.textContent = currentFlag || '🏳';
+  wrap.appendChild(btn);
+
+  const picker = document.createElement('div');
+  picker.style.cssText = 'display:none;position:absolute;top:110%;left:0;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px;z-index:100;display:none;flex-wrap:wrap;gap:4px;width:240px;max-height:200px;overflow-y:auto';
+  TEAMS.forEach(t => {
+    const fb = document.createElement('button');
+    fb.title = t.n;
+    fb.style.cssText = 'background:none;border:none;cursor:pointer;font-size:1.2rem;padding:3px;border-radius:4px';
+    fb.textContent = t.f;
+    fb.onclick = (e) => {
+      e.stopPropagation();
+      btn.textContent = t.f;
+      picker.style.display = 'none';
+      onChange(t.f);
+    };
+    picker.appendChild(fb);
+  });
+  wrap.appendChild(picker);
+
+  btn.onclick = (e) => {
+    e.stopPropagation();
+    picker.style.display = picker.style.display === 'none' ? 'flex' : 'none';
+  };
+  document.addEventListener('click', () => { picker.style.display = 'none'; }, {once:false});
+
+  return wrap;
+}
+
+let RESULTS = { b24:[], b8:[], scorer:'', scorer_flag:'', champ:[] };
 
 function loadResults() {
   try { const s = localStorage.getItem('wc2026v6_results'); if(s) RESULTS = JSON.parse(s); } catch(e) {}
@@ -368,8 +407,8 @@ function saveResults() { localStorage.setItem('wc2026v6_results', JSON.stringify
 
 let state = {
   predictions: {
-    kei:      {b24:[], scorer_early:'', b8:[], scorer:'', champ:[]},
-    akacello: {b24:[], scorer_early:'', b8:[], scorer:'', champ:[]},
+    kei:      {b24:[], scorer_early:'', scorer_early_flag:'', b8:[], scorer:'', scorer_flag:'', champ:[]},
+    akacello: {b24:[], scorer_early:'', scorer_early_flag:'', b8:[], scorer:'', scorer_flag:'', champ:[]},
   },
 };
 
@@ -377,15 +416,17 @@ let curPlayer = {b24:'kei', b8:'kei', scorer:'kei', champ:'kei'};
 
 const AKACELLO_SEED = {
   b24: ['メキシコ','チェコ','カナダ','スイス','ブラジル','モロッコ','アメリカ','トルコ','ドイツ','コートジボワール','オランダ','日本','ベルギー','エジプト','スペイン','ウルグアイ','フランス','ノルウェー','アルゼンチン','オーストリア','ポルトガル','コロンビア','イングランド','クロアチア'],
-  scorer_early: 'ハヴァーツ',
-  b8: [], scorer: '', champ: [],
+  scorer_early: 'ハヴァーツ', scorer_early_flag: '🇩🇪',
+  b8: [], scorer: '', scorer_flag: '', champ: [],
 };
 
 function loadState() {
   try { const s = localStorage.getItem('wc2026v6'); if(s) state = JSON.parse(s); } catch(e){}
   ['kei','akacello'].forEach(p => {
     if(state.predictions[p].scorer===undefined) state.predictions[p].scorer='';
+    if(state.predictions[p].scorer_flag===undefined) state.predictions[p].scorer_flag='';
     if(state.predictions[p].scorer_early===undefined) state.predictions[p].scorer_early='';
+    if(state.predictions[p].scorer_early_flag===undefined) state.predictions[p].scorer_early_flag='';
   });
   // akacelloのデータが未入力なら初期値をセット
   if(state.predictions.akacello.b24.length === 0) {
@@ -540,14 +581,25 @@ function clearScorerEarly() {
 function updateScorerEarlyBadge() {
   const el = document.getElementById('scorer-early-badge');
   if (!el) return;
-  const val = state.predictions[curPlayer.b24].scorer_early;
-  el.textContent = val || '未入力';
+  const p = state.predictions[curPlayer.b24];
+  const val = p.scorer_early, flag = p.scorer_early_flag || '';
+  el.textContent = val ? `${flag} ${val}`.trim() : '未入力';
   el.className = 'badge' + (val ? ' ok' : '');
 }
 function renderScorerEarlyInput(player) {
   const p = player || curPlayer.b24;
   const input = document.getElementById('scorer-early-input');
   if (input) input.value = state.predictions[p].scorer_early || '';
+  // 国旗ピッカーを更新
+  const pickerWrap = document.getElementById('scorer-early-flag-wrap');
+  if (pickerWrap) {
+    pickerWrap.innerHTML = '';
+    pickerWrap.appendChild(makeFlagPicker(state.predictions[p].scorer_early_flag, (f) => {
+      state.predictions[curPlayer.b24].scorer_early_flag = f;
+      updateScorerEarlyBadge();
+      updateTemplate();
+    }));
+  }
   updateScorerEarlyBadge();
 }
 
@@ -556,9 +608,7 @@ function switchScorer(player, tabEl) {
   curPlayer.scorer = player;
   tabEl.parentElement.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
   tabEl.classList.add('active');
-  const input = document.getElementById('scorer-input');
-  if (input) input.value = state.predictions[player].scorer || '';
-  updateScorerBadge();
+  renderScorerInput();
   updateTemplate();
 }
 function onScorerInput() {
@@ -569,21 +619,33 @@ function onScorerInput() {
 }
 function clearScorer() {
   state.predictions[curPlayer.scorer].scorer = '';
+  state.predictions[curPlayer.scorer].scorer_flag = '';
   const input = document.getElementById('scorer-input');
   if (input) input.value = '';
-  updateScorerBadge();
+  renderScorerInput();
   updateTemplate();
 }
 function updateScorerBadge() {
   const el = document.getElementById('scorer-badge');
   if (!el) return;
-  const val = state.predictions[curPlayer.scorer].scorer;
-  el.textContent = val || '未入力';
+  const p = state.predictions[curPlayer.scorer];
+  const val = p.scorer, flag = p.scorer_flag || '';
+  el.textContent = val ? `${flag} ${val}`.trim() : '未入力';
   el.className = 'badge' + (val ? ' ok' : '');
 }
 function renderScorerInput() {
+  const p = curPlayer.scorer;
   const input = document.getElementById('scorer-input');
-  if (input) input.value = state.predictions[curPlayer.scorer].scorer || '';
+  if (input) input.value = state.predictions[p].scorer || '';
+  const pickerWrap = document.getElementById('scorer-flag-wrap');
+  if (pickerWrap) {
+    pickerWrap.innerHTML = '';
+    pickerWrap.appendChild(makeFlagPicker(state.predictions[p].scorer_flag, (f) => {
+      state.predictions[curPlayer.scorer].scorer_flag = f;
+      updateScorerBadge();
+      updateTemplate();
+    }));
+  }
   updateScorerBadge();
 }
 
@@ -594,9 +656,9 @@ function updateTemplate() {
     const sels = g.teams.filter(t => p.b24.includes(t.n));
     return `  G${g.g}: ${sels.length ? sels.map(t=>t.f+' '+t.n).join('・') : '（未選択）'}`;
   }).join('\n');
-  const scorerEarly = p.scorer_early || '（未入力）';
+  const scorerEarly = p.scorer_early ? `${p.scorer_early_flag||''} ${p.scorer_early}`.trim() : '（未入力）';
   const b8Lines = p.b8.length > 0 ? p.b8.map((t,i) => `  ${i+1}. ${teamFlag(t)} ${t}`).join('\n') : '  （未選択）';
-  const scorer = p.scorer || '（未入力）';
+  const scorer = p.scorer ? `${p.scorer_flag||''} ${p.scorer}`.trim() : '（未入力）';
   const champ = p.champ[0] ? `${teamFlag(p.champ[0])} ${p.champ[0]}` : '（未選択）';
 
   const ta = document.getElementById('template-text');
@@ -679,7 +741,8 @@ function renderCompare() {
     if (!p.scorer_early) html += `<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
     else {
       const cls = !RESULTS.scorer ? 'pending' : (p.scorer_early === RESULTS.scorer ? 'hit' : 'miss');
-      html += `<span class="team-pill ${cls}">⚽ ${p.scorer_early} ${icon(cls)}</span>`;
+      const ef = p.scorer_early_flag || '⚽';
+      html += `<span class="team-pill ${cls}">${ef} ${p.scorer_early} ${icon(cls)}</span>`;
     }
 
     html += `<div class="stage-label">② ベスト8（${p.b8.length}/8）</div>`;
@@ -691,7 +754,8 @@ function renderCompare() {
     else {
       const scorerResult = RESULTS.scorer || null;
       const scorerCls = !scorerResult ? 'pending' : (p.scorer === scorerResult ? 'hit' : 'miss');
-      html += `<span class="team-pill ${scorerCls}">⚽ ${p.scorer} ${icon(scorerCls)}</span>`;
+      const sf = p.scorer_flag || '⚽';
+      html += `<span class="team-pill ${scorerCls}">${sf} ${p.scorer} ${icon(scorerCls)}</span>`;
     }
 
     html += `<div class="stage-label">④ 優勝予想</div>`;
@@ -717,6 +781,17 @@ function renderResultInputs() {
   renderResB8Grid();
   const si = document.getElementById('res-scorer-input');
   if (si) si.value = RESULTS.scorer || '';
+  const rsfWrap = document.getElementById('res-scorer-flag-wrap');
+  if (rsfWrap) {
+    rsfWrap.innerHTML = '';
+    rsfWrap.appendChild(makeFlagPicker(RESULTS.scorer_flag, (f) => {
+      RESULTS.scorer_flag = f;
+      saveResults();
+      updateResScorer();
+      renderCompare();
+      renderScores();
+    }));
+  }
   updateResScorer();
   renderResChampGrid();
 }
@@ -822,8 +897,9 @@ function clearResScorer() {
 function updateResScorer() {
   const el = document.getElementById('res-scorer-badge');
   if (!el) return;
-  el.textContent = RESULTS.scorer || '未確定';
-  el.className = 'badge' + (RESULTS.scorer ? ' ok' : '');
+  const v = RESULTS.scorer, f = RESULTS.scorer_flag || '';
+  el.textContent = v ? `${f} ${v}`.trim() : '未確定';
+  el.className = 'badge' + (v ? ' ok' : '');
 }
 
 function renderResChampGrid() {
@@ -908,7 +984,9 @@ function renderScores() {
     const pred = state.predictions[p].scorer_early, name = p==='kei'?'Kei':'akacello';
     if (!pred) return `<tr><td>${name}</td><td colspan="3" class="pend">未入力</td></tr>`;
     const hit = RESULTS.scorer && pred === RESULTS.scorer;
-    return `<tr><td>${name}</td><td>⚽ ${pred}</td><td>${RESULTS.scorer || '<span class="pend">未定</span>'}</td><td>${!RESULTS.scorer ? '<span class="pend">－</span>' : hit ? '<span class="hit">+7</span>' : '<span class="miss">0</span>'}</td></tr>`;
+    const pf = state.predictions[p].scorer_early_flag || '⚽';
+    const rf = RESULTS.scorer_flag || '';
+    return `<tr><td>${name}</td><td>${pf} ${pred}</td><td>${RESULTS.scorer ? `${rf} ${RESULTS.scorer}`.trim() : '<span class="pend">未定</span>'}</td><td>${!RESULTS.scorer ? '<span class="pend">－</span>' : hit ? '<span class="hit">+7</span>' : '<span class="miss">0</span>'}</td></tr>`;
   }).join('');
 
   // B8
@@ -929,7 +1007,9 @@ function renderScores() {
     const pred = state.predictions[p].scorer, name = p==='kei'?'Kei':'akacello';
     if (!pred) return `<tr><td>${name}</td><td colspan="3" class="pend">未入力</td></tr>`;
     const hit = RESULTS.scorer && pred === RESULTS.scorer;
-    return `<tr><td>${name}</td><td>⚽ ${pred}</td><td>${RESULTS.scorer || '<span class="pend">未定</span>'}</td><td>${!RESULTS.scorer ? '<span class="pend">－</span>' : hit ? '<span class="hit">+5</span>' : '<span class="miss">0</span>'}</td></tr>`;
+    const pf2 = state.predictions[p].scorer_flag || '⚽';
+    const rf2 = RESULTS.scorer_flag || '';
+    return `<tr><td>${name}</td><td>${pf2} ${pred}</td><td>${RESULTS.scorer ? `${rf2} ${RESULTS.scorer}`.trim() : '<span class="pend">未定</span>'}</td><td>${!RESULTS.scorer ? '<span class="pend">－</span>' : hit ? '<span class="hit">+5</span>' : '<span class="miss">0</span>'}</td></tr>`;
   }).join('');
 
   // Champ
