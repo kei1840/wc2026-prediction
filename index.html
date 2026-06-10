@@ -331,12 +331,23 @@ let state = {
 
 let curPlayer = {b24:'kei', b8:'kei', scorer:'kei', champ:'kei'};
 
+const AKACELLO_SEED = {
+  b24: ['メキシコ','チェコ','カナダ','スイス','ブラジル','モロッコ','アメリカ','トルコ','ドイツ','コートジボワール','オランダ','日本','ベルギー','エジプト','スペイン','ウルグアイ','フランス','ノルウェー','アルゼンチン','オーストリア','ポルトガル','コロンビア','イングランド','クロアチア'],
+  scorer_early: 'ハヴァーツ',
+  b8: [], scorer: '', champ: [],
+};
+
 function loadState() {
   try { const s = localStorage.getItem('wc2026v6'); if(s) state = JSON.parse(s); } catch(e){}
   ['kei','akacello'].forEach(p => {
     if(state.predictions[p].scorer===undefined) state.predictions[p].scorer='';
     if(state.predictions[p].scorer_early===undefined) state.predictions[p].scorer_early='';
   });
+  // akacelloのデータが未入力なら初期値をセット
+  if(state.predictions.akacello.b24.length === 0) {
+    state.predictions.akacello = {...AKACELLO_SEED};
+    saveState();
+  }
 }
 function saveState() { localStorage.setItem('wc2026v6', JSON.stringify(state)); }
 
