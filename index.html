@@ -20,15 +20,18 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'Helvetica Neue', Arial, sans-serif; min-height: 100vh; }
 
-  header { background: var(--primary); border-bottom: 3px solid var(--accent); padding: 14px 20px; display: flex; align-items: center; gap: 10px; }
+  .site-wrap { max-width: 1100px; margin: 0 auto; }
+  header { background: var(--primary); border-bottom: 3px solid var(--accent); }
+  .header-inner { max-width: 1100px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; gap: 10px; }
   header h1 { font-size: 1.25rem; font-weight: 700; }
 
-  nav { display: flex; background: var(--card); border-bottom: 1px solid var(--border); overflow-x: auto; }
+  nav { background: var(--card); border-bottom: 1px solid var(--border); overflow-x: auto; }
+  .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; }
   nav button { flex: 1; min-width: 70px; padding: 13px 8px; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.78rem; font-weight: 600; transition: all 0.2s; border-bottom: 3px solid transparent; white-space: nowrap; }
   nav button.active { color: var(--accent); border-bottom-color: var(--accent); }
   nav button:hover:not(.active) { color: var(--text); }
 
-  .view { display: none; padding: 20px; max-width: 900px; margin: 0 auto; }
+  .view { display: none; padding: 20px 24px; max-width: 1100px; margin: 0 auto; }
   .view.active { display: block; }
 
   .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 16px; }
@@ -119,16 +122,20 @@
 <body>
 
 <header>
-  <img src="assets/wc2026-logo.png" alt="FIFA World Cup 2026" style="height:44px;width:auto;object-fit:contain;flex-shrink:0">
-  <h1>W杯2026 予想ゲーム</h1>
+  <div class="header-inner">
+    <img src="assets/wc2026-logo.png" alt="FIFA World Cup 2026" style="height:44px;width:auto;object-fit:contain;flex-shrink:0">
+    <h1>W杯2026 予想ゲーム</h1>
+  </div>
 </header>
 
 <nav>
-  <button class="active" onclick="showView('home',this)">🏠 ホーム</button>
-  <button onclick="showView('result',this)">📊 結果・スコア</button>
-  <button onclick="showView('rules',this)">📋 ルール</button>
-  <button onclick="showView('schedule',this)">📅 日程</button>
-  <button onclick="showView('predict',this)">📝 予想入力</button>
+  <div class="nav-inner">
+    <button class="active" onclick="showView('home',this)">🏠 ホーム</button>
+    <button onclick="showView('result',this)">📊 結果・スコア</button>
+    <button onclick="showView('rules',this)">📋 ルール</button>
+    <button onclick="showView('schedule',this)">📅 日程</button>
+    <button onclick="showView('predict',this)">📝 予想入力</button>
+  </div>
 </nav>
 
 <!-- ホーム -->
@@ -766,6 +773,14 @@ async function fetchResults() {
   msg.textContent = '';
 
   try {
+    // 開幕前チェック（2026-06-19開幕）
+    if (new Date() < new Date('2026-06-19')) {
+      msg.style.color = 'var(--muted)';
+      msg.textContent = '⏳ 大会は6/19開幕予定。開幕後に取得してください';
+      btn.disabled = false;
+      btn.innerHTML = '🔄 最新結果を取得';
+      return;
+    }
     // ESPN公開API - WC2026グループ順位表
     const r = await fetch('https://site.api.espn.com/apis/v2/sports/soccer/fifa.world/standings?season=2026', {cache:'no-store'});
     if (!r.ok) throw new Error('HTTP ' + r.status);
