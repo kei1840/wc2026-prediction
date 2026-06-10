@@ -375,6 +375,9 @@ function makeFlagPicker(currentFlag, onChange) {
 let RESULTS = { b24:[], b8:[], scorer:'', scorer_flag:'', champ:[] };
 
 function loadResults() {
+  // 古いキーを削除（誤データのクリーンアップ）
+  localStorage.removeItem('wc2026v6_results');
+  localStorage.removeItem('wc2026v6_results2');
   try { const s = localStorage.getItem('wc2026v6_results3'); if(s) RESULTS = JSON.parse(s); } catch(e) {}
 }
 function saveResults() { localStorage.setItem('wc2026v6_results3', JSON.stringify(RESULTS)); }
