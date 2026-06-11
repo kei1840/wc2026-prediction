@@ -1094,8 +1094,30 @@ function renderBookmaker() {
     </div>`;
   }).join('');
 
+  const bkt = bk.b24+bk.scorer_early+bk.champ_early+bk.b8+bk.scorer+bk.champ;
+  const bat = ba.b24+ba.scorer_early+ba.champ_early+ba.b8+ba.scorer+ba.champ;
+  const draw = bkt === bat;
+
   el.innerHTML = `
-    <div style="font-size:0.75rem;color:var(--muted);margin-bottom:14px">出典：${BOOKMAKER.source}</div>
+    <div style="font-size:0.75rem;color:var(--muted);margin-bottom:12px">出典：${BOOKMAKER.source}　※ブックメーカー予想が全的中した場合の仮想スコア</div>
+    <div class="score-board" style="margin-bottom:20px">
+      ${['kei','akacello'].map(p => {
+        const bm = p==='kei' ? bk : ba, bt = p==='kei' ? bkt : bat;
+        const win = !draw && (p==='kei' ? bkt > bat : bat > bkt);
+        return `<div class="score-card ${win?'winner':''}">
+          <div class="pname">${p==='kei'?'Kei':'akacello'} ${win?'👑':''}</div>
+          <div class="total">${bt}<small style="font-size:1rem;color:var(--muted)">/75</small></div>
+          <div class="breakdown">
+            グループ突破：<span>${bm.b24}点/24点</span><br>
+            ⭐得点王ボーナス：<span>${bm.scorer_early}点/7点</span><br>
+            🔮優勝国早期ボーナス：<span>${bm.champ_early}点/5点</span><br>
+            ベスト8：<span>${bm.b8}点/24点</span><br>
+            得点王：<span>${bm.scorer}点/5点</span><br>
+            優勝予想：<span>${bm.champ}点/5点</span>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
 
     <div class="stage-label">① グループ突破予想（各グループ2チーム）</div>
     <div style="margin-bottom:4px">${b24Groups}</div>
