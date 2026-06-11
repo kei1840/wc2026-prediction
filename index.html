@@ -915,7 +915,6 @@ function renderScores() {
 
   const hasPred = state.predictions.kei.b24.length > 0 || state.predictions.akacello.b24.length > 0;
   document.getElementById('no-data-msg').style.display = hasPred ? 'none' : 'block';
-  if (!hasPred) return;
 
   renderBookmaker();
 }
