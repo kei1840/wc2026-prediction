@@ -935,7 +935,7 @@ function renderBookmaker() {
       const hits = picks.filter(t => BOOKMAKER.b24.includes(t.n));
       const miss = picks.filter(t => !BOOKMAKER.b24.includes(t.n));
       return `<div style="margin-bottom:6px">
-        <span style="font-size:0.7rem;color:var(--accent);font-weight:700">G${g.name} </span>
+        <span style="font-size:0.7rem;color:var(--accent);font-weight:700">G${g.g} </span>
         ${hits.map(t=>`<span class="team-pill hit">${t.f} ${t.n}</span>`).join('')}
         ${miss.map(t=>`<span class="team-pill miss">${t.f} ${t.n}</span>`).join('')}
       </div>`;
