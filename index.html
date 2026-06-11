@@ -356,7 +356,7 @@
 
   <!-- ブックメーカー予想セクション -->
   <div class="card" style="margin-top:8px">
-    <h3>📈 ブックメーカー予想との比較</h3>
+    <h3>📈 ブックメーカー予想</h3>
     <div id="bm-section"></div>
   </div>
 
@@ -1072,65 +1072,36 @@ function renderScores() {
 }
 
 function renderBookmaker() {
-  const bk = calcBMScore('kei'), ba = calcBMScore('akacello');
-  const bkt = bk.b24+bk.scorer_early+bk.champ_early+bk.b8+bk.scorer+bk.champ;
-  const bat = ba.b24+ba.scorer_early+ba.champ_early+ba.b8+ba.scorer+ba.champ;
-  const draw = bkt === bat;
-
-  // グループ別ヒット詳細
-  function bmDetail(player) {
-    const p = state.predictions[player];
-    return GROUPS.map(g => {
-      const bmTeams = g.teams.filter(t => BOOKMAKER.b24.includes(t.n));
-      const picks = g.teams.filter(t => p.b24.includes(t.n));
-      const hits = picks.filter(t => BOOKMAKER.b24.includes(t.n));
-      const miss = picks.filter(t => !BOOKMAKER.b24.includes(t.n));
-      return `<div style="margin-bottom:6px">
-        <span style="font-size:0.7rem;color:var(--accent);font-weight:700">G${g.g} </span>
-        ${hits.map(t=>`<span class="team-pill hit">${t.f} ${t.n}</span>`).join('')}
-        ${miss.map(t=>`<span class="team-pill miss">${t.f} ${t.n}</span>`).join('')}
-      </div>`;
-    }).join('');
-  }
-
   const el = document.getElementById('bm-section');
   if (!el) return;
 
+  const b24Groups = GROUPS.map(g => {
+    const picks = g.teams.filter(t => BOOKMAKER.b24.includes(t.n));
+    return `<div style="margin-bottom:6px">
+      <span style="font-size:0.72rem;color:var(--accent);font-weight:700;margin-right:4px">G${g.g}</span>
+      ${picks.map(t => `<span class="team-pill hit">${t.f} ${t.n}</span>`).join('')}
+    </div>`;
+  }).join('');
+
   el.innerHTML = `
-    <div style="margin-bottom:12px;font-size:0.78rem;color:var(--muted)">
-      📊 ブックメーカー予想が的中した場合の仮想スコアです。<br>
-      出典：${BOOKMAKER.source}｜優勝：${BOOKMAKER.champ[0]} 🇪🇸｜得点王：${BOOKMAKER.scorer} ${BOOKMAKER.scorer_flag}
+    <div style="font-size:0.75rem;color:var(--muted);margin-bottom:14px">出典：${BOOKMAKER.source}</div>
+
+    <div class="stage-label">① グループ突破予想（各グループ2チーム）</div>
+    <div style="margin-bottom:16px">${b24Groups}</div>
+
+    <div class="stage-label">⭐ 得点王ボーナス予想</div>
+    <div style="margin-bottom:16px">
+      <span class="team-pill hit">${BOOKMAKER.scorer_flag} ${BOOKMAKER.scorer_early}</span>
     </div>
-    <div class="score-board" style="margin-bottom:16px">
-      ${['kei','akacello'].map(p => {
-        const bm = p==='kei' ? bk : ba, bt = p==='kei' ? bkt : bat;
-        const win = p==='kei' ? bkt >= bat : bat >= bkt;
-        return `<div class="score-card ${win&&!draw?'winner':''}">
-          <div class="pname">${p==='kei'?'Kei':'akacello'} ${win&&!draw?'👑':''}</div>
-          <div class="total">${bt}<small style="font-size:1rem;color:var(--muted)">/75</small></div>
-          <div class="breakdown">
-            グループ突破：<span>${bm.b24}点/24点</span><br>
-            ⭐得点王ボーナス：<span>${bm.scorer_early}点/7点</span><br>
-            🔮優勝国早期ボーナス：<span>${bm.champ_early}点/5点</span><br>
-            ベスト8：<span>${bm.b8}点/24点</span><br>
-            得点王：<span>${bm.scorer}点/5点</span><br>
-            優勝予想：<span>${bm.champ}点/5点</span>
-          </div>
-        </div>`;
-      }).join('')}
+
+    <div class="stage-label">🔮 優勝国早期ボーナス予想</div>
+    <div style="margin-bottom:16px">
+      <span class="team-pill hit">${BOOKMAKER.champ_early_flag} ${BOOKMAKER.champ_early}</span>
     </div>
-    <div class="compare-grid">
-      ${['kei','akacello'].map(p => `
-        <div class="cplayer">
-          <h3>${p==='kei'?'Kei':'akacello'}</h3>
-          <div class="stage-label">① グループ突破（ブックメーカーとの一致）</div>
-          ${bmDetail(p)}
-          <div class="stage-label">⭐ 得点王ボーナス</div>
-          <span class="team-pill ${state.predictions[p].scorer_early===BOOKMAKER.scorer_early?'hit':'miss'}">
-            ${state.predictions[p].scorer_early||'未入力'} ${state.predictions[p].scorer_early_flag||''} ${state.predictions[p].scorer_early===BOOKMAKER.scorer_early?'✓':'✗'}
-          </span>
-        </div>
-      `).join('')}
+
+    <div class="stage-label">④ 優勝予想</div>
+    <div style="margin-bottom:4px">
+      <span class="team-pill hit">${teamFlag(BOOKMAKER.champ[0])} ${BOOKMAKER.champ[0]}</span>
     </div>
   `;
 }
