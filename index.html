@@ -171,6 +171,18 @@
           <td>的中 <strong>+7点</strong></td>
         </tr>
         <tr>
+          <td><strong>　🔮優勝国早期ボーナス</strong></td>
+          <td>①と同時に優勝国を予想（任意）</td>
+          <td style="white-space:nowrap;color:var(--accent)">6/11</td>
+          <td>的中 <strong>+5点</strong></td>
+        </tr>
+        <tr>
+          <td><strong>　⏱長友出場時間</strong></td>
+          <td>長友の大会通算出場分数を予想（近い方が勝ち）</td>
+          <td style="white-space:nowrap;color:var(--accent)">6/11</td>
+          <td>近い方 <strong>+5点</strong></td>
+        </tr>
+        <tr>
           <td><strong>② ベスト8</strong></td>
           <td>準々決勝に残る8チームを予想</td>
           <td style="white-space:nowrap;color:var(--accent)">7/17<br><small>QF前</small></td>
@@ -190,7 +202,7 @@
         </tr>
       </tbody>
     </table></div>
-    <p style="margin-top:12px;font-size:0.8rem;color:var(--muted)">合計最大：<strong style="color:var(--text)">65点</strong>（24 + 7 + 24 + 5 + 5）</p>
+    <p style="margin-top:12px;font-size:0.8rem;color:var(--muted)">合計最大：<strong style="color:var(--text)">75点</strong>（24 + 7 + 5 + 5 + 24 + 5 + 5）</p>
   </div>
 
   <div class="card">
@@ -235,6 +247,32 @@
         <button onclick="clearScorerEarly()" style="padding:8px 12px;background:none;border:1.5px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:0.8rem;white-space:nowrap;flex-shrink:0">クリア</button>
       </div>
       <div style="margin-top:6px;font-size:0.78rem">入力：<span id="scorer-early-badge" class="badge">未入力</span></div>
+    </div>
+
+    <!-- ①内：優勝国早期ボーナス -->
+    <div style="background:rgba(100,200,120,0.06);border:1px solid rgba(100,200,120,0.25);border-radius:8px;padding:12px;margin-bottom:8px">
+      <div style="font-size:0.82rem;font-weight:700;color:#6ec87a;margin-bottom:8px">🔮 優勝国早期ボーナス予想　<small style="color:var(--muted);font-weight:400">締切：6/11・的中で+5点</small></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div id="champ-early-flag-wrap"></div>
+        <input id="champ-early-input" type="text" placeholder="例：スペイン、フランス、ブラジル..." maxlength="40"
+          style="flex:1;padding:9px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:0.88rem;outline:none"
+          oninput="onChampEarlyInput()" onfocus="this.style.borderColor='#6ec87a'" onblur="this.style.borderColor='var(--border)'">
+        <button onclick="clearChampEarly()" style="padding:8px 12px;background:none;border:1.5px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:0.8rem;white-space:nowrap;flex-shrink:0">クリア</button>
+      </div>
+      <div style="margin-top:6px;font-size:0.78rem">入力：<span id="champ-early-badge" class="badge">未入力</span></div>
+    </div>
+
+    <!-- ①内：長友出場時間ボーナス -->
+    <div style="background:rgba(100,160,255,0.06);border:1px solid rgba(100,160,255,0.25);border-radius:8px;padding:12px;margin-bottom:12px">
+      <div style="font-size:0.82rem;font-weight:700;color:#7ab4ff;margin-bottom:8px">⏱ 長友出場時間ボーナス　<small style="color:var(--muted);font-weight:400">大会通算分数・近い方が+5点</small></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="nagatomo-input" type="number" placeholder="例：180" min="0" max="600"
+          style="flex:1;padding:9px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:0.88rem;outline:none"
+          oninput="onNagatomoInput()" onfocus="this.style.borderColor='#7ab4ff'" onblur="this.style.borderColor='var(--border)'">
+        <span style="color:var(--muted);font-size:0.85rem;white-space:nowrap">分</span>
+        <button onclick="clearNagatomo()" style="padding:8px 12px;background:none;border:1.5px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:0.8rem;white-space:nowrap;flex-shrink:0">クリア</button>
+      </div>
+      <div style="margin-top:6px;font-size:0.78rem">入力：<span id="nagatomo-badge" class="badge">未入力</span></div>
     </div>
 
     <div id="b24-grid"></div>
@@ -301,6 +339,16 @@
       <span style="color:var(--border)">｜</span>
       <span>🤖 自動更新: 毎朝8時（ウェブ検索）</span>
     </div>
+  </div>
+
+  <!-- 長友出場時間・実績入力（管理者用） -->
+  <div id="nagatomo-admin-wrap" style="display:none;background:rgba(100,160,255,0.06);border:1px solid rgba(100,160,255,0.25);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.82rem">
+    <span style="color:var(--muted)">⏱ 長友 実際の出場分数：</span>
+    <input id="nagatomo-actual-input" type="number" min="0" max="690" placeholder="0"
+      style="width:64px;padding:4px 6px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;text-align:right"
+      oninput="onNagatomoActualInput()">
+    <span style="color:var(--muted)"> 分</span>
+    <span id="nagatomo-actual-status" style="margin-left:8px;color:var(--muted)"></span>
   </div>
 
   <div class="score-board" id="score-board"></div>
@@ -378,7 +426,7 @@ function makeFlagPicker(currentFlag, onChange) {
   return wrap;
 }
 
-let RESULTS = { b24:[], b8:[], scorer:'', scorer_flag:'', champ:[] };
+let RESULTS = { b24:[], b8:[], scorer:'', scorer_flag:'', champ:[], nagatomo_actual:null };
 
 // ブックメーカー予想（Yahoo Sports / FOX Sports / Oddschecker 集計）
 const BOOKMAKER = {
@@ -387,6 +435,7 @@ const BOOKMAKER = {
   scorer: 'ムバッペ', scorer_flag: '🇫🇷',
   scorer_early: 'ムバッペ', scorer_early_flag: '🇫🇷',
   b8: [], // ベスト8はまだ予想なし
+  champ_early: 'スペイン', champ_early_flag: '🇪🇸',
   champ: ['スペイン'],
 };
 
@@ -400,12 +449,12 @@ function saveResults() { localStorage.setItem('wc2026v6_results3', JSON.stringif
 
 let state = {
   predictions: {
-    kei:      {b24:[], scorer_early:'', scorer_early_flag:'', b8:[], scorer:'', scorer_flag:'', champ:[]},
-    akacello: {b24:[], scorer_early:'', scorer_early_flag:'', b8:[], scorer:'', scorer_flag:'', champ:[]},
+    kei:      {b24:[], scorer_early:'', scorer_early_flag:'', champ_early:'', champ_early_flag:'', nagatomo:'', b8:[], scorer:'', scorer_flag:'', champ:[]},
+    akacello: {b24:[], scorer_early:'', scorer_early_flag:'', champ_early:'', champ_early_flag:'', nagatomo:'', b8:[], scorer:'', scorer_flag:'', champ:[]},
   },
 };
 
-let curPlayer = {b24:'kei', b8:'kei', scorer:'kei', champ:'kei'};
+let curPlayer = {b24:'kei', b8:'kei', scorer:'kei', champ:'kei', champ_early:'kei'};
 
 const AKACELLO_SEED = {
   b24: ['メキシコ','チェコ','カナダ','スイス','ブラジル','モロッコ','アメリカ','トルコ','ドイツ','コートジボワール','オランダ','日本','ベルギー','エジプト','スペイン','ウルグアイ','フランス','ノルウェー','アルゼンチン','オーストリア','ポルトガル','コロンビア','イングランド','クロアチア'],
@@ -569,6 +618,8 @@ function switchPlayer(stage, player, tabEl) {
   if (stage === 'b24') {
     renderB24Grid(player);
     renderScorerEarlyInput(player);
+    renderChampEarlyInput(player);
+    renderNagatomoInput(player);
   } else {
     renderGrid(stage === 'b8' ? 'b8-grid' : 'champ-grid', stage);
   }
@@ -612,6 +663,83 @@ function renderScorerEarlyInput(player) {
     }));
   }
   updateScorerEarlyBadge();
+}
+
+// 優勝国早期ボーナス（6/11）
+function onChampEarlyInput() {
+  const val = document.getElementById('champ-early-input').value.trim();
+  state.predictions[curPlayer.b24].champ_early = val;
+  updateChampEarlyBadge();
+  updateTemplate();
+}
+function clearChampEarly() {
+  state.predictions[curPlayer.b24].champ_early = '';
+  state.predictions[curPlayer.b24].champ_early_flag = '';
+  const input = document.getElementById('champ-early-input');
+  if (input) input.value = '';
+  updateChampEarlyBadge();
+  updateTemplate();
+}
+function updateChampEarlyBadge() {
+  const el = document.getElementById('champ-early-badge');
+  if (!el) return;
+  const p = state.predictions[curPlayer.b24];
+  const val = p.champ_early, flag = p.champ_early_flag || '';
+  el.textContent = val ? `${val} ${flag}`.trim() : '未入力';
+  el.className = 'badge' + (val ? ' ok' : '');
+}
+function renderChampEarlyInput(player) {
+  const p = player || curPlayer.b24;
+  const input = document.getElementById('champ-early-input');
+  if (input) input.value = state.predictions[p].champ_early || '';
+  const pickerWrap = document.getElementById('champ-early-flag-wrap');
+  if (pickerWrap) {
+    pickerWrap.innerHTML = '';
+    pickerWrap.appendChild(makeFlagPicker(state.predictions[p].champ_early_flag, (f) => {
+      state.predictions[curPlayer.b24].champ_early_flag = f;
+      updateChampEarlyBadge();
+      updateTemplate();
+    }));
+  }
+  updateChampEarlyBadge();
+}
+
+// 長友出場時間ボーナス
+function onNagatomoInput() {
+  const val = document.getElementById('nagatomo-input').value.trim();
+  state.predictions[curPlayer.b24].nagatomo = val;
+  updateNagatomoBadge();
+  updateTemplate();
+}
+function clearNagatomo() {
+  state.predictions[curPlayer.b24].nagatomo = '';
+  const input = document.getElementById('nagatomo-input');
+  if (input) input.value = '';
+  updateNagatomoBadge();
+  updateTemplate();
+}
+function updateNagatomoBadge() {
+  const el = document.getElementById('nagatomo-badge');
+  if (!el) return;
+  const val = state.predictions[curPlayer.b24].nagatomo;
+  el.textContent = val !== '' && val !== undefined ? `${val}分` : '未入力';
+  el.className = 'badge' + (val !== '' && val !== undefined ? ' ok' : '');
+}
+function renderNagatomoInput(player) {
+  const p = player || curPlayer.b24;
+  const input = document.getElementById('nagatomo-input');
+  if (input) input.value = state.predictions[p].nagatomo || '';
+  updateNagatomoBadge();
+}
+
+// 長友 実績入力（管理者）
+function onNagatomoActualInput() {
+  const val = document.getElementById('nagatomo-actual-input').value.trim();
+  RESULTS.nagatomo_actual = val !== '' ? parseInt(val) : null;
+  saveResults();
+  const st = document.getElementById('nagatomo-actual-status');
+  if (st) st.textContent = val !== '' ? `✅ ${val}分 で保存` : '';
+  renderScores();
 }
 
 // 得点王（7/10）
@@ -668,6 +796,8 @@ function updateTemplate() {
     return `  G${g.g}: ${sels.length ? sels.map(t=>t.f+' '+t.n).join('・') : '（未選択）'}`;
   }).join('\n');
   const scorerEarly = p.scorer_early ? `${p.scorer_early}${p.scorer_early_flag?' '+p.scorer_early_flag:''}` : '（未入力）';
+  const champEarly = p.champ_early ? `${p.champ_early_flag?p.champ_early_flag+' ':''}${p.champ_early}` : '（未入力）';
+  const nagatomo = p.nagatomo !== '' && p.nagatomo !== undefined ? `${p.nagatomo}分` : '（未入力）';
   const b8Lines = p.b8.length > 0 ? p.b8.map((t,i) => `  ${i+1}. ${teamFlag(t)} ${t}`).join('\n') : '  （未選択）';
   const scorer = p.scorer ? `${p.scorer}${p.scorer_flag?' '+p.scorer_flag:''}` : '（未入力）';
   const champ = p.champ[0] ? `${teamFlag(p.champ[0])} ${p.champ[0]}` : '（未選択）';
@@ -681,6 +811,12 @@ ${b24Lines}
 
 【⭐ 得点王ボーナス予想】締切：6/11（+7点）
   ${scorerEarly}
+
+【🔮 優勝国早期ボーナス】締切：6/11（+5点）
+  ${champEarly}
+
+【⏱ 長友出場時間ボーナス】大会通算分数（+5点）
+  ${nagatomo}
 
 ━━━━━━━━━━━━━━━━━━━━
 【② ベスト8】締切：7/17
@@ -874,12 +1010,27 @@ async function fetchResults() {
   }
 }
 
+// 長友出場時間ボーナス（closer wins, draw = both win）
+function nagatomoWinner() {
+  if (RESULTS.nagatomo_actual == null) return null;
+  const kp = parseInt(state.predictions.kei.nagatomo) || 0;
+  const ap = parseInt(state.predictions.akacello.nagatomo) || 0;
+  const kd = Math.abs(kp - RESULTS.nagatomo_actual);
+  const ad = Math.abs(ap - RESULTS.nagatomo_actual);
+  if (kd < ad) return 'kei';
+  if (ad < kd) return 'akacello';
+  return 'draw';
+}
+
 // スコア
 function calcScore(player) {
   const p = state.predictions[player];
-  let s = {b24:0, scorer_early:0, b8:0, scorer:0, champ:0};
+  let s = {b24:0, scorer_early:0, champ_early:0, b8:0, scorer:0, champ:0, nagatomo:0};
   if (RESULTS.b24.length) p.b24.forEach(t => { if (RESULTS.b24.includes(t)) s.b24 += POINTS.b24; });
   if (RESULTS.scorer && p.scorer_early) s.scorer_early = RESULTS.scorer === p.scorer_early ? 7 : 0;
+  if (RESULTS.champ.length && p.champ_early) s.champ_early = RESULTS.champ[0] === p.champ_early ? 5 : 0;
+  const nw = nagatomoWinner();
+  if (nw === player || nw === 'draw') s.nagatomo = 5;
   if (RESULTS.b8.length) p.b8.forEach(t => { if (RESULTS.b8.includes(t)) s.b8 += POINTS.b8; });
   if (RESULTS.scorer && p.scorer) s.scorer = RESULTS.scorer === p.scorer ? 5 : 0;
   if (RESULTS.champ.length && p.champ.length) s.champ = RESULTS.champ[0] === p.champ[0] ? POINTS.champ : 0;
@@ -889,9 +1040,10 @@ function calcScore(player) {
 // ブックメーカー仮想スコア
 function calcBMScore(player) {
   const p = state.predictions[player];
-  let s = {b24:0, scorer_early:0, b8:0, scorer:0, champ:0};
+  let s = {b24:0, scorer_early:0, champ_early:0, b8:0, scorer:0, champ:0, nagatomo:0};
   p.b24.forEach(t => { if (BOOKMAKER.b24.includes(t)) s.b24 += POINTS.b24; });
   if (p.scorer_early) s.scorer_early = p.scorer_early === BOOKMAKER.scorer_early ? 7 : 0;
+  if (p.champ_early) s.champ_early = p.champ_early === BOOKMAKER.champ_early ? 5 : 0;
   if (BOOKMAKER.b8.length) p.b8.forEach(t => { if (BOOKMAKER.b8.includes(t)) s.b8 += POINTS.b8; });
   if (p.scorer) s.scorer = p.scorer === BOOKMAKER.scorer ? 5 : 0;
   if (p.champ.length) s.champ = p.champ[0] === BOOKMAKER.champ[0] ? POINTS.champ : 0;
@@ -900,7 +1052,7 @@ function calcBMScore(player) {
 
 function renderScores() {
   const ks = calcScore('kei'), as = calcScore('akacello');
-  const kt = ks.b24+ks.scorer_early+ks.b8+ks.scorer+ks.champ, at = as.b24+as.scorer_early+as.b8+as.scorer+as.champ;
+  const kt = ks.b24+ks.scorer_early+ks.champ_early+ks.nagatomo+ks.b8+ks.scorer+ks.champ, at = as.b24+as.scorer_early+as.champ_early+as.nagatomo+as.b8+as.scorer+as.champ;
   const draw = kt === at;
 
   document.getElementById('score-board').innerHTML = ['kei','akacello'].map(p => {
@@ -908,8 +1060,8 @@ function renderScores() {
     const win = p==='kei' ? kt >= at : at >= kt;
     return `<div class="score-card ${win&&!draw?'winner':''}">
       <div class="pname">${p==='kei'?'Kei':'akacello'} ${win&&!draw?'👑':''}</div>
-      <div class="total">${t}<small style="font-size:1rem;color:var(--muted)">/65</small></div>
-      <div class="breakdown">グループ突破：<span>${s.b24}点/24点</span><br>⭐得点王ボーナス：<span>${s.scorer_early}点/7点</span><br>ベスト8：<span>${s.b8}点/24点</span><br>得点王：<span>${s.scorer}点/5点</span><br>優勝予想：<span>${s.champ}点/5点</span></div>
+      <div class="total">${t}<small style="font-size:1rem;color:var(--muted)">/75</small></div>
+      <div class="breakdown">グループ突破：<span>${s.b24}点/24点</span><br>⭐得点王ボーナス：<span>${s.scorer_early}点/7点</span><br>🔮優勝国早期ボーナス：<span>${s.champ_early}点/5点</span><br>⏱長友ボーナス：<span>${s.nagatomo}点/5点</span><br>ベスト8：<span>${s.b8}点/24点</span><br>得点王：<span>${s.scorer}点/5点</span><br>優勝予想：<span>${s.champ}点/5点</span></div>
     </div>`;
   }).join('');
 
@@ -921,8 +1073,8 @@ function renderScores() {
 
 function renderBookmaker() {
   const bk = calcBMScore('kei'), ba = calcBMScore('akacello');
-  const bkt = bk.b24+bk.scorer_early+bk.b8+bk.scorer+bk.champ;
-  const bat = ba.b24+ba.scorer_early+ba.b8+ba.scorer+ba.champ;
+  const bkt = bk.b24+bk.scorer_early+bk.champ_early+bk.b8+bk.scorer+bk.champ;
+  const bat = ba.b24+ba.scorer_early+ba.champ_early+ba.b8+ba.scorer+ba.champ;
   const draw = bkt === bat;
 
   // グループ別ヒット詳細
@@ -955,10 +1107,11 @@ function renderBookmaker() {
         const win = p==='kei' ? bkt >= bat : bat >= bkt;
         return `<div class="score-card ${win&&!draw?'winner':''}">
           <div class="pname">${p==='kei'?'Kei':'akacello'} ${win&&!draw?'👑':''}</div>
-          <div class="total">${bt}<small style="font-size:1rem;color:var(--muted)">/65</small></div>
+          <div class="total">${bt}<small style="font-size:1rem;color:var(--muted)">/75</small></div>
           <div class="breakdown">
             グループ突破：<span>${bm.b24}点/24点</span><br>
             ⭐得点王ボーナス：<span>${bm.scorer_early}点/7点</span><br>
+            🔮優勝国早期ボーナス：<span>${bm.champ_early}点/5点</span><br>
             ベスト8：<span>${bm.b8}点/24点</span><br>
             得点王：<span>${bm.scorer}点/5点</span><br>
             優勝予想：<span>${bm.champ}点/5点</span>
@@ -985,8 +1138,8 @@ function renderBookmaker() {
 // ホーム
 function renderHome() {
   const ks = calcScore('kei'), as = calcScore('akacello');
-  const kt = ks.b24+ks.scorer_early+ks.b8+ks.scorer+ks.champ;
-  const at = as.b24+as.scorer_early+as.b8+as.scorer+as.champ;
+  const kt = ks.b24+ks.scorer_early+ks.champ_early+ks.nagatomo+ks.b8+ks.scorer+ks.champ;
+  const at = as.b24+as.scorer_early+as.champ_early+as.nagatomo+as.b8+as.scorer+as.champ;
   const draw = kt === at;
 
   // スコアボード
@@ -995,10 +1148,12 @@ function renderHome() {
     const win = p==='kei' ? kt >= at : at >= kt;
     return `<div class="score-card ${win&&!draw?'winner':''}">
       <div class="pname">${p==='kei'?'Kei':'akacello'} ${win&&!draw?'👑':''}</div>
-      <div class="total">${t}<small style="font-size:1rem;color:var(--muted)">/65</small></div>
+      <div class="total">${t}<small style="font-size:1rem;color:var(--muted)">/75</small></div>
       <div class="breakdown">
         グループ突破：<span>${s.b24}点/24点</span><br>
         ⭐得点王ボーナス：<span>${s.scorer_early}点/7点</span><br>
+        🔮優勝国早期ボーナス：<span>${s.champ_early}点/5点</span><br>
+        ⏱長友ボーナス：<span>${s.nagatomo}点/5点</span><br>
         ベスト8：<span>${s.b8}点/24点</span><br>
         得点王：<span>${s.scorer}点/5点</span><br>
         優勝予想：<span>${s.champ}点/5点</span>
@@ -1077,6 +1232,14 @@ function showView(id, btn) {
     // 開幕済み（6/11〜）：常に表示
     const wrap = document.getElementById('fetch-wrap');
     if (wrap) wrap.style.display = 'flex';
+    const nagAdmin = document.getElementById('nagatomo-admin-wrap');
+    if (nagAdmin) {
+      nagAdmin.style.display = 'flex';
+      nagAdmin.style.alignItems = 'center';
+      nagAdmin.style.gap = '6px';
+      const input = document.getElementById('nagatomo-actual-input');
+      if (input && RESULTS.nagatomo_actual != null) input.value = RESULTS.nagatomo_actual;
+    }
     renderCompare(); renderScores();
   }
   if (id === 'schedule') renderSchedule();
@@ -1088,6 +1251,8 @@ loadResults();
 renderHome();
 renderB24Grid(curPlayer.b24);
 renderScorerEarlyInput(curPlayer.b24);
+renderChampEarlyInput(curPlayer.b24);
+renderNagatomoInput(curPlayer.b24);
 renderGrid('b8-grid', 'b8');
 renderScorerInput();
 renderGrid('champ-grid', 'champ');
