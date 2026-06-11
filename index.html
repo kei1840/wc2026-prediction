@@ -1075,11 +1075,22 @@ function renderBookmaker() {
   const el = document.getElementById('bm-section');
   if (!el) return;
 
+  const bk = calcBMScore('kei'), ba = calcBMScore('akacello');
+
+  function pts(kVal, aVal) {
+    return `<span style="font-size:0.75rem;color:var(--muted);margin-left:8px">
+      Kei <strong style="color:var(--text)">${kVal}点</strong>　akacello <strong style="color:var(--text)">${aVal}点</strong>
+    </span>`;
+  }
+
   const b24Groups = GROUPS.map(g => {
     const picks = g.teams.filter(t => BOOKMAKER.b24.includes(t.n));
-    return `<div style="margin-bottom:6px">
-      <span style="font-size:0.72rem;color:var(--accent);font-weight:700;margin-right:4px">G${g.g}</span>
+    const kHits = state.predictions.kei.b24.filter(t => picks.map(p=>p.n).includes(t)).length;
+    const aHits = state.predictions.akacello.b24.filter(t => picks.map(p=>p.n).includes(t)).length;
+    return `<div style="margin-bottom:6px;display:flex;align-items:center;flex-wrap:wrap;gap:4px">
+      <span style="font-size:0.72rem;color:var(--accent);font-weight:700;min-width:24px">G${g.g}</span>
       ${picks.map(t => `<span class="team-pill hit">${t.f} ${t.n}</span>`).join('')}
+      <span style="font-size:0.72rem;color:var(--muted);margin-left:4px">→ Kei <strong style="color:var(--text)">${kHits*POINTS.b24}点</strong> / akacello <strong style="color:var(--text)">${aHits*POINTS.b24}点</strong></span>
     </div>`;
   }).join('');
 
@@ -1087,21 +1098,27 @@ function renderBookmaker() {
     <div style="font-size:0.75rem;color:var(--muted);margin-bottom:14px">出典：${BOOKMAKER.source}</div>
 
     <div class="stage-label">① グループ突破予想（各グループ2チーム）</div>
-    <div style="margin-bottom:16px">${b24Groups}</div>
+    <div style="margin-bottom:4px">${b24Groups}</div>
+    <div style="font-size:0.8rem;margin-bottom:16px;padding:6px 8px;background:rgba(255,255,255,0.04);border-radius:6px">
+      合計　Kei <strong>${bk.b24}点</strong>　akacello <strong>${ba.b24}点</strong>　/24点
+    </div>
 
     <div class="stage-label">⭐ 得点王ボーナス予想</div>
-    <div style="margin-bottom:16px">
+    <div style="margin-bottom:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
       <span class="team-pill hit">${BOOKMAKER.scorer_flag} ${BOOKMAKER.scorer_early}</span>
+      ${pts(bk.scorer_early, ba.scorer_early)}/7点
     </div>
 
     <div class="stage-label">🔮 優勝国早期ボーナス予想</div>
-    <div style="margin-bottom:16px">
+    <div style="margin-bottom:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
       <span class="team-pill hit">${BOOKMAKER.champ_early_flag} ${BOOKMAKER.champ_early}</span>
+      ${pts(bk.champ_early, ba.champ_early)}/5点
     </div>
 
     <div class="stage-label">④ 優勝予想</div>
-    <div style="margin-bottom:4px">
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
       <span class="team-pill hit">${teamFlag(BOOKMAKER.champ[0])} ${BOOKMAKER.champ[0]}</span>
+      ${pts(bk.champ, ba.champ)}/5点
     </div>
   `;
 }
