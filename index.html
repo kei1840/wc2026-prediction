@@ -983,6 +983,16 @@ async function fetchResults() {
           const jaName = EN_TO_JA[enName];
           if (jaName && !newB24.includes(jaName)) newB24.push(jaName);
         });
+      } else {
+        // 2試合消化済みで勝ち点6（2勝）= 数学的に突破確定
+        const getPts = e => e.stats?.find(s => s.abbreviation === 'PTS' || s.name === 'points')?.value ?? 0;
+        entries.forEach(e => {
+          if (getGP(e) >= 2 && getPts(e) >= 6) {
+            const enName = e.team?.displayName || e.team?.name || '';
+            const jaName = EN_TO_JA[enName];
+            if (jaName && !newB24.includes(jaName)) newB24.push(jaName);
+          }
+        });
       }
     });
 
