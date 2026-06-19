@@ -439,11 +439,17 @@ const BOOKMAKER = {
   champ: ['スペイン'],
 };
 
+// 突破確定チーム（手動確定分）
+const CONFIRMED_B24 = ['メキシコ'];
+
 function loadResults() {
   // 古いキーを削除（誤データのクリーンアップ）
   localStorage.removeItem('wc2026v6_results');
   localStorage.removeItem('wc2026v6_results2');
   try { const s = localStorage.getItem('wc2026v6_results3'); if(s) RESULTS = JSON.parse(s); } catch(e) {}
+  // 確定チームをマージ
+  CONFIRMED_B24.forEach(t => { if (!RESULTS.b24.includes(t)) RESULTS.b24.push(t); });
+  saveResults();
 }
 function saveResults() { localStorage.setItem('wc2026v6_results3', JSON.stringify(RESULTS)); }
 
