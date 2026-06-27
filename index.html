@@ -931,7 +931,7 @@ function renderCompare() {
 // ESPN英語→日本語チーム名マッピング
 const EN_TO_JA = {
   'Mexico':'メキシコ','South Korea':'韓国','Korea Republic':'韓国','South Africa':'南アフリカ','Czech Republic':'チェコ','Czechia':'チェコ',
-  'Canada':'カナダ','Switzerland':'スイス','Qatar':'カタール','Bosnia and Herzegovina':'ボスニア','Bosnia & Herzegovina':'ボスニア',
+  'Canada':'カナダ','Switzerland':'スイス','Qatar':'カタール','Bosnia and Herzegovina':'ボスニア','Bosnia & Herzegovina':'ボスニア','Bosnia-Herzegovina':'ボスニア',
   'Brazil':'ブラジル','Morocco':'モロッコ','Haiti':'ハイチ','Scotland':'スコットランド',
   'United States':'アメリカ','USA':'アメリカ','Paraguay':'パラグアイ','Australia':'オーストラリア','Turkey':'トルコ',
   'Germany':'ドイツ','Curaçao':'キュラソー',"Curaçao":'キュラソー',"Côte d'Ivoire":'コートジボワール','Ivory Coast':'コートジボワール','Ecuador':'エクアドル',
@@ -980,8 +980,20 @@ async function fetchResults() {
       if (totalGP === 0) return;
       partialGroups++;
 
-      // 全チームが3試合消化済み = グループ完了
-      if (minGP >= 3) {
+      // ADV=1フラグで突破確定チームを取得（ワイルドカード3位も含む）
+      const getADV = e => e.stats?.find(s => s.abbreviation === 'ADV' || s.name === 'advanced')?.value ?? 0;
+      const advEntries = entries.filter(e => getADV(e) === 1);
+
+      if (minGP >= 3 && advEntries.length > 0) {
+        // グループ完了 + ADVフラグあり → ADV=1のチームを全員追加
+        completedGroups++;
+        advEntries.forEach(e => {
+          const enName = e.team?.displayName || e.team?.name || '';
+          const jaName = EN_TO_JA[enName];
+          if (jaName && !newB24.includes(jaName)) newB24.push(jaName);
+        });
+      } else if (minGP >= 3) {
+        // グループ完了だがADVフラグなし → rank上位2チーム
         completedGroups++;
         const sorted = [...entries].sort((a,b) => (a.stats?.find(s=>s.name==='rank')?.value||99) - (b.stats?.find(s=>s.name==='rank')?.value||99));
         sorted.slice(0,2).forEach(e => {
@@ -990,10 +1002,12 @@ async function fetchResults() {
           if (jaName && !newB24.includes(jaName)) newB24.push(jaName);
         });
       } else {
-        // 2試合消化済みで勝ち点6（2勝）= 数学的に突破確定
-        const getPts = e => e.stats?.find(s => s.abbreviation === 'PTS' || s.name === 'points')?.value ?? 0;
+        // 未完了グループ：ADV=1 または 勝ち点6以上で数学的確定
+        const getPts = e => e.stats?.find(s => s.abbreviation === 'P' || s.name === 'points')?.value ?? 0;
         entries.forEach(e => {
-          if (getGP(e) >= 2 && getPts(e) >= 6) {
+          const adv = getADV(e) === 1;
+          const pts6 = getGP(e) >= 2 && getPts(e) >= 6;
+          if (adv || pts6) {
             const enName = e.team?.displayName || e.team?.name || '';
             const jaName = EN_TO_JA[enName];
             if (jaName && !newB24.includes(jaName)) newB24.push(jaName);
