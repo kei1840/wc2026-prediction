@@ -476,6 +476,7 @@ const KEI_SCORER_SEED = {
 };
 
 const KEI_B24_SEED = ['メキシコ','チェコ','スイス','カタール','ブラジル','モロッコ','アメリカ','トルコ','ドイツ','エクアドル','日本','スウェーデン','ベルギー','イラン','スペイン','ウルグアイ','フランス','ノルウェー','アルゼンチン','オーストリア','ポルトガル','コロンビア','イングランド','クロアチア'];
+const KEI_B8_SEED = ['メキシコ','スイス','ブラジル','オランダ','ベルギー','スペイン','フランス','アルゼンチン'];
 
 function loadState() {
   try { const s = localStorage.getItem('wc2026v6'); if(s) state = JSON.parse(s); } catch(e){}
@@ -498,6 +499,9 @@ function loadState() {
   if(!state.predictions.kei.b24 || state.predictions.kei.b24.length === 0) {
     state.predictions.kei.b24 = [...KEI_B24_SEED];
   }
+  // KeiのB8データをシードで更新
+  const ks0 = state.predictions.kei;
+  if(KEI_B8_SEED.length && (!ks0.b8 || ks0.b8.length === 0)) ks0.b8 = [...KEI_B8_SEED];
   // Keiの得点王データを個別にフォールバック（名前だけあって国旗がないケースもカバー）
   const ks = state.predictions.kei;
   if(!ks.scorer_early)       ks.scorer_early       = KEI_SCORER_SEED.scorer_early;
