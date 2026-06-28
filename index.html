@@ -916,7 +916,10 @@ function renderCompare() {
 
     html += `<div class="stage-label">② ベスト8（${p.b8.length}/8）</div>`;
     if (!p.b8.length) html += `<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
-    else p.b8.forEach(t => { const cls = pillClass(t, 'b8'); html += `<span class="team-pill ${cls}">${teamFlag(t)} ${t} ${icon(cls)}</span>`; });
+    else {
+      const b8Sorted = TEAMS.map(t=>t.n).filter(n => p.b8.includes(n));
+      b8Sorted.forEach(t => { const cls = pillClass(t, 'b8'); html += `<span class="team-pill ${cls}">${teamFlag(t)} ${t} ${icon(cls)}</span>`; });
+    }
 
     html += `<div class="stage-label">③ 得点王予想</div>`;
     if (!p.scorer) html += `<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
