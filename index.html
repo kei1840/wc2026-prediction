@@ -350,6 +350,7 @@
     <span id="nagatomo-actual-status" style="margin-left:8px;color:var(--muted)"></span>
   </div>
 
+  <div id="lead-banner" style="display:none;border-radius:12px;padding:12px 18px;margin-bottom:14px;text-align:center;font-size:1.05rem;font-weight:700"></div>
   <div class="score-board" id="score-board"></div>
   <div class="compare-grid" id="compare-grid"></div>
 
@@ -475,7 +476,7 @@ const AKACELLO_SEED = {
 
 const KEI_SCORER_SEED = {
   scorer_early: 'アルバレス', scorer_early_flag: '🇦🇷',
-  scorer: '', scorer_flag: '',
+  scorer: 'ハヴァーツ', scorer_flag: '🇩🇪',
 };
 
 const KEI_B24_SEED = ['メキシコ','チェコ','スイス','カタール','ブラジル','モロッコ','アメリカ','トルコ','ドイツ','エクアドル','日本','スウェーデン','ベルギー','イラン','スペイン','ウルグアイ','フランス','ノルウェー','アルゼンチン','オーストリア','ポルトガル','コロンビア','イングランド','クロアチア'];
@@ -495,9 +496,10 @@ function loadState() {
   }
   // akacelloのb8・scorer・champをシードで強制更新
   const ak = state.predictions.akacello;
-  if(AKACELLO_SEED.b8.length && ak.b8.length === 0) ak.b8 = [...AKACELLO_SEED.b8];
-  if(AKACELLO_SEED.scorer && !ak.scorer) { ak.scorer = AKACELLO_SEED.scorer; ak.scorer_flag = AKACELLO_SEED.scorer_flag; }
-  if(AKACELLO_SEED.nagatomo && !ak.nagatomo) ak.nagatomo = AKACELLO_SEED.nagatomo;
+  // シード値は常に強制セット（localStorageの古い値を上書き）
+  if(AKACELLO_SEED.b8.length) ak.b8 = [...AKACELLO_SEED.b8];
+  if(AKACELLO_SEED.scorer) { ak.scorer = AKACELLO_SEED.scorer; ak.scorer_flag = AKACELLO_SEED.scorer_flag; }
+  ak.nagatomo = AKACELLO_SEED.nagatomo; // 常に強制セット
   saveState();
   // KeiのB24データが消えていたら復元
   if(!state.predictions.kei.b24 || state.predictions.kei.b24.length === 0) {
@@ -506,13 +508,14 @@ function loadState() {
   // KeiのB8データをシードで更新
   const ks0 = state.predictions.kei;
   if(KEI_B8_SEED.length && (!ks0.b8 || ks0.b8.length === 0)) ks0.b8 = [...KEI_B8_SEED];
-  if(!ks0.nagatomo) ks0.nagatomo = '45';
+  ks0.nagatomo = '45'; // 常に強制セット
   // Keiの得点王データを個別にフォールバック（名前だけあって国旗がないケースもカバー）
   const ks = state.predictions.kei;
-  if(!ks.scorer_early)       ks.scorer_early       = KEI_SCORER_SEED.scorer_early;
-  if(!ks.scorer_early_flag)  ks.scorer_early_flag  = KEI_SCORER_SEED.scorer_early_flag;
-  // ③得点王（締切7/10）は旧シード値「ハヴァーツ」が入っていた場合はクリア
-  if(ks.scorer === 'ハヴァーツ' && ks.scorer_flag === '🇩🇪') { ks.scorer = ''; ks.scorer_flag = ''; }
+  // Keiの得点王データ：常に強制セット
+  ks.scorer_early      = KEI_SCORER_SEED.scorer_early;
+  ks.scorer_early_flag = KEI_SCORER_SEED.scorer_early_flag;
+  ks.scorer            = KEI_SCORER_SEED.scorer;
+  ks.scorer_flag       = KEI_SCORER_SEED.scorer_flag;
   saveState();
 }
 function saveState() { localStorage.setItem('wc2026v6', JSON.stringify(state)); }
@@ -1114,6 +1117,26 @@ function renderScores() {
 
   const hasPred = state.predictions.kei.b24.length > 0 || state.predictions.akacello.b24.length > 0;
   document.getElementById('no-data-msg').style.display = hasPred ? 'none' : 'block';
+
+  // リードバナー
+  const banner = document.getElementById('lead-banner');
+  if (banner) {
+    if (draw) {
+      banner.style.display = 'block';
+      banner.style.background = 'rgba(255,255,255,0.06)';
+      banner.style.border = '1px solid var(--border)';
+      banner.style.color = 'var(--text)';
+      banner.innerHTML = `🤝 引き分け！　Kei ${kt}点　＝　akacello ${at}点`;
+    } else {
+      const leader = kt > at ? 'Kei' : 'akacello';
+      const diff = Math.abs(kt - at);
+      banner.style.display = 'block';
+      banner.style.background = kt > at ? 'rgba(255,200,50,0.10)' : 'rgba(100,200,255,0.10)';
+      banner.style.border = kt > at ? '1px solid rgba(255,200,50,0.4)' : '1px solid rgba(100,200,255,0.4)';
+      banner.style.color = 'var(--text)';
+      banner.innerHTML = `👑 <strong>${leader}</strong> が <strong style="font-size:1.2rem">${diff}点</strong> リード！　Kei ${kt}点　vs　akacello ${at}点`;
+    }
+  }
 
   renderBookmaker();
 }
