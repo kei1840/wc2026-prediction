@@ -465,7 +465,9 @@ let curPlayer = {b24:'kei', b8:'kei', scorer:'kei', champ:'kei', champ_early:'ke
 const AKACELLO_SEED = {
   b24: ['メキシコ','チェコ','カナダ','スイス','ブラジル','モロッコ','アメリカ','トルコ','ドイツ','コートジボワール','オランダ','日本','ベルギー','エジプト','スペイン','ウルグアイ','フランス','ノルウェー','アルゼンチン','オーストリア','ポルトガル','コロンビア','イングランド','クロアチア'],
   scorer_early: 'ハヴァーツ', scorer_early_flag: '🇩🇪',
-  b8: [], scorer: '', scorer_flag: '', champ: [],
+  b8: ['ドイツ','アルゼンチン','日本','アメリカ','メキシコ','オランダ','スペイン','コロンビア'],
+  scorer: 'メッシ', scorer_flag: '🇦🇷',
+  champ: [], champ_early: '', champ_early_flag: '', nagatomo: '',
 };
 
 const KEI_SCORER_SEED = {
@@ -486,8 +488,12 @@ function loadState() {
   // akacelloのデータが未入力なら初期値をセット
   if(state.predictions.akacello.b24.length === 0) {
     state.predictions.akacello = {...AKACELLO_SEED};
-    saveState();
   }
+  // akacelloのb8・scorer・champをシードで強制更新
+  const ak = state.predictions.akacello;
+  if(AKACELLO_SEED.b8.length && ak.b8.length === 0) ak.b8 = [...AKACELLO_SEED.b8];
+  if(AKACELLO_SEED.scorer && !ak.scorer) { ak.scorer = AKACELLO_SEED.scorer; ak.scorer_flag = AKACELLO_SEED.scorer_flag; }
+  saveState();
   // KeiのB24データが消えていたら復元
   if(!state.predictions.kei.b24 || state.predictions.kei.b24.length === 0) {
     state.predictions.kei.b24 = [...KEI_B24_SEED];
