@@ -130,8 +130,7 @@
 
 <nav>
   <div class="nav-inner">
-    <button class="active" onclick="showView('home',this)">🏠 ホーム</button>
-    <button onclick="showView('result',this)">📊 結果・スコア</button>
+    <button class="active" onclick="showView('result',this)">📊 結果・スコア</button>
     <button onclick="showView('rules',this)">📋 ルール</button>
     <button onclick="showView('schedule',this)">📅 日程</button>
     <button onclick="showView('predict',this)">📝 予想入力</button>
@@ -139,7 +138,7 @@
 </nav>
 
 <!-- ホーム -->
-<div id="home" class="view active">
+<div id="home" class="view" style="display:none">
   <div style="margin:-20px -24px 20px;overflow:hidden;border-radius:0 0 12px 12px">
     <img src="assets/japan-kv.jpg" alt="最高の景色を2026 FOR OUR GREATEST STAGE"
       style="width:100%;display:block;object-fit:cover;height:280px;object-position:center center">
@@ -323,7 +322,7 @@
 </div>
 
 <!-- 結果・スコア（統合） -->
-<div id="result" class="view">
+<div id="result" class="view active">
 
   <!-- 結果取得ボタン（大会開幕後のみ表示） -->
   <div id="fetch-wrap" style="display:none;flex-direction:column;gap:6px;margin-bottom:16px">
@@ -441,6 +440,8 @@ const BOOKMAKER = {
 
 // 突破確定チーム（手動確定分）
 const CONFIRMED_B24 = ['メキシコ'];
+// 長友出場時間（仮：GS3試合終了時点。vsスウェーデン75分〜終了）
+const NAGATOMO_ACTUAL = 17;
 
 function loadResults() {
   // 古いキーを削除（誤データのクリーンアップ）
@@ -449,6 +450,8 @@ function loadResults() {
   try { const s = localStorage.getItem('wc2026v6_results3'); if(s) RESULTS = JSON.parse(s); } catch(e) {}
   // 確定チームをマージ
   CONFIRMED_B24.forEach(t => { if (!RESULTS.b24.includes(t)) RESULTS.b24.push(t); });
+  // 長友出場時間をセット（仮）
+  if (RESULTS.nagatomo_actual == null) RESULTS.nagatomo_actual = NAGATOMO_ACTUAL;
   saveResults();
 }
 function saveResults() { localStorage.setItem('wc2026v6_results3', JSON.stringify(RESULTS)); }
@@ -1300,8 +1303,8 @@ function showView(id, btn) {
 
 loadState();
 loadResults();
-renderHome();
-// 起動時にバックグラウンドで自動取得
+// 起動時にバックグラウンドで自動取得 & result初期描画
+renderCompare(); renderScores();
 fetchResults(true);
 renderB24Grid(curPlayer.b24);
 renderScorerEarlyInput(curPlayer.b24);
