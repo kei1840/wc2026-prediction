@@ -959,12 +959,10 @@ const EN_TO_JA = {
   'England':'イングランド','Croatia':'クロアチア','Ghana':'ガーナ','Panama':'パナマ',
 };
 
-async function fetchResults() {
+async function fetchResults(silent = false) {
   const btn = document.getElementById('fetch-btn');
   const msg = document.getElementById('fetch-msg');
-  btn.disabled = true;
-  btn.innerHTML = '⏳ 取得中...';
-  msg.textContent = '';
+  if (!silent) { btn.disabled = true; btn.innerHTML = '⏳ 取得中...'; msg.textContent = ''; }
 
   try {
     // 開幕前チェック（6/11開幕済み）
@@ -1050,8 +1048,7 @@ async function fetchResults() {
     msg.style.color = 'var(--red)';
     msg.textContent = '取得失敗: ' + e.message;
   } finally {
-    btn.disabled = false;
-    btn.innerHTML = '🔄 最新結果を取得';
+    if (!silent) { btn.disabled = false; btn.innerHTML = '🔄 最新結果を取得'; }
   }
 }
 
@@ -1304,6 +1301,8 @@ function showView(id, btn) {
 loadState();
 loadResults();
 renderHome();
+// 起動時にバックグラウンドで自動取得
+fetchResults(true);
 renderB24Grid(curPlayer.b24);
 renderScorerEarlyInput(curPlayer.b24);
 renderChampEarlyInput(curPlayer.b24);
