@@ -571,12 +571,14 @@ function renderGrid(gridId, stage) {
 
   let pool;
   if (stage === 'b8') {
-    if (RESULTS.b24.length === 0) {
-      grid.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;padding:12px 0">🔒 グループステージ終了後に解放されます</div>';
+    // 自分のb24予想チームを使う（公式結果がなくても入力可能）
+    const myB24 = state.predictions[player].b24;
+    if (myB24.length === 0) {
+      grid.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;padding:12px 0">🔒 ①グループ突破予想を先に入力してください</div>';
       updateFlatCount(stage, selected.length, limit);
       return;
     }
-    pool = TEAMS.filter(t => RESULTS.b24.includes(t.n));
+    pool = TEAMS.filter(t => myB24.includes(t.n));
   } else {
     if (RESULTS.b8.length === 0) {
       grid.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;padding:12px 0">🔒 ベスト8確定後に解放されます</div>';
