@@ -1303,7 +1303,11 @@ function showView(id, btn) {
 
 loadState();
 loadResults();
-// 起動時にバックグラウンドで自動取得 & result初期描画
+// 結果タブをデフォルト表示（fetch-wrap / nagatomo-admin-wrap を表示）
+const _fw = document.getElementById('fetch-wrap');
+if (_fw) _fw.style.display = 'flex';
+const _naw = document.getElementById('nagatomo-admin-wrap');
+if (_naw) { _naw.style.display = 'flex'; _naw.style.alignItems = 'center'; _naw.style.gap = '6px'; const _ni = document.getElementById('nagatomo-actual-input'); if (_ni && RESULTS.nagatomo_actual != null) _ni.value = RESULTS.nagatomo_actual; }
 renderCompare(); renderScores();
 fetchResults(true);
 renderB24Grid(curPlayer.b24);
