@@ -79,9 +79,10 @@
   .score-card .breakdown span { color: var(--text); font-weight: 600; }
 
   .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  table { min-width: 480px; width: 100%; border-collapse: collapse; font-size: 0.82rem; }
   th { padding: 9px 14px; text-align: left; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); white-space: nowrap; }
   td { padding: 8px 14px; border-bottom: 1px solid rgba(42,74,106,0.4); vertical-align: top; }
+  td:first-child { white-space: nowrap; }
   tr:last-child td { border-bottom: none; }
 
   .schedule-section { margin-bottom: 20px; }
@@ -99,6 +100,13 @@
   .round-final { background: rgba(232,200,74,0.3); color: var(--accent); }
 
   .note { background: rgba(232,200,74,0.06); border: 1px solid rgba(232,200,74,0.2); border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+  /* ボーナスBOX - 統一スタイル */
+  .bonus-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+  .bonus-label { font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .bonus-label small { color: var(--muted); font-weight: 400; display: inline; }
+  .bonus-input { flex: 1; padding: 9px 12px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.88rem; outline: none; }
+  .clear-btn { padding: 8px 12px; background: none; border: 1.5px solid var(--border); border-radius: 8px; color: var(--muted); cursor: pointer; font-size: 0.8rem; white-space: nowrap; flex-shrink: 0; }
 
   /* タブレット（601〜900px） */
   @media(min-width:601px) and (max-width:900px) {
@@ -127,8 +135,7 @@
     .cplayer h3 { font-size: 0.88rem; }
     .stage-label { margin: 10px 0 5px; font-size: 0.68rem; }
     .team-pill { font-size: 0.75rem; padding: 3px 8px; }
-    /* 予想入力：ボーナスラベルを2行に */
-    .bonus-label { display: flex; flex-direction: column; gap: 2px; }
+    /* 予想入力：ボーナスラベルの説明を改行 */
     .bonus-label small { display: block; }
     /* 取得ボタン */
     #fetch-btn { white-space: nowrap; font-size: 0.8rem; padding: 8px 12px; }
@@ -254,40 +261,37 @@
     <div class="count-line">選択：<span id="b24-count" class="badge">0 / 24</span></div>
 
     <!-- ①内：得点王ボーナス -->
-    <div style="background:rgba(232,200,74,0.06);border:1px solid rgba(232,200,74,0.25);border-radius:8px;padding:12px;margin-bottom:12px">
-      <div class="bonus-label" style="font-size:0.82rem;font-weight:700;color:var(--accent);margin-bottom:8px">⭐ 得点王ボーナス予想　<small style="color:var(--muted);font-weight:400">締切：6/11・的中で+7点</small></div>
+    <div class="bonus-box">
+      <div class="bonus-label">⭐ 得点王ボーナス予想　<small>締切：6/11・的中で+7点</small></div>
       <div style="display:flex;gap:8px;align-items:center">
         <div id="scorer-early-flag-wrap"></div>
-        <input id="scorer-early-input" type="text" placeholder="例：ムバッペ、ハヴァーツ、三笘..." maxlength="40"
-          style="flex:1;padding:9px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:0.88rem;outline:none"
+        <input id="scorer-early-input" type="text" placeholder="例：ムバッペ、ハヴァーツ、三笘..." maxlength="40" class="bonus-input"
           oninput="onScorerEarlyInput()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
-        <button onclick="clearScorerEarly()" style="padding:8px 12px;background:none;border:1.5px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:0.8rem;white-space:nowrap;flex-shrink:0">クリア</button>
+        <button onclick="clearScorerEarly()" class="clear-btn">クリア</button>
       </div>
       <div style="margin-top:6px;font-size:0.78rem">入力：<span id="scorer-early-badge" class="badge">未入力</span></div>
     </div>
 
     <!-- ①内：優勝国早期ボーナス -->
-    <div style="background:rgba(100,200,120,0.06);border:1px solid rgba(100,200,120,0.25);border-radius:8px;padding:12px;margin-bottom:8px">
-      <div class="bonus-label" style="font-size:0.82rem;font-weight:700;color:#6ec87a;margin-bottom:8px">🔮 優勝国早期ボーナス予想　<small style="color:var(--muted);font-weight:400">締切：6/11・的中で+5点</small></div>
+    <div class="bonus-box">
+      <div class="bonus-label">🔮 優勝国早期ボーナス予想　<small>締切：6/11・的中で+5点</small></div>
       <div style="display:flex;gap:8px;align-items:center">
         <div id="champ-early-flag-wrap"></div>
-        <input id="champ-early-input" type="text" placeholder="例：スペイン、フランス、ブラジル..." maxlength="40"
-          style="flex:1;padding:9px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:0.88rem;outline:none"
-          oninput="onChampEarlyInput()" onfocus="this.style.borderColor='#6ec87a'" onblur="this.style.borderColor='var(--border)'">
-        <button onclick="clearChampEarly()" style="padding:8px 12px;background:none;border:1.5px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:0.8rem;white-space:nowrap;flex-shrink:0">クリア</button>
+        <input id="champ-early-input" type="text" placeholder="例：スペイン、フランス、ブラジル..." maxlength="40" class="bonus-input"
+          oninput="onChampEarlyInput()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        <button onclick="clearChampEarly()" class="clear-btn">クリア</button>
       </div>
       <div style="margin-top:6px;font-size:0.78rem">入力：<span id="champ-early-badge" class="badge">未入力</span></div>
     </div>
 
     <!-- ①内：長友出場時間ボーナス -->
-    <div style="background:rgba(100,160,255,0.06);border:1px solid rgba(100,160,255,0.25);border-radius:8px;padding:12px;margin-bottom:12px">
-      <div class="bonus-label" style="font-size:0.82rem;font-weight:700;color:#7ab4ff;margin-bottom:8px">⏱ 長友出場時間ボーナス　<small style="color:var(--muted);font-weight:400">大会通算分数・近い方が+5点</small></div>
+    <div class="bonus-box">
+      <div class="bonus-label">⏱ 長友出場時間ボーナス　<small>大会通算分数・近い方が+5点</small></div>
       <div style="display:flex;gap:8px;align-items:center">
-        <input id="nagatomo-input" type="number" placeholder="例：180" min="0" max="600"
-          style="flex:1;padding:9px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:0.88rem;outline:none"
-          oninput="onNagatomoInput()" onfocus="this.style.borderColor='#7ab4ff'" onblur="this.style.borderColor='var(--border)'">
+        <input id="nagatomo-input" type="number" placeholder="例：180" min="0" max="600" class="bonus-input"
+          oninput="onNagatomoInput()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
         <span style="color:var(--muted);font-size:0.85rem;white-space:nowrap">分</span>
-        <button onclick="clearNagatomo()" style="padding:8px 12px;background:none;border:1.5px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:0.8rem;white-space:nowrap;flex-shrink:0">クリア</button>
+        <button onclick="clearNagatomo()" class="clear-btn">クリア</button>
       </div>
       <div style="margin-top:6px;font-size:0.78rem">入力：<span id="nagatomo-badge" class="badge">未入力</span></div>
     </div>
@@ -359,7 +363,7 @@
   </div>
 
   <!-- 長友出場時間・実績入力（管理者用） -->
-  <div id="nagatomo-admin-wrap" style="display:none;background:rgba(100,160,255,0.06);border:1px solid rgba(100,160,255,0.25);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.82rem">
+  <div id="nagatomo-admin-wrap" style="display:none;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.82rem">
     <span style="color:var(--muted)">⏱ 長友 実際の出場分数：</span>
     <input id="nagatomo-actual-input" type="number" min="0" max="690" placeholder="0"
       style="width:64px;padding:4px 6px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem;text-align:right"
