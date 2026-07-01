@@ -69,6 +69,7 @@
   .team-pill.hit { border-color: rgba(61,122,88,0.6); color: #6aad8a; background: rgba(61,122,88,0.1); }
   .team-pill.miss { border-color: rgba(138,62,62,0.6); color: #a07070; background: rgba(138,62,62,0.1); }
   .team-pill.pending { border-color: var(--border); color: var(--muted); }
+  .team-pill.eliminated { border-color: rgba(138,62,62,0.3); color: var(--muted); background: rgba(138,62,62,0.05); text-decoration: line-through; opacity: 0.6; }
 
   .score-board { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
   .score-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
@@ -463,8 +464,10 @@ const BOOKMAKER = {
 
 // 突破確定チーム（手動確定分）
 const CONFIRMED_B24 = ['メキシコ'];
-// 長友出場時間（仮：GS3試合終了時点。vsスウェーデン75分〜終了）
+// 長友出場時間（確定：大会通算17分）
 const NAGATOMO_ACTUAL = 17;
+// ベスト8前に敗退確定したチーム（R32/R16敗退）
+const CONFIRMED_OUT_B8 = [];
 
 function loadResults() {
   // 古いキーを削除（誤データのクリーンアップ）
@@ -909,11 +912,13 @@ function renderCompare() {
   grid.innerHTML = '';
 
   function pillClass(team, stage) {
+    // B8・優勝予想：敗退確定チームは即miss（RESULTS確定前でも）
+    if ((stage === 'b8' || stage === 'champ') && CONFIRMED_OUT_B8.includes(team)) return 'eliminated';
     if (!RESULTS[stage].length) return 'pending';
     return RESULTS[stage].includes(team) ? 'hit' : 'miss';
   }
   function icon(cls) {
-    return cls === 'hit' ? '✅' : cls === 'miss' ? '❌' : '';
+    return cls === 'hit' ? '✅' : (cls === 'miss' || cls === 'eliminated') ? '❌' : '';
   }
 
   ['kei', 'akacello'].forEach(player => {
@@ -1133,7 +1138,7 @@ function renderScores() {
     return `<div class="score-card ${win&&!draw?'winner':''}">
       <div class="pname">${p==='kei'?'Kei':'akacello'} ${win&&!draw?'👑':''}</div>
       <div class="total">${t}<small style="font-size:1rem;color:var(--muted)">/75</small></div>
-      <div class="breakdown">グループ突破：<span>${s.b24}点/24点</span><br>⭐得点王ボーナス：<span>${s.scorer_early}点/7点</span><br>🔮優勝国早期ボーナス：<span>${s.champ_early}点/5点</span><br>⏱長友ボーナス：<span>${s.nagatomo}点/5点</span><span style="font-size:0.7rem;color:var(--muted)">（暫定）</span><br>ベスト8：<span>${s.b8}点/24点</span><br>得点王：<span>${s.scorer}点/5点</span><br>優勝予想：<span>${s.champ}点/5点</span></div>
+      <div class="breakdown">グループ突破：<span>${s.b24}点/24点</span><br>⭐得点王ボーナス：<span>${s.scorer_early}点/7点</span><br>🔮優勝国早期ボーナス：<span>${s.champ_early}点/5点</span><br>⏱長友ボーナス：<span>${s.nagatomo}点/5点</span><br>ベスト8：<span>${s.b8}点/24点</span><br>得点王：<span>${s.scorer}点/5点</span><br>優勝予想：<span>${s.champ}点/5点</span></div>
     </div>`;
   }).join('');
 
@@ -1255,7 +1260,7 @@ function renderHome() {
         グループ突破：<span>${s.b24}点/24点</span><br>
         ⭐得点王ボーナス：<span>${s.scorer_early}点/7点</span><br>
         🔮優勝国早期ボーナス：<span>${s.champ_early}点/5点</span><br>
-        ⏱長友ボーナス：<span>${s.nagatomo}点/5点</span><span style="font-size:0.7rem;color:var(--muted)">（暫定）</span><br>
+        ⏱長友ボーナス：<span>${s.nagatomo}点/5点</span><br>
         ベスト8：<span>${s.b8}点/24点</span><br>
         得点王：<span>${s.scorer}点/5点</span><br>
         優勝予想：<span>${s.champ}点/5点</span>
