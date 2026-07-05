@@ -377,12 +377,6 @@
   <div class="score-board" id="score-board"></div>
   <div class="compare-grid" id="compare-grid"></div>
 
-  <!-- ブックメーカー予想セクション -->
-  <div class="card" style="margin-top:8px">
-    <h3>📈 ブックメーカー予想</h3>
-    <div id="bm-section"></div>
-  </div>
-
   <div class="note" id="no-data-msg">まだ予想が保存されていません。「予想入力」タブから入力してください。</div>
 </div>
 
@@ -451,19 +445,14 @@ function makeFlagPicker(currentFlag, onChange) {
 
 let RESULTS = { b24:['メキシコ','南アフリカ','カナダ','スイス','ブラジル','モロッコ','アメリカ','オーストラリア','ドイツ','エクアドル','オランダ','日本','ベルギー','エジプト','スペイン','ウルグアイ','フランス','ノルウェー','アルゼンチン','オーストリア','コロンビア','ポルトガル','イングランド','クロアチア'], b8:['モロッコ','フランス'], scorer:'ムバッペ', scorer_flag:'🇫🇷', champ:[], nagatomo_actual:null };
 
-// ブックメーカー予想（Yahoo Sports / FOX Sports / Oddschecker 集計）
-const BOOKMAKER = {
-  source: 'Yahoo Sports / FOX Sports / Oddschecker',
-  b24: ['メキシコ','南アフリカ','スイス','カナダ','ブラジル','モロッコ','アメリカ','オーストラリア','ドイツ','エクアドル','オランダ','日本','ベルギー','エジプト','スペイン','ウルグアイ','フランス','ノルウェー','アルゼンチン','オーストリア','ポルトガル','コロンビア','イングランド','クロアチア'],
-  scorer: 'ムバッペ', scorer_flag: '🇫🇷',
-  scorer_early: 'ムバッペ', scorer_early_flag: '🇫🇷',
-  b8: ['モロッコ','フランス'], // R16確定分（7/5時点）
-  champ_early: 'スペイン', champ_early_flag: '🇪🇸',
-  champ: ['スペイン'],
-};
 
 // 突破確定チーム（手動確定分）
 const CONFIRMED_B24 = ['メキシコ','南アフリカ','カナダ','スイス','ブラジル','モロッコ','アメリカ','オーストラリア','ドイツ','エクアドル','オランダ','日本','ベルギー','エジプト','スペイン','ウルグアイ','フランス','ノルウェー','アルゼンチン','オーストリア','コロンビア','ポルトガル','イングランド','クロアチア'];
+// QF確定チーム（R16勝者）
+const CONFIRMED_B8 = ['モロッコ','フランス'];
+// 得点王（暫定）
+const CONFIRMED_SCORER = 'ムバッペ';
+const CONFIRMED_SCORER_FLAG = '🇫🇷';
 // 長友出場時間（確定：大会通算17分）
 const NAGATOMO_ACTUAL = 17;
 // ベスト8前に敗退確定したチーム（R32/R16敗退）
@@ -474,9 +463,11 @@ function loadResults() {
   localStorage.removeItem('wc2026v6_results');
   localStorage.removeItem('wc2026v6_results2');
   try { const s = localStorage.getItem('wc2026v6_results3'); if(s) RESULTS = JSON.parse(s); } catch(e) {}
-  // 確定チームをマージ
+  // 確定チームをマージ（localStorageを上書きする定数から強制反映）
   CONFIRMED_B24.forEach(t => { if (!RESULTS.b24.includes(t)) RESULTS.b24.push(t); });
-  // 長友出場時間をセット（仮）
+  CONFIRMED_B8.forEach(t => { if (!RESULTS.b8.includes(t)) RESULTS.b8.push(t); });
+  if (CONFIRMED_SCORER) { RESULTS.scorer = CONFIRMED_SCORER; RESULTS.scorer_flag = CONFIRMED_SCORER_FLAG; }
+  // 長友出場時間をセット
   if (RESULTS.nagatomo_actual == null) RESULTS.nagatomo_actual = NAGATOMO_ACTUAL;
   saveResults();
 }
@@ -1115,19 +1106,6 @@ function calcScore(player) {
   return s;
 }
 
-// ブックメーカー仮想スコア
-function calcBMScore(player) {
-  const p = state.predictions[player];
-  let s = {b24:0, scorer_early:0, champ_early:0, b8:0, scorer:0, champ:0, nagatomo:0};
-  p.b24.forEach(t => { if (BOOKMAKER.b24.includes(t)) s.b24 += POINTS.b24; });
-  if (p.scorer_early) s.scorer_early = p.scorer_early === BOOKMAKER.scorer_early ? 7 : 0;
-  if (p.champ_early) s.champ_early = p.champ_early === BOOKMAKER.champ_early ? 5 : 0;
-  if (BOOKMAKER.b8.length) p.b8.forEach(t => { if (BOOKMAKER.b8.includes(t)) s.b8 += POINTS.b8; });
-  if (p.scorer) s.scorer = p.scorer === BOOKMAKER.scorer ? 5 : 0;
-  if (p.champ.length) s.champ = p.champ[0] === BOOKMAKER.champ[0] ? POINTS.champ : 0;
-  return s;
-}
-
 function renderScores() {
   const ks = calcScore('kei'), as = calcScore('akacello');
   const kt = ks.b24+ks.scorer_early+ks.champ_early+ks.nagatomo+ks.b8+ks.scorer+ks.champ, at = as.b24+as.scorer_early+as.champ_early+as.nagatomo+as.b8+as.scorer+as.champ;
@@ -1166,81 +1144,6 @@ function renderScores() {
     }
   }
 
-  renderBookmaker();
-}
-
-function renderBookmaker() {
-  const el = document.getElementById('bm-section');
-  if (!el) return;
-
-  const bk = calcBMScore('kei'), ba = calcBMScore('akacello');
-
-  function pts(kVal, aVal) {
-    return `<span style="font-size:0.75rem;color:var(--muted);margin-left:8px">
-      Kei <strong style="color:var(--text)">${kVal}点</strong>　akacello <strong style="color:var(--text)">${aVal}点</strong>
-    </span>`;
-  }
-
-  const b24Groups = GROUPS.map(g => {
-    const picks = g.teams.filter(t => BOOKMAKER.b24.includes(t.n));
-    const kHits = state.predictions.kei.b24.filter(t => picks.map(p=>p.n).includes(t)).length;
-    const aHits = state.predictions.akacello.b24.filter(t => picks.map(p=>p.n).includes(t)).length;
-    return `<div style="margin-bottom:6px;display:flex;align-items:center;flex-wrap:wrap;gap:4px">
-      <span style="font-size:0.72rem;color:var(--accent);font-weight:700;min-width:24px">G${g.g}</span>
-      ${picks.map(t => `<span class="team-pill hit">${t.f} ${t.n}</span>`).join('')}
-      <span style="font-size:0.72rem;color:var(--muted);margin-left:4px">→ Kei <strong style="color:var(--text)">${kHits*POINTS.b24}点</strong> / akacello <strong style="color:var(--text)">${aHits*POINTS.b24}点</strong></span>
-    </div>`;
-  }).join('');
-
-  const bkt = bk.b24+bk.scorer_early+bk.champ_early+bk.b8+bk.scorer+bk.champ;
-  const bat = ba.b24+ba.scorer_early+ba.champ_early+ba.b8+ba.scorer+ba.champ;
-  const draw = bkt === bat;
-
-  el.innerHTML = `
-    <div style="font-size:0.75rem;color:var(--muted);margin-bottom:12px">出典：${BOOKMAKER.source}　※ブックメーカー予想が全的中した場合の仮想スコア</div>
-    <div class="score-board" style="margin-bottom:20px">
-      ${['kei','akacello'].map(p => {
-        const bm = p==='kei' ? bk : ba, bt = p==='kei' ? bkt : bat;
-        const win = !draw && (p==='kei' ? bkt > bat : bat > bkt);
-        return `<div class="score-card ${win?'winner':''}">
-          <div class="pname">${p==='kei'?'Kei':'akacello'} ${win?'👑':''}</div>
-          <div class="total">${bt}<small style="font-size:1rem;color:var(--muted)">/75</small></div>
-          <div class="breakdown">
-            グループ突破：<span>${bm.b24}点/24点</span><br>
-            ⭐得点王ボーナス：<span>${bm.scorer_early}点/7点</span><br>
-            🔮優勝国早期ボーナス：<span>${bm.champ_early}点/5点</span><br>
-            ベスト8：<span>${bm.b8}点/24点</span><br>
-            得点王：<span>${bm.scorer}点/5点</span><br>
-            優勝予想：<span>${bm.champ}点/5点</span>
-          </div>
-        </div>`;
-      }).join('')}
-    </div>
-
-    <div class="stage-label">① グループ突破予想（各グループ2チーム）</div>
-    <div style="margin-bottom:4px">${b24Groups}</div>
-    <div style="font-size:0.8rem;margin-bottom:16px;padding:6px 8px;background:rgba(255,255,255,0.04);border-radius:6px">
-      合計　Kei <strong>${bk.b24}点</strong>　akacello <strong>${ba.b24}点</strong>　/24点
-    </div>
-
-    <div class="stage-label">⭐ 得点王ボーナス予想</div>
-    <div style="margin-bottom:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-      <span class="team-pill hit">${BOOKMAKER.scorer_flag} ${BOOKMAKER.scorer_early}</span>
-      ${pts(bk.scorer_early, ba.scorer_early)}/7点
-    </div>
-
-    <div class="stage-label">🔮 優勝国早期ボーナス予想</div>
-    <div style="margin-bottom:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-      <span class="team-pill hit">${BOOKMAKER.champ_early_flag} ${BOOKMAKER.champ_early}</span>
-      ${pts(bk.champ_early, ba.champ_early)}/5点
-    </div>
-
-    <div class="stage-label">④ 優勝予想</div>
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-      <span class="team-pill hit">${teamFlag(BOOKMAKER.champ[0])} ${BOOKMAKER.champ[0]}</span>
-      ${pts(bk.champ, ba.champ)}/5点
-    </div>
-  `;
 }
 
 // ホーム
