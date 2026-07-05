@@ -216,13 +216,13 @@
         <tr>
           <td><strong>③ 得点王予想</strong></td>
           <td>大会得点王の選手名を予想（自由記述）</td>
-          <td style="white-space:nowrap;color:var(--accent)">7/10<br><small>R16前</small></td>
+          <td style="white-space:nowrap;color:var(--accent)">7/10<br><small>QF前</small></td>
           <td>的中 <strong>5点</strong></td>
         </tr>
         <tr>
           <td><strong>④ 優勝予想</strong></td>
           <td>優勝チームを1チーム予想</td>
-          <td style="white-space:nowrap;color:var(--accent)">7/25<br><small>決勝前</small></td>
+          <td style="white-space:nowrap;color:var(--accent)">7/18<br><small>決勝前</small></td>
           <td>的中 <strong>5点</strong></td>
         </tr>
       </tbody>
@@ -467,7 +467,7 @@ const CONFIRMED_B24 = ['メキシコ','南アフリカ','カナダ','スイス',
 // 長友出場時間（確定：大会通算17分）
 const NAGATOMO_ACTUAL = 17;
 // ベスト8前に敗退確定したチーム（R32/R16敗退）
-const CONFIRMED_OUT_B8 = [];
+const CONFIRMED_OUT_B8 = ['カナダ'];
 
 function loadResults() {
   // 古いキーを削除（誤データのクリーンアップ）
@@ -912,10 +912,11 @@ function renderCompare() {
   grid.innerHTML = '';
 
   function pillClass(team, stage) {
-    // B8・優勝予想：敗退確定チームは即miss（RESULTS確定前でも）
     if ((stage === 'b8' || stage === 'champ') && CONFIRMED_OUT_B8.includes(team)) return 'eliminated';
     if (!RESULTS[stage].length) return 'pending';
-    return RESULTS[stage].includes(team) ? 'hit' : 'miss';
+    if (RESULTS[stage].includes(team)) return 'hit';
+    if (stage === 'b8' && RESULTS.b8.length < 8) return 'pending';
+    return 'miss';
   }
   function icon(cls) {
     return cls === 'hit' ? '✅' : (cls === 'miss' || cls === 'eliminated') ? '❌' : '';
@@ -1271,9 +1272,9 @@ function renderHome() {
   // ステータス
   const deadlines = [
     {label:'① グループ突破 + 得点王ボーナス', date:'2026-06-11'},
-    {label:'② ベスト8', date:'2026-07-17'},
+    {label:'② ベスト8', date:'2026-06-29'},
     {label:'③ 得点王', date:'2026-07-10'},
-    {label:'④ 優勝予想', date:'2026-07-25'},
+    {label:'④ 優勝予想', date:'2026-07-18'},
   ];
   const now = new Date();
   const next = deadlines.filter(d => new Date(d.date) >= now).sort((a,b)=>new Date(a.date)-new Date(b.date))[0];
@@ -1302,21 +1303,21 @@ function renderSchedule() {
       {date:'6/11 〜 6/27', teams:'グループステージ 全試合（12グループ）', venue:'米・加・墨 各都市', round:'GS', cls:'round-group'},
     ]},
     { title:'ラウンド32', matches:[
-      {date:'6/30 〜 7/3', teams:'ラウンド32（ベスト32）', venue:'各会場', round:'R32', cls:'round-r32'},
+      {date:'6/28 〜 7/3', teams:'ラウンド32（ベスト32）', venue:'各会場', round:'R32', cls:'round-r32'},
     ]},
     { title:'ラウンド16', matches:[
-      {date:'7/10 〜 7/13', teams:'ラウンド16（ベスト16）', venue:'各会場', round:'R16', cls:'round-r16'},
+      {date:'7/4 〜 7/7', teams:'ラウンド16（ベスト16）', venue:'各会場', round:'R16', cls:'round-r16'},
     ]},
     { title:'準々決勝（ベスト8）', matches:[
-      {date:'7/17 〜 7/18', teams:'準々決勝 4試合', venue:'各会場', round:'QF', cls:'round-qf'},
+      {date:'7/9 〜 7/11', teams:'準々決勝 4試合', venue:'各会場', round:'QF', cls:'round-qf'},
     ]},
     { title:'準決勝', matches:[
-      {date:'7/21（火）', teams:'準決勝 第1試合', venue:'MetLife Stadium, NJ', round:'SF', cls:'round-sf'},
-      {date:'7/22（水）', teams:'準決勝 第2試合', venue:'AT&T Stadium, Dallas', round:'SF', cls:'round-sf'},
+      {date:'7/14（月）', teams:'準決勝 第1試合', venue:'AT&T Stadium, Dallas', round:'SF', cls:'round-sf'},
+      {date:'7/15（火）', teams:'準決勝 第2試合', venue:'Mercedes-Benz Stadium, Atlanta', round:'SF', cls:'round-sf'},
     ]},
     { title:'決勝', matches:[
-      {date:'7/25（土）', teams:'3位決定戦', venue:'各会場', round:'3位', cls:'round-qf'},
-      {date:'7/26（日）', teams:'🏆 決勝', venue:'MetLife Stadium, East Rutherford, NJ', round:'決勝', cls:'round-final'},
+      {date:'7/18（金）', teams:'3位決定戦', venue:'Hard Rock Stadium, Miami', round:'3位', cls:'round-qf'},
+      {date:'7/19（土）', teams:'🏆 決勝', venue:'MetLife Stadium, East Rutherford, NJ', round:'決勝', cls:'round-final'},
     ]},
   ];
   document.getElementById('schedule-content').innerHTML = sections.map(s => `
