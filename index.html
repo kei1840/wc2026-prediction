@@ -375,6 +375,14 @@
 
   <div id="lead-banner" style="display:none;border-radius:12px;padding:12px 18px;margin-bottom:14px;text-align:center;font-size:1.05rem;font-weight:700"></div>
   <div class="score-board" id="score-board"></div>
+
+  <!-- ノックアウトブラケット -->
+  <div class="card" id="bracket-card" style="margin-bottom:14px">
+    <h3 style="margin-bottom:2px">🏟️ ノックアウトブラケット</h3>
+    <div class="sub">準々決勝〜決勝の対戦カードと進捗</div>
+    <div id="bracket-content"></div>
+  </div>
+
   <div class="compare-grid" id="compare-grid"></div>
 
   <div class="note" id="no-data-msg">まだ予想が保存されていません。「予想入力」タブから入力してください。</div>
@@ -443,31 +451,67 @@ function makeFlagPicker(currentFlag, onChange) {
   return wrap;
 }
 
-let RESULTS = { b24:['メキシコ','南アフリカ','カナダ','スイス','ブラジル','モロッコ','アメリカ','オーストラリア','ドイツ','エクアドル','オランダ','日本','ベルギー','エジプト','スペイン','ウルグアイ','フランス','ノルウェー','アルゼンチン','オーストリア','コロンビア','ポルトガル','イングランド','クロアチア'], b8:['モロッコ','フランス','ノルウェー'], scorer:'ムバッペ', scorer_flag:'🇫🇷', champ:[], nagatomo_actual:null };
+let RESULTS = { b24:['メキシコ','南アフリカ','カナダ','スイス','ブラジル','モロッコ','アメリカ','オーストラリア','ドイツ','エクアドル','オランダ','日本','ベルギー','エジプト','スペイン','ウルグアイ','フランス','ノルウェー','アルゼンチン','オーストリア','コロンビア','ポルトガル','イングランド','クロアチア'], b8:['モロッコ','フランス','ノルウェー','イングランド'], scorer:'ムバッペ', scorer_flag:'🇫🇷', champ:[], nagatomo_actual:null };
 
+// ============================================================
+// 確定データ（自動更新エージェントが管理）
+// 最終更新: 2026-07-06
+// 大会進捗: R16 4/8完了 | QF 7/9〜7/11 | SF 7/14〜7/15 | 決勝 7/19
+// ============================================================
 
-// 突破確定チーム（手動確定分）
+// ① グループ突破（全24チーム確定）
 const CONFIRMED_B24 = ['メキシコ','南アフリカ','カナダ','スイス','ブラジル','モロッコ','アメリカ','オーストラリア','ドイツ','エクアドル','オランダ','日本','ベルギー','エジプト','スペイン','ウルグアイ','フランス','ノルウェー','アルゼンチン','オーストリア','コロンビア','ポルトガル','イングランド','クロアチア'];
-// QF確定チーム（R16勝者）
-const CONFIRMED_B8 = ['モロッコ','フランス','ノルウェー'];
-// 得点王（暫定）
+
+// ② ベスト8確定（QF進出・R16勝者）※ R16全8試合完了で8チーム揃う
+// R16結果: モロッコ3-0カナダ / フランス1-0パラグアイ / ノルウェー2-1ブラジル / イングランド3-2メキシコ
+// 残り4試合: ポルトガル/スペイン(7/6) / アメリカ/ベルギー(7/6) / アルゼンチン/エジプト(7/7) / スイス/コロンビア(7/7)
+const CONFIRMED_B8 = ['モロッコ','フランス','ノルウェー','イングランド']; // 4/8確定
+
+// 得点王（暫定首位）※ 大会終了後に確定
 const CONFIRMED_SCORER = 'ムバッペ';
 const CONFIRMED_SCORER_FLAG = '🇫🇷';
-// 長友出場時間（確定：大会通算17分）
+
+// 長友出場時間（大会終了・確定）
 const NAGATOMO_ACTUAL = 17;
-// ベスト8前に敗退確定したチーム（R32/R16敗退）
-const CONFIRMED_OUT_B8 = ['カナダ','ブラジル','南アフリカ','日本','オランダ','エクアドル','ドイツ','オーストリア','クロアチア','オーストラリア'];
+
+// QF前に敗退確定（R32またはR16でb24チームが負けた場合のみ）
+// R32敗退(8): 南アフリカ 日本 ドイツ オランダ エクアドル オーストリア クロアチア オーストラリア
+// R16敗退(3): カナダ(vs モロッコ) ブラジル(vs ノルウェー) メキシコ(vs イングランド)
+const CONFIRMED_OUT_B8 = [
+  '南アフリカ','日本','ドイツ','オランダ','エクアドル','オーストリア','クロアチア','オーストラリア',
+  'カナダ','ブラジル','メキシコ'
+];
+
+// QF対戦カード（確定分）{a,af,b,bf,date,venue,winner} winner=''は未確定
+const CONFIRMED_QF = [
+  {a:'フランス',   af:'🇫🇷', b:'モロッコ',   bf:'🇲🇦', date:'7/9',  venue:'ボストン', winner:''},
+  {a:'イングランド',af:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', b:'ノルウェー', bf:'🇳🇴', date:'7/11', venue:'マイアミ', winner:''},
+  // 残り2試合は7/7以降に確定 → 当エージェントが更新する
+];
+
+// SF進出確定（QF勝者）
+const CONFIRMED_SF = [];
+
+// SF対戦カード {a,af,b,bf,date,venue,winner}
+const CONFIRMED_SF_MATCHES = [];
+
+// QF敗退（champion予想でも'eliminated'表示）
+const CONFIRMED_OUT_QF = [];
+
+// SF敗退
+const CONFIRMED_OUT_SF = [];
+
+// 優勝確定（文字列 or ''）
+const CONFIRMED_CHAMP = '';
 
 function loadResults() {
-  // 古いキーを削除（誤データのクリーンアップ）
   localStorage.removeItem('wc2026v6_results');
   localStorage.removeItem('wc2026v6_results2');
   try { const s = localStorage.getItem('wc2026v6_results3'); if(s) RESULTS = JSON.parse(s); } catch(e) {}
-  // 確定チームをマージ（localStorageを上書きする定数から強制反映）
   CONFIRMED_B24.forEach(t => { if (!RESULTS.b24.includes(t)) RESULTS.b24.push(t); });
   CONFIRMED_B8.forEach(t => { if (!RESULTS.b8.includes(t)) RESULTS.b8.push(t); });
   if (CONFIRMED_SCORER) { RESULTS.scorer = CONFIRMED_SCORER; RESULTS.scorer_flag = CONFIRMED_SCORER_FLAG; }
-  // 長友出場時間をセット
+  if (CONFIRMED_CHAMP) { RESULTS.champ = [CONFIRMED_CHAMP]; }
   if (RESULTS.nagatomo_actual == null) RESULTS.nagatomo_actual = NAGATOMO_ACTUAL;
   saveResults();
 }
@@ -903,10 +947,21 @@ function renderCompare() {
   grid.innerHTML = '';
 
   function pillClass(team, stage) {
-    if ((stage === 'b8' || stage === 'champ') && CONFIRMED_OUT_B8.includes(team)) return 'eliminated';
-    if (!RESULTS[stage].length) return 'pending';
-    if (RESULTS[stage].includes(team)) return 'hit';
-    if (stage === 'b8' && RESULTS.b8.length < 8) return 'pending';
+    if (stage === 'b8') {
+      if (CONFIRMED_OUT_B8.includes(team)) return 'eliminated';
+      if (RESULTS.b8.includes(team)) return 'hit';
+      if (RESULTS.b8.length < 8) return 'pending';
+      return 'miss';
+    }
+    if (stage === 'champ') {
+      if (CONFIRMED_OUT_B8.includes(team) || CONFIRMED_OUT_QF.includes(team) || CONFIRMED_OUT_SF.includes(team)) return 'eliminated';
+      if (!RESULTS.champ.length) return 'pending';
+      if (RESULTS.champ.includes(team)) return 'hit';
+      return 'miss';
+    }
+    // b24
+    if (!RESULTS.b24.length) return 'pending';
+    if (RESULTS.b24.includes(team)) return 'hit';
     return 'miss';
   }
   function icon(cls) {
@@ -1199,6 +1254,53 @@ function renderHome() {
   `;
 }
 
+// ノックアウトブラケット表示
+function renderBracket() {
+  const el = document.getElementById('bracket-content');
+  if (!el) return;
+
+  function matchRow(a, af, b, bf, date, venue, winner) {
+    if (!a) {
+      return `<div style="padding:7px 10px;margin-bottom:4px;background:rgba(255,255,255,0.02);border-radius:8px;border:1px dashed var(--border);color:var(--muted);font-size:0.83rem">TBD vs TBD <span style="float:right;font-size:0.75rem">${date} ${venue}</span></div>`;
+    }
+    const aW = winner === a, bW = winner === b, decided = winner !== '';
+    return `<div style="padding:7px 10px;margin-bottom:4px;background:rgba(255,255,255,0.02);border-radius:8px;border:1px solid var(--border);font-size:0.83rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <span style="${aW?'font-weight:700;':''} ${decided&&!aW?'opacity:0.4;text-decoration:line-through':''}">${af} ${a}${aW?' ✅':''}</span>
+      <span style="color:var(--muted)">vs</span>
+      <span style="${bW?'font-weight:700;':''} ${decided&&!bW?'opacity:0.4;text-decoration:line-through':''}">${bf} ${b}${bW?' ✅':''}</span>
+      <span style="margin-left:auto;color:var(--muted);font-size:0.72rem;white-space:nowrap">${date} ${venue}</span>
+    </div>`;
+  }
+
+  let html = '';
+
+  // 準々決勝
+  html += '<div class="stage-label" style="margin:8px 0 5px">準々決勝（7/9〜7/11）</div>';
+  CONFIRMED_QF.forEach(m => { html += matchRow(m.a, m.af, m.b, m.bf, m.date, m.venue, m.winner); });
+  for (let i = CONFIRMED_QF.length; i < 4; i++) html += matchRow('','','','','7/10','TBD','');
+
+  // 準決勝
+  html += '<div class="stage-label" style="margin:10px 0 5px">準決勝（7/14〜7/15）</div>';
+  if (CONFIRMED_SF_MATCHES.length > 0) {
+    CONFIRMED_SF_MATCHES.forEach(m => { html += matchRow(m.a, m.af, m.b, m.bf, m.date, m.venue, m.winner || ''); });
+    for (let i = CONFIRMED_SF_MATCHES.length; i < 2; i++) html += matchRow('','','','',i===0?'7/14':'7/15','TBD','');
+  } else {
+    html += matchRow('','','','','7/14','ダラス','');
+    html += matchRow('','','','','7/15','アトランタ','');
+  }
+
+  // 決勝
+  html += '<div class="stage-label" style="margin:10px 0 5px">決勝（7/19 メットライフ）</div>';
+  if (RESULTS.champ.length) {
+    const c = RESULTS.champ[0];
+    html += `<div style="padding:8px 12px;background:rgba(184,154,90,0.12);border-radius:8px;border:1px solid var(--accent);font-size:0.9rem;font-weight:700;text-align:center">🏆 優勝 ${teamFlag(c)} ${c}</div>`;
+  } else {
+    html += `<div style="padding:7px 10px;background:rgba(255,255,255,0.02);border-radius:8px;border:1px dashed var(--accent);color:var(--muted);font-size:0.83rem;text-align:center">🏆 TBD（7/19）</div>`;
+  }
+
+  el.innerHTML = html;
+}
+
 // 日程
 function renderSchedule() {
   const sections = [
@@ -1251,7 +1353,7 @@ function showView(id, btn) {
       const input = document.getElementById('nagatomo-actual-input');
       if (input && RESULTS.nagatomo_actual != null) input.value = RESULTS.nagatomo_actual;
     }
-    renderCompare(); renderScores();
+    renderCompare(); renderScores(); renderBracket();
   }
   if (id === 'schedule') renderSchedule();
   if (id === 'predict') { renderScorerInput(); updateTemplate(); }
@@ -1264,7 +1366,7 @@ const _fw = document.getElementById('fetch-wrap');
 if (_fw) _fw.style.display = 'flex';
 const _naw = document.getElementById('nagatomo-admin-wrap');
 if (_naw) { _naw.style.display = 'flex'; _naw.style.alignItems = 'center'; _naw.style.gap = '6px'; const _ni = document.getElementById('nagatomo-actual-input'); if (_ni && RESULTS.nagatomo_actual != null) _ni.value = RESULTS.nagatomo_actual; }
-renderCompare(); renderScores();
+renderCompare(); renderScores(); renderBracket();
 fetchResults(true);
 renderB24Grid(curPlayer.b24);
 renderScorerEarlyInput(curPlayer.b24);
