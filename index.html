@@ -717,7 +717,7 @@ function renderGrid(gridId, stage) {
     // QF対戦順に表示（match単位でグループ化、必ず2列）
     grid.innerHTML = '';
     grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
-    CONFIRMED_QF.forEach(match => {
+    CONFIRMED_QF.forEach((match, idx) => {
       const wrap = document.createElement('div');
       wrap.style.cssText = 'display:contents';
       [{ n: match.a, f: match.af }, { n: match.b, f: match.bf }].forEach(team => {
@@ -737,12 +737,14 @@ function renderGrid(gridId, stage) {
         };
         wrap.appendChild(btn);
       });
-      // マッチ区切り（右端に "vs" ラベル + 右マージン）
-      const vs = document.createElement('div');
-      vs.style.cssText = 'grid-column: 1 / -1; border-top: 1px solid var(--border); margin: 2px 0;';
       grid.appendChild(wrap.children[0]);
       grid.appendChild(wrap.children[0]);
-      grid.appendChild(vs);
+      // 最後のmatch以外に区切り線
+      if (idx < CONFIRMED_QF.length - 1) {
+        const sep = document.createElement('div');
+        sep.style.cssText = 'grid-column: 1 / -1; border-top: 1px solid var(--border); margin: 2px 0;';
+        grid.appendChild(sep);
+      }
     });
     updateFlatCount(stage, selected.length, limit);
     return;
@@ -1118,8 +1120,9 @@ function renderCompare() {
     html += `<div class="stage-label">③ ベスト4（${(p.sf4||[]).length}/4）</div>`;
     if (!p.sf4 || !p.sf4.length) html += `<span style="color:var(--muted);font-size:0.8rem;">未入力</span>`;
     else {
-      const sf4Sorted = TEAMS.map(t=>t.n).filter(n => p.sf4.includes(n));
-      sf4Sorted.forEach(t => { const cls = pillClass(t, 'sf4'); html += `<span class="team-pill ${cls}">${teamFlag(t)} ${t} ${icon(cls)}</span>`; });
+      // QF対戦順に並べる
+      const sf4Ordered = CONFIRMED_QF.flatMap(m => [m.a, m.b]).filter(n => p.sf4.includes(n));
+      sf4Ordered.forEach(t => { const cls = pillClass(t, 'sf4'); html += `<span class="team-pill ${cls}">${teamFlag(t)} ${t} ${icon(cls)}</span>`; });
     }
 
     html += `<div class="stage-label">④ 得点王予想</div>`;
