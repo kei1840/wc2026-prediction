@@ -48,11 +48,38 @@ for w in qf_winners:
     if w not in b8:
         errors.append(f'QF勝者がCONFIRMED_B8にない: {w}')
 
-# 3. SF進出チームとQF敗退チームの重複なし
+# 3. QF対戦カードから勝者・敗者の整合性を確認
+import re as _re
+qf_blocks = _re.findall(
+    r"\{a:'([^']+)'.*?b:'([^']+)'.*?winner:'([^']*)'\}", src
+)
+for a, b, winner in qf_blocks:
+    if not winner:
+        continue
+    loser = b if winner == a else a
+    if winner not in sf and winner not in b8:
+        errors.append(f'QF勝者{winner}がCONFIRMED_SFにもCONFIRMED_B8にもない')
+    if loser not in out_qf:
+        errors.append(f'QF敗者{loser}がCONFIRMED_OUT_QFにない（champ予想で❌が出なくなる）')
+
+# 4. SF対戦カードから勝者・敗者の整合性を確認
+sf_blocks = _re.findall(
+    r"CONFIRMED_SF_MATCHES\s*=\s*\[(.*?)\]", src, _re.DOTALL
+)
+if sf_blocks:
+    sf_matches = _re.findall(r"\{a:'([^']+)'.*?b:'([^']+)'.*?winner:'([^']*)'\}", sf_blocks[0])
+    for a, b, winner in sf_matches:
+        if not winner:
+            continue
+        loser = b if winner == a else a
+        if loser not in out_sf:
+            errors.append(f'SF敗者{loser}がCONFIRMED_OUT_SFにない')
+
+# 5. SF進出チームとQF敗退チームの重複なし
 sf_out_overlap = [t for t in sf if t in out_qf]
 if sf_out_overlap: errors.append(f'SF進出とQF敗退の両方に存在: {sf_out_overlap}')
 
-# 4. 優勝チームは存在するチームか
+# 6. 優勝チームは存在するチームか
 if champ and champ not in b8 and champ not in sf:
     errors.append(f'優勝チームがB8/SFにない: {champ}')
 
