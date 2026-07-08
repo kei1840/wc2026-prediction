@@ -228,7 +228,7 @@
         <tr>
           <td><strong>⑤ 優勝予想</strong></td>
           <td>優勝チームを1チーム予想</td>
-          <td style="white-space:nowrap;color:var(--accent)">7/9<br><small>QF前</small></td>
+          <td style="white-space:nowrap;color:var(--accent)">7/14<br><small>SF前</small></td>
           <td>的中 <strong>5点</strong></td>
         </tr>
       </tbody>
@@ -347,7 +347,7 @@
 
   <!-- ステージ5 -->
   <div class="card">
-    <h3>⑤ 優勝予想 <small style="color:var(--muted);font-weight:400">締切：7/9（QF前）</small></h3>
+    <h3>⑤ 優勝予想 <small style="color:var(--muted);font-weight:400">締切：7/14（SF前）</small></h3>
     <div class="player-tabs">
       <button class="ptab active" onclick="switchPlayer('champ','kei',this)">Kei</button>
       <button class="ptab" onclick="switchPlayer('champ','akacello',this)">akacello</button>
@@ -984,7 +984,7 @@ ${sf4Lines}
   ${scorer}
 
 ━━━━━━━━━━━━━━━━━━━━
-【⑤ 優勝予想】締切：7/9（5点）
+【⑤ 優勝予想】締切：7/14（5点）
   ${champ}
 `;
 }
@@ -1318,8 +1318,9 @@ function renderHome() {
   const deadlines = [
     {label:'① グループ突破 + 得点王ボーナス', date:'2026-06-11'},
     {label:'② ベスト8', date:'2026-06-29'},
-    {label:'③ ベスト4 + ⑤ 優勝予想', date:'2026-07-09'},
+    {label:'③ ベスト4', date:'2026-07-09'},
     {label:'④ 得点王', date:'2026-07-10'},
+    {label:'⑤ 優勝予想', date:'2026-07-14'},
   ];
   const now = new Date();
   const next = deadlines.filter(d => new Date(d.date) >= now).sort((a,b)=>new Date(a.date)-new Date(b.date))[0];
