@@ -508,6 +508,36 @@ const CONFIRMED_OUT_SF = [];
 // 優勝確定（文字列 or ''）
 const CONFIRMED_CHAMP = '';
 
+function validateConstants() {
+  const errors = [];
+  const b24 = CONFIRMED_B24;
+  const b8 = CONFIRMED_B8;
+  const outB8 = CONFIRMED_OUT_B8;
+  // b8+outB8の合計がb24と一致するか
+  const covered = [...b8, ...outB8];
+  const missing = b24.filter(t => !covered.includes(t));
+  const overlap = b8.filter(t => outB8.includes(t));
+  const extra = covered.filter(t => !b24.includes(t));
+  if (missing.length) errors.push('未分類（b8にもOUT_B8にもない）: ' + missing.join(', '));
+  if (overlap.length) errors.push('重複（b8とOUT_B8の両方に存在）: ' + overlap.join(', '));
+  if (extra.length) errors.push('b24外チームがb8/OUT_B8に混入: ' + extra.join(', '));
+  if (b8.length > 8) errors.push('CONFIRMED_B8が8チームを超えている: ' + b8.length + 'チーム');
+  // QF winner整合性
+  const qfWinners = CONFIRMED_QF.map(m => m.winner).filter(w => w);
+  qfWinners.forEach(w => { if (!b8.includes(w)) errors.push('QF勝者がCONFIRMED_B8にない: ' + w); });
+  const outQF = CONFIRMED_OUT_QF;
+  const sf = CONFIRMED_SF;
+  outQF.forEach(t => { if (sf.includes(t)) errors.push('SF進出とQF敗退の両方に存在: ' + t); });
+  if (CONFIRMED_CHAMP && !sf.includes(CONFIRMED_CHAMP) && !b8.includes(CONFIRMED_CHAMP)) errors.push('優勝チームがSF/B8にない: ' + CONFIRMED_CHAMP);
+  if (errors.length) {
+    const banner = document.createElement('div');
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#c0392b;color:#fff;padding:10px 16px;font-size:0.85rem;font-weight:700;z-index:9999;line-height:1.6';
+    banner.innerHTML = '⚠️ データ整合性エラー（開発者確認要）<br>' + errors.map(e => '・' + e).join('<br>');
+    document.body.prepend(banner);
+    console.error('[WC2026] 整合性エラー:', errors);
+  }
+  return errors;
+}
 function loadResults() {
   localStorage.removeItem('wc2026v6_results');
   localStorage.removeItem('wc2026v6_results2');
@@ -1365,6 +1395,7 @@ function showView(id, btn) {
 
 loadState();
 loadResults();
+validateConstants();
 // 結果タブをデフォルト表示（fetch-wrap / nagatomo-admin-wrap を表示）
 const _fw = document.getElementById('fetch-wrap');
 if (_fw) _fw.style.display = 'flex';
