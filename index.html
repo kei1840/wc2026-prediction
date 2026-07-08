@@ -714,7 +714,36 @@ function renderGrid(gridId, stage) {
       updateFlatCount(stage, selected.length, limit);
       return;
     }
-    pool = TEAMS.filter(t => RESULTS.b8.includes(t.n));
+    // QF対戦順に表示（match単位でグループ化、必ず2列）
+    grid.innerHTML = '';
+    grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
+    CONFIRMED_QF.forEach(match => {
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'display:contents';
+      [{ n: match.a, f: match.af }, { n: match.b, f: match.bf }].forEach(team => {
+        const isSel = selected.includes(team.n);
+        const atLimit = selected.length >= limit && !isSel;
+        const btn = document.createElement('button');
+        btn.className = 'tbtn' + (isSel ? ' sel' : '') + (atLimit ? ' dis' : '');
+        btn.innerHTML = `<span class="flag">${team.f}</span>${team.n}`;
+        btn.onclick = () => {
+          if (isSel) selected.splice(selected.indexOf(team.n), 1);
+          else if (!atLimit) selected.push(team.n);
+          updateFlatCount(stage, selected.length, limit);
+          renderGrid(gridId, stage);
+          updateTemplate();
+        };
+        wrap.appendChild(btn);
+      });
+      // マッチ区切り（右端に "vs" ラベル + 右マージン）
+      const vs = document.createElement('div');
+      vs.style.cssText = 'grid-column: 1 / -1; border-top: 1px solid var(--border); margin: 2px 0;';
+      grid.appendChild(wrap.children[0]);
+      grid.appendChild(wrap.children[0]);
+      grid.appendChild(vs);
+    });
+    updateFlatCount(stage, selected.length, limit);
+    return;
   } else {
     if (RESULTS.b8.length === 0) {
       grid.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;padding:12px 0">🔒 ベスト8確定後に解放されます</div>';
