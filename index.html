@@ -211,7 +211,7 @@
           <td><strong>② ベスト8</strong></td>
           <td>準々決勝に残る8チームを予想</td>
           <td style="white-space:nowrap;color:var(--accent)">6/29<br><small>GS終了後<br>R32前</small></td>
-          <td>1チーム <strong>3点</strong>（最大24点）</td>
+          <td>1チーム <strong>4点</strong>（最大32点）</td>
         </tr>
         <tr>
           <td><strong>③ ベスト4</strong></td>
@@ -233,7 +233,7 @@
         </tr>
       </tbody>
     </table></div>
-    <p style="margin-top:12px;font-size:0.8rem;color:var(--muted)">合計最大：<strong style="color:var(--text)">87点</strong>（24 + 7 + 5 + 5 + 24 + 12 + 5 + 5）</p>
+    <p style="margin-top:12px;font-size:0.8rem;color:var(--muted)">合計最大：<strong style="color:var(--text)">95点</strong>（24 + 7 + 5 + 5 + 32 + 12 + 5 + 5）</p>
   </div>
 
   <div class="card">
@@ -430,7 +430,7 @@ const TEAMS = GROUPS.flatMap(g => g.teams);
 function teamFlag(name) { return TEAMS.find(t=>t.n===name)?.f||''; }
 function teamGroup(name) { return GROUPS.find(g=>g.teams.some(t=>t.n===name))?.g||''; }
 
-const POINTS = {b24:1, b8:3, sf4:3, champ:5};
+const POINTS = {b24:1, b8:4, sf4:3, champ:5};
 
 // 国旗ピッカー生成
 function makeFlagPicker(currentFlag, onChange) {
@@ -1291,8 +1291,8 @@ function renderScores() {
     const win = p==='kei' ? kt >= at : at >= kt;
     return `<div class="score-card ${win&&!draw?'winner':''}">
       <div class="pname">${p==='kei'?'Kei':'akacello'} ${win&&!draw?'👑':''}</div>
-      <div class="total">${t}<small style="font-size:1rem;color:var(--muted)">/87</small></div>
-      <div class="breakdown">グループ突破：<span>${s.b24}点/24点</span><br>⭐得点王ボーナス：<span>${s.scorer_early}点/7点</span><br>🔮優勝国早期ボーナス：<span>${s.champ_early}点/5点</span><br>⏱長友ボーナス：<span>${s.nagatomo}点/5点</span><br>ベスト8：<span>${s.b8}点/24点</span><br>ベスト4：<span>${s.sf4}点/12点</span><br>得点王：<span>${s.scorer}点/5点</span><br>優勝予想：<span>${s.champ}点/5点</span></div>
+      <div class="total">${t}<small style="font-size:1rem;color:var(--muted)">/95</small></div>
+      <div class="breakdown">グループ突破：<span>${s.b24}点/24点</span><br>⭐得点王ボーナス：<span>${s.scorer_early}点/7点</span><br>🔮優勝国早期ボーナス：<span>${s.champ_early}点/5点</span><br>⏱長友ボーナス：<span>${s.nagatomo}点/5点</span><br>ベスト8：<span>${s.b8}点/32点</span><br>ベスト4：<span>${s.sf4}点/12点</span><br>得点王：<span>${s.scorer}点/5点</span><br>優勝予想：<span>${s.champ}点/5点</span></div>
     </div>`;
   }).join('');
 
@@ -1334,13 +1334,13 @@ function renderHome() {
     const win = p==='kei' ? kt >= at : at >= kt;
     return `<div class="score-card ${win&&!draw?'winner':''}">
       <div class="pname">${p==='kei'?'Kei':'akacello'} ${win&&!draw?'👑':''}</div>
-      <div class="total">${t}<small style="font-size:1rem;color:var(--muted)">/87</small></div>
+      <div class="total">${t}<small style="font-size:1rem;color:var(--muted)">/95</small></div>
       <div class="breakdown">
         グループ突破：<span>${s.b24}点/24点</span><br>
         ⭐得点王ボーナス：<span>${s.scorer_early}点/7点</span><br>
         🔮優勝国早期ボーナス：<span>${s.champ_early}点/5点</span><br>
         ⏱長友ボーナス：<span>${s.nagatomo}点/5点</span><br>
-        ベスト8：<span>${s.b8}点/24点</span><br>
+        ベスト8：<span>${s.b8}点/32点</span><br>
         ベスト4：<span>${s.sf4}点/12点</span><br>
         得点王：<span>${s.scorer}点/5点</span><br>
         優勝予想：<span>${s.champ}点/5点</span>
