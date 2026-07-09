@@ -562,7 +562,9 @@ function loadResults() {
   CONFIRMED_B24.forEach(t => { if (!RESULTS.b24.includes(t)) RESULTS.b24.push(t); });
   // b8はCONFIRMED_B8から再構築（localStorageの古い不正データを排除）
   RESULTS.b8 = [...CONFIRMED_B8];
-  if (CONFIRMED_SCORER) { RESULTS.scorer = CONFIRMED_SCORER; RESULTS.scorer_flag = CONFIRMED_SCORER_FLAG; }
+  // scorerもCONFIRMED_SCORERから再構築（localStorageの古い暫定値を排除）
+  RESULTS.scorer = CONFIRMED_SCORER;
+  RESULTS.scorer_flag = CONFIRMED_SCORER_FLAG;
   if (CONFIRMED_CHAMP) { RESULTS.champ = [CONFIRMED_CHAMP]; }
   if (RESULTS.nagatomo_actual == null) RESULTS.nagatomo_actual = NAGATOMO_ACTUAL;
   saveResults();
