@@ -596,8 +596,8 @@ const KEI_SCORER_SEED = {
 
 const KEI_B24_SEED = ['メキシコ','チェコ','スイス','カタール','ブラジル','モロッコ','アメリカ','トルコ','ドイツ','エクアドル','日本','スウェーデン','ベルギー','イラン','スペイン','ウルグアイ','フランス','ノルウェー','アルゼンチン','オーストリア','ポルトガル','コロンビア','イングランド','クロアチア'];
 const KEI_B8_SEED = ['メキシコ','スイス','ブラジル','オランダ','ベルギー','スペイン','フランス','アルゼンチン'];
-const KEI_SF4_SEED = [];
-const AKACELLO_SF4_SEED = [];
+const KEI_SF4_SEED = ['フランス','ベルギー','スイス','ノルウェー'];
+const AKACELLO_SF4_SEED = ['フランス','スペイン','アルゼンチン','イングランド'];
 
 function loadState() {
   try { const s = localStorage.getItem('wc2026v6'); if(s) state = JSON.parse(s); } catch(e){}
@@ -615,7 +615,7 @@ function loadState() {
   const ak = state.predictions.akacello;
   // シード値は常に強制セット（localStorageの古い値を上書き）
   if(AKACELLO_SEED.b8.length) ak.b8 = [...AKACELLO_SEED.b8];
-  if(!ak.sf4) ak.sf4 = [...AKACELLO_SF4_SEED];
+  if(AKACELLO_SF4_SEED.length) ak.sf4 = [...AKACELLO_SF4_SEED];
   if(AKACELLO_SEED.scorer) { ak.scorer = AKACELLO_SEED.scorer; ak.scorer_flag = AKACELLO_SEED.scorer_flag; }
   ak.nagatomo = AKACELLO_SEED.nagatomo; // 常に強制セット
   saveState();
@@ -626,7 +626,7 @@ function loadState() {
   // KeiのB8データをシードで更新
   const ks0 = state.predictions.kei;
   if(KEI_B8_SEED.length && (!ks0.b8 || ks0.b8.length === 0)) ks0.b8 = [...KEI_B8_SEED];
-  if(!ks0.sf4) ks0.sf4 = [...KEI_SF4_SEED];
+  if(KEI_SF4_SEED.length) ks0.sf4 = [...KEI_SF4_SEED];
   ks0.nagatomo = '45'; // 常に強制セット
   // Keiの得点王データを個別にフォールバック（名前だけあって国旗がないケースもカバー）
   const ks = state.predictions.kei;
