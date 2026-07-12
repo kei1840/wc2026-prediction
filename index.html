@@ -1298,7 +1298,7 @@ function renderScores() {
     return `<div class="score-card ${win&&!draw?'winner':''}">
       <div class="pname">${p==='kei'?'Kei':'akacello'} ${win&&!draw?'👑':''}</div>
       <div class="total">${t}<small style="font-size:1rem;color:var(--muted)">/92</small></div>
-      <div class="breakdown">グループ突破：<span>${s.b24}点/24点</span><br>⭐得点王ボーナス：<span>${s.scorer_early}点/7点</span><br>🔮優勝国早期ボーナス：<span>${s.champ_early}点/5点</span><br>⏱長友ボーナス：<span>${s.nagatomo}点/5点</span><br>ベスト8：<span>${s.b8}点/24点</span><br>ベスト4：<span>${s.sf4}点/12点</span><br>得点王：<span>${s.scorer}点/5点</span><br>優勝予想：<span>${s.champ}点/10点</span></div>
+      <div class="breakdown">グループ突破：<span>${s.b24}点/24点</span><br>⭐得点王ボーナス：<span>${s.scorer_early}点/7点</span><br>🔮優勝国早期ボーナス：<span>${s.champ_early}点/5点</span><br>⏱長友ボーナス：<span>${s.nagatomo}点/5点</span><br>ベスト8：<span>${s.b8}点/24点</span><br>ベスト4：<span>${s.sf4}点/12点</span><br>得点王：<span>${s.scorer}点/5点</span><br>優勝予想：<span>${s.champ}点/<s style="color:var(--muted)">5点</s> 10点</span></div>
     </div>`;
   }).join('');
 
@@ -1349,7 +1349,7 @@ function renderHome() {
         ベスト8：<span>${s.b8}点/24点</span><br>
         ベスト4：<span>${s.sf4}点/12点</span><br>
         得点王：<span>${s.scorer}点/5点</span><br>
-        優勝予想：<span>${s.champ}点/10点</span>
+        優勝予想：<span>${s.champ}点/<s style="color:var(--muted)">5点</s> 10点</span>
       </div>
     </div>`;
   }).join('');
