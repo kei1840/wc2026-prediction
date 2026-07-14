@@ -590,7 +590,7 @@ const AKACELLO_SEED = {
   b8: ['ドイツ','アルゼンチン','日本','アメリカ','メキシコ','オランダ','スペイン','コロンビア'],
   sf4: [],
   scorer: 'メッシ', scorer_flag: '🇦🇷',
-  champ: [], champ_early: '', champ_early_flag: '', nagatomo: '30',
+  champ: ['アルゼンチン'], champ_early: '', champ_early_flag: '', nagatomo: '30',
 };
 
 const KEI_SCORER_SEED = {
@@ -602,6 +602,7 @@ const KEI_B24_SEED = ['メキシコ','チェコ','スイス','カタール','ブ
 const KEI_B8_SEED = ['メキシコ','スイス','ブラジル','オランダ','ベルギー','スペイン','フランス','アルゼンチン'];
 const KEI_SF4_SEED = ['フランス','ベルギー','スイス','ノルウェー'];
 const AKACELLO_SF4_SEED = ['フランス','スペイン','アルゼンチン','イングランド'];
+const KEI_CHAMP_SEED = ['フランス'];
 
 function loadState() {
   try { const s = localStorage.getItem('wc2026v6'); if(s) state = JSON.parse(s); } catch(e){}
@@ -621,6 +622,7 @@ function loadState() {
   if(AKACELLO_SEED.b8.length) ak.b8 = [...AKACELLO_SEED.b8];
   if(AKACELLO_SF4_SEED.length) ak.sf4 = [...AKACELLO_SF4_SEED];
   if(AKACELLO_SEED.scorer) { ak.scorer = AKACELLO_SEED.scorer; ak.scorer_flag = AKACELLO_SEED.scorer_flag; }
+  if(AKACELLO_SEED.champ.length) ak.champ = [...AKACELLO_SEED.champ];
   ak.nagatomo = AKACELLO_SEED.nagatomo; // 常に強制セット
   saveState();
   // KeiのB24データが消えていたら復元
@@ -631,6 +633,7 @@ function loadState() {
   const ks0 = state.predictions.kei;
   if(KEI_B8_SEED.length && (!ks0.b8 || ks0.b8.length === 0)) ks0.b8 = [...KEI_B8_SEED];
   if(KEI_SF4_SEED.length) ks0.sf4 = [...KEI_SF4_SEED];
+  if(KEI_CHAMP_SEED.length) ks0.champ = [...KEI_CHAMP_SEED];
   ks0.nagatomo = '45'; // 常に強制セット
   // Keiの得点王データを個別にフォールバック（名前だけあって国旗がないケースもカバー）
   const ks = state.predictions.kei;
