@@ -26,8 +26,10 @@ out_qf  = extract_array('CONFIRMED_OUT_QF')
 out_sf  = extract_array('CONFIRMED_OUT_SF')
 champ   = extract_str('CONFIRMED_CHAMP')
 
-# QF winners
-qf_matches = re.findall(r"winner:'([^']*)'", src)
+# QF winners（CONFIRMED_QF配列のみを対象にスコープする。全文検索だとCONFIRMED_SF_MATCHESのwinnerまで拾ってしまう）
+qf_array_text = re.search(r"CONFIRMED_QF\s*=\s*\[(.*?)\n\];", src, re.DOTALL)
+qf_array_text = qf_array_text.group(1) if qf_array_text else ''
+qf_matches = re.findall(r"winner:'([^']*)'", qf_array_text)
 qf_winners = [w for w in qf_matches if w]
 
 errors = []
@@ -48,10 +50,10 @@ for w in qf_winners:
     if w not in b8:
         errors.append(f'QF勝者がCONFIRMED_B8にない: {w}')
 
-# 3. QF対戦カードから勝者・敗者の整合性を確認
+# 3. QF対戦カードから勝者・敗者の整合性を確認（CONFIRMED_QF配列のみが対象）
 import re as _re
 qf_blocks = _re.findall(
-    r"\{a:'([^']+)'.*?b:'([^']+)'.*?winner:'([^']*)'\}", src
+    r"\{a:'([^']+)'.*?b:'([^']+)'.*?winner:'([^']*)'\}", qf_array_text
 )
 for a, b, winner in qf_blocks:
     if not winner:
