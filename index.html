@@ -443,6 +443,7 @@ function makeFlagPicker(currentFlag, onChange) {
   wrap.appendChild(btn);
 
   const picker = document.createElement('div');
+  picker.className = 'flag-picker';
   picker.style.cssText = 'display:none;position:absolute;top:110%;left:0;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px;z-index:100;display:none;flex-wrap:wrap;gap:4px;width:240px;max-height:200px;overflow-y:auto';
   TEAMS.forEach(t => {
     const fb = document.createElement('button');
@@ -463,10 +464,13 @@ function makeFlagPicker(currentFlag, onChange) {
     e.stopPropagation();
     picker.style.display = picker.style.display === 'none' ? 'flex' : 'none';
   };
-  document.addEventListener('click', () => { picker.style.display = 'none'; }, {once:false});
 
   return wrap;
 }
+// 開いている国旗ピッカーをどこかクリックしたら閉じる（ピッカー生成のたびにリスナーを積まないよう1つだけ登録）
+document.addEventListener('click', () => {
+  document.querySelectorAll('.flag-picker').forEach(p => { p.style.display = 'none'; });
+});
 
 let RESULTS = { b24:['メキシコ','南アフリカ','カナダ','スイス','ブラジル','モロッコ','アメリカ','オーストラリア','ドイツ','エクアドル','オランダ','日本','ベルギー','エジプト','スペイン','ウルグアイ','フランス','ノルウェー','アルゼンチン','オーストリア','コロンビア','ポルトガル','イングランド','クロアチア'], b8:['モロッコ','フランス','ノルウェー','イングランド','スペイン','ベルギー','アルゼンチン','スイス'], scorer:'', scorer_flag:'', champ:[], nagatomo_actual:null };
 
@@ -1174,14 +1178,6 @@ async function fetchResults(silent = false) {
   if (!silent) { btn.disabled = true; btn.innerHTML = '⏳ 取得中...'; msg.textContent = ''; }
 
   try {
-    // 開幕前チェック（6/11開幕済み）
-    if (false) {
-      msg.style.color = 'var(--muted)';
-      msg.textContent = '⏳ 大会は6/19開幕予定。開幕後に取得してください';
-      btn.disabled = false;
-      btn.innerHTML = '🔄 最新結果を取得';
-      return;
-    }
     // ESPN公開API - WC2026グループ順位表
     const r = await fetch('https://site.api.espn.com/apis/v2/sports/soccer/fifa.world/standings?season=2026', {cache:'no-store'});
     if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -1290,20 +1286,31 @@ function calcScore(player) {
   return s;
 }
 
-function renderScores() {
-  const ks = calcScore('kei'), as = calcScore('akacello');
-  const kt = ks.b24+ks.scorer_early+ks.champ_early+ks.nagatomo+ks.b8+ks.sf4+ks.scorer+ks.champ, at = as.b24+as.scorer_early+as.champ_early+as.nagatomo+as.b8+as.sf4+as.scorer+as.champ;
-  const draw = kt === at;
+function totalScore(s) { return s.b24+s.scorer_early+s.champ_early+s.nagatomo+s.b8+s.sf4+s.scorer+s.champ; }
 
-  document.getElementById('score-board').innerHTML = ['kei','akacello'].map(p => {
+function scoreCardHTML(name, s, t, win, draw) {
+  return `<div class="score-card ${win&&!draw?'winner':''}">
+    <div class="pname">${name} ${win&&!draw?'👑':''}</div>
+    <div class="total">${t}<small style="font-size:1rem;color:var(--muted)">/92</small></div>
+    <div class="breakdown">グループ突破：<span>${s.b24}点/24点</span><br>⭐得点王ボーナス：<span>${s.scorer_early}点/7点</span><br>🔮優勝国早期ボーナス：<span>${s.champ_early}点/5点</span><br>⏱長友ボーナス：<span>${s.nagatomo}点/5点</span><br>ベスト8：<span>${s.b8}点/24点</span><br>ベスト4：<span>${s.sf4}点/12点</span><br>得点王：<span>${s.scorer}点/5点</span><br>優勝予想：<span>${s.champ}点/<s style="color:var(--muted)">5点</s> 10点</span></div>
+  </div>`;
+}
+
+// score-board / home-score-board 共通のスコアカード描画（重複排除）
+function renderScoreBoard(targetId) {
+  const ks = calcScore('kei'), as = calcScore('akacello');
+  const kt = totalScore(ks), at = totalScore(as);
+  const draw = kt === at;
+  document.getElementById(targetId).innerHTML = ['kei','akacello'].map(p => {
     const s = p==='kei' ? ks : as, t = p==='kei' ? kt : at;
     const win = p==='kei' ? kt >= at : at >= kt;
-    return `<div class="score-card ${win&&!draw?'winner':''}">
-      <div class="pname">${p==='kei'?'Kei':'akacello'} ${win&&!draw?'👑':''}</div>
-      <div class="total">${t}<small style="font-size:1rem;color:var(--muted)">/92</small></div>
-      <div class="breakdown">グループ突破：<span>${s.b24}点/24点</span><br>⭐得点王ボーナス：<span>${s.scorer_early}点/7点</span><br>🔮優勝国早期ボーナス：<span>${s.champ_early}点/5点</span><br>⏱長友ボーナス：<span>${s.nagatomo}点/5点</span><br>ベスト8：<span>${s.b8}点/24点</span><br>ベスト4：<span>${s.sf4}点/12点</span><br>得点王：<span>${s.scorer}点/5点</span><br>優勝予想：<span>${s.champ}点/<s style="color:var(--muted)">5点</s> 10点</span></div>
-    </div>`;
+    return scoreCardHTML(p==='kei'?'Kei':'akacello', s, t, win, draw);
   }).join('');
+  return {kt, at, draw};
+}
+
+function renderScores() {
+  const {kt, at, draw} = renderScoreBoard('score-board');
 
   const hasPred = state.predictions.kei.b24.length > 0 || state.predictions.akacello.b24.length > 0;
   document.getElementById('no-data-msg').style.display = hasPred ? 'none' : 'block';
@@ -1332,30 +1339,7 @@ function renderScores() {
 
 // ホーム
 function renderHome() {
-  const ks = calcScore('kei'), as = calcScore('akacello');
-  const kt = ks.b24+ks.scorer_early+ks.champ_early+ks.nagatomo+ks.b8+ks.sf4+ks.scorer+ks.champ;
-  const at = as.b24+as.scorer_early+as.champ_early+as.nagatomo+as.b8+as.sf4+as.scorer+as.champ;
-  const draw = kt === at;
-
-  // スコアボード
-  document.getElementById('home-score-board').innerHTML = ['kei','akacello'].map(p => {
-    const s = p==='kei' ? ks : as, t = p==='kei' ? kt : at;
-    const win = p==='kei' ? kt >= at : at >= kt;
-    return `<div class="score-card ${win&&!draw?'winner':''}">
-      <div class="pname">${p==='kei'?'Kei':'akacello'} ${win&&!draw?'👑':''}</div>
-      <div class="total">${t}<small style="font-size:1rem;color:var(--muted)">/92</small></div>
-      <div class="breakdown">
-        グループ突破：<span>${s.b24}点/24点</span><br>
-        ⭐得点王ボーナス：<span>${s.scorer_early}点/7点</span><br>
-        🔮優勝国早期ボーナス：<span>${s.champ_early}点/5点</span><br>
-        ⏱長友ボーナス：<span>${s.nagatomo}点/5点</span><br>
-        ベスト8：<span>${s.b8}点/24点</span><br>
-        ベスト4：<span>${s.sf4}点/12点</span><br>
-        得点王：<span>${s.scorer}点/5点</span><br>
-        優勝予想：<span>${s.champ}点/<s style="color:var(--muted)">5点</s> 10点</span>
-      </div>
-    </div>`;
-  }).join('');
+  renderScoreBoard('home-score-board');
 
   // ステータス
   const deadlines = [
@@ -1499,7 +1483,8 @@ if (_fw) _fw.style.display = 'flex';
 const _naw = document.getElementById('nagatomo-admin-wrap');
 if (_naw) { _naw.style.display = 'flex'; _naw.style.alignItems = 'center'; _naw.style.gap = '6px'; const _ni = document.getElementById('nagatomo-actual-input'); if (_ni && RESULTS.nagatomo_actual != null) _ni.value = RESULTS.nagatomo_actual; }
 renderCompare(); renderScores(); renderBracket();
-fetchResults(true);
+// グループ突破24/24が確定済みならESPN APIへの問い合わせ自体が無駄なのでスキップ
+if (RESULTS.b24.length < 24) fetchResults(true);
 renderB24Grid(curPlayer.b24);
 renderScorerEarlyInput(curPlayer.b24);
 renderChampEarlyInput(curPlayer.b24);
